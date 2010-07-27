@@ -1,0 +1,41 @@
+import(
+tcltk, 
+utils
+)
+
+export(
+compareGroups,
+compareGroups.default,
+compareGroups.formula,
+varinfo.compareGroups,
+createTable,
+varinfo,
+export2latex,
+export2csv,
+cGroupsGUI                
+)
+
+S3method(compareGroups,default)      
+S3method(compareGroups,formula)      
+S3method(print,compareGroups) 
+S3method(plot,compareGroups)            
+S3method(print,createTable)          
+S3method(print,summary.compareGroups)
+S3method(summary,compareGroups)  
+S3method(update,compareGroups)    
+S3method(varinfo,compareGroups)    
+
+# not exported:
+  # chisq.test2                
+  # combn2                     
+  # compare.i                  
+  # descrip                    
+  # flip                       
+  # format2                    
+  # signifdec.i                
+  # signifdec                  
+  # summ.i                     
+  # table.i 
+  # norm.plot	
+  # Others ...
+
