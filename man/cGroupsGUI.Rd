@@ -1,0 +1,46 @@
+\name{cGroupsGUI}
+\alias{cGroupsGUI}
+
+\title{
+Graphical user interface to create tables of descriptives by groups (bivariate tables)
+}
+
+\description{
+This function allows the user to build tables in an easy and intuitive way, and to modify several options, by using a graphical interface.
+}
+
+\usage{
+cGroupsGUI(X)
+}
+
+\arguments{
+  \item{X}{a matrix or a data.frame. 'X' must exist in \code{.GlobalEnv}. If missing, \code{\link{regicor}} data is loaded}
+}
+
+\details{
+See the vignette to see more detailed examples illustrating the use of this function.
+}
+
+
+\note{
+
+When typing \code{library(compareGroups)}, this function is called with the \code{\link{regicor}} data loaded. \cr
+
+If a data.frame or a matrix is passed through 'X' argument or is loaded by the 'Load data' GUI menu, this object is placed in the \code{.GlobalEnv}. Manipulating this data.frame or matrix while GUI is opened may produce an error in executing the GUI operations. 
+
+}
+
+
+\seealso{
+\code{\link{compareGroups}}, \code{\link{createTable}}
+}
+
+\examples{
+\dontrun{
+data(myData)
+cGroupsGUI(myData)
+}
+}
+
+\keyword{utilities}
+
