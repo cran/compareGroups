@@ -6,6 +6,7 @@
 \usepackage{amssymb,amsmath}
 \usepackage{multirow}
 \usepackage{lscape}
+%\usepackage[latin1]{inputenc}
 
 
 
@@ -17,7 +18,7 @@
 
 \vspace{1cm}
 
-\author{Isaac Subirana\,$^{1,2,3}$, Héctor Sanz\,$^{2,4}$}
+\author{Isaac Subirana\,$^{1,2,3}$, H\'ector Sanz\,$^{2,4}$}
 
 
 %\VignetteIndexEntry{compareGroups} 
