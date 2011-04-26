@@ -1,17 +1,21 @@
+v0.1-4
+2011-04-26
+- fixed: problems when checking Windows version
+
 V0.1-3
-2009-07-27
+2010-07-27
 - fixed a bug in 'print.createTable', 'export2csv' and 'export2latex' functions when there is only one row-variable
 
 v0.1-2
-2009-07-27
+2010-07-27
 - MAIN CHANGE: submitted to CRAN.
 - package no more available in www.regicor.org
 
 v0.1-1
-2009-07-26
+2010-07-26
 - fixed a bug in 'print.createTable', 'export2csv' and 'export2latex' functions when there is only one group
 - some words changed in help documentation
 
 v0.1-0
-2009-06-22
+2010-06-22
 - 'compareGroups' created and uploaded in www.regicor.org
