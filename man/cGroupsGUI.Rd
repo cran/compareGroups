@@ -6,7 +6,7 @@ Graphical user interface to create tables of descriptives by groups (bivariate t
 }
 
 \description{
-This function allows the user to build tables in an easy and intuitive way, and to modify several options, by using a graphical interface.
+This function allows the user to build tables in an easy and intuitive way and to modify several options, using a graphical interface.
 }
 
 \usage{
@@ -18,13 +18,11 @@ cGroupsGUI(X)
 }
 
 \details{
-See the vignette to see more detailed examples illustrating the use of this function.
+See the vignette for more detailed examples illustrating the use of this function.
 }
 
 
 \note{
-
-When typing \code{library(compareGroups)}, this function is called with the \code{\link{regicor}} data loaded. \cr
 
 If a data.frame or a matrix is passed through 'X' argument or is loaded by the 'Load data' GUI menu, this object is placed in the \code{.GlobalEnv}. Manipulating this data.frame or matrix while GUI is opened may produce an error in executing the GUI operations. 
 
@@ -37,8 +35,8 @@ If a data.frame or a matrix is passed through 'X' argument or is loaded by the '
 
 \examples{
 \dontrun{
-data(myData)
-cGroupsGUI(myData)
+data(regicor)
+cGroupsGUI(regicor)
 }
 }
 

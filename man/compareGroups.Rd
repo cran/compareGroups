@@ -14,26 +14,33 @@ Descriptives by groups
 
 
 \description{
-This function performs descriptives by groups for several variables. Depending on the nature of these variables, different descriptive statistics are calculated (mean, median, frequencies) and different tests are computed as appropriate (t-test, ANOVA, Kruskall-Wallis, Fisher,...).
+This function performs descriptives by groups for several variables. Depending on the nature of these variables, different descriptive statistics are calculated (mean, median, frequencies or K-M probabilities) and different tests are computed as appropriate (t-test, ANOVA, Kruskall-Wallis, Fisher, log-rank, ...).
 }
 
 \usage{
 compareGroups(X, ...)
-\method{compareGroups}{default}(X, y, selec = NA, method = 1, alpha = 0.05, min.dis = 
-          5, max.ylev = 5, max.xlev=10, include.label=TRUE, ...)
-\method{compareGroups}{formula}(X, data, subset, na.action= NULL, include.label=TRUE, ...)
-\method{plot}{compareGroups}(x, z=1.5 ,n.breaks="Sturges", ...)
+\method{compareGroups}{default}(X, y = NULL, Xext = NULL, selec = NA, method = 1, timemax = NA, 
+alpha = 0.05, min.dis = 5, max.ylev = 5, max.xlev = 10, include.label = TRUE, 
+Q1 = 0.25, Q3 = 0.75, simplify = FALSE, ref = 1, ref.no = NA, fact.ratio = 1, 
+ref.y = 1, p.corrected = TRUE, ...)
+\method{compareGroups}{formula}(X, data, subset, na.action=NULL, include.label=TRUE, ...)
+\method{plot}{compareGroups}(x, file, bivar = FALSE, z=1.5, n.breaks = "Sturges", ...)
 }
 
 \arguments{
 
-  \item{X}{either a data.frame or a matrix (then method 'compareGroups.default' is called), or a formula (then method 'compareGroups.formula' is called). When 'X' is a formula, it must be an object of class "formula" (or one that can be coerced to that class). Right side of ~ must have the terms in an additive way.}
+  \item{X}{either a data.frame or a matrix (then method 'compareGroups.default' is called), or a formula (then method 'compareGroups.formula' is called). When 'X' is a formula, it must be an object of class "formula" (or one that can be coerced to that class). Right side of ~ must have the terms in an additive way, and left side of ~ must contain the name of the grouping variable or can be left in blank (in this latter case descriptives for whole sample are calculated and no test is performed).}
   
-  \item{y}{a vector variable that distinguishes the groups. It must be either a numeric, character or factor.}
+  \item{y}{a vector variable that distinguishes the groups. It must be either a numeric, character, factor or NULL. Default value is NULL which means that descriptives for whole sample are calculated and no test is performed.}
   
-  \item{selec}{a character vector with as many components as row-variables. If it has length 1 it is recycled for all row-variables. Every component of 'selec' is an expression character that will be evaluated to select the individuals to be analysed for every row-variable. Or a named vector specifying which row-variables 'selec' is applied, and for the rest of row-variables default value is applied. Default value is NA, which means that all individuals are analysed (no subsetting).}
+  \item{Xext}{a data.frame or a matrix with the same rows / individuals contained in \code{X}, and maybe with different variables / columns than \code{X}. This argument is used by \code{compareGroups.default} in the sense that the variables specified in the argument \code{selec} are searched in \code{Xext} and/or in the \code{\link[base]{.GlobalEnv}}. If \code{Xext} is \code{NULL}, then Xext is created from variables of \code{X} plus \code{y}. Default value is \code{NULL}.} 
   
-  \item{method}{an integer vector with as many components as row-variables. If it has length 1 it is recycled for all row-variables. It only applies for continuous row-variables (for factor row-variables it is ignored). Possible values are: 1 - forces to be analysed as normal-distributed; 2 - forces to be analysed as continuous non-normal; 3 - forces to be analysed as categorical; and NA - performs a Shapiro-Wilks test to decide between normal or non-normal. Or a named vector specifying which row-variables 'method' is applied, and for the rest of row-variables default value is applied. Default value is 1.}
+  \item{selec}{a list with as many components as row-variables. If list length is 1 it is recycled for all row-variables. Every component of 'selec' is an expression that will be evaluated to select the individuals to be analyzed for every row-variable. Otherwise, a named list specifying 'selec' row-variables is applied. '.else' is a reserved name that defines the selection for the rest of the variables; if no '.else' variable is defined, default value is applied for the rest of the variables. Default value is NA; all individuals are analyzed (no subsetting).}
+  
+  \item{method}{integer vector with as many components as row-variables. If its length is 1 it is recycled for all row-variables. It only applies for continuous row-variables (for factor row-variables it is ignored). Possible values are: 1 - forces analysis as "normal-distributed"; 2 - forces analysis as "continuous  non-normal"; 3 - forces analysis as "categorical";  and 4 - NA, which performs a Shapiro-Wilks  test to decide between normal or non-normal. Otherwise, a named vector specifying 'method' row-variables is applied. 
+'.else' is a reserved name that defines the method for the rest of the variables; if no '.else' variable is defined, default value is applied. Default value is 1.}
+  
+  \item{timemax}{double vector with as many components as row-variables. If its length is 1 it is recycled for all row-variables. It only applies for 'Surv' class row-variables (for all other row-variables it is ignored).  This value indicates at which time the K-M probability is to be computed. Otherwise, a named vector specifying 'timemax' row-variables is applied. '.else' is a reserved name that defines the 'timemax' for the rest of the variables; if no '.else' variable is defined, default value is applied. Default value is NA; K-M probability is then computed at the median of observed times.}
   
   \item{alpha}{double between 0 and 1. Significance threshold for the \code{\link[stats]{shapiro.test}} normality test for continuous row-variables. Default value is 0.05.}
   
@@ -47,17 +54,37 @@ compareGroups(X, ...)
   
   \item{subset}{an optional vector specifying a subset of individuals to be used in the computation process. It is applied to all row-variables. 'subset' and 'selec' are added in the sense of '&' to be applied in every row-variable.}
   
-  \item{na.action}{a function which indicates what should happen when the data contains NAs. The default is NULL, and that is equivalent to \code{\link[stats]{na.pass}}, which means no action. Value \code{\link[stats]{na.exclude}} can be useful if it is desired to removed all individuals with some NA in any variable.}
+  \item{na.action}{a function which indicates what should happen when the data contain NAs. The default is NULL, and that is equivalent to \code{\link[stats]{na.pass}}, which means no action. Value \code{\link[stats]{na.exclude}} can be useful if it is desired to removed all individuals with some NA in any variable.}    
 
   \item{include.label}{logical, indicating whether or not variable labels have to be shown in the results. Default value is TRUE}
 
-  \item{x}{an object of class 'compareGroups'}  
-
-  \item{z}{double. threshold limits to be placed in the deviation from normality plot. It is considered that too many points beyond this threshold indicates that current variable is far to be normal-distributed. Default value is 1.5.}
-
-  \item{n.breaks}{same as argument 'breaks' of \code{\link[graphics]{hist}}} 
+  \item{Q1}{double between 0 and 1, indicating the quantile to be displayed as the first number inside the square brackets in the bivariate table. To compute the minimum just type 0. Default value is 0.25 which means the first quartile.}
   
-  \item{\dots}{further arguments passed to 'compareGroups.default' or other methods}
+  \item{Q3}{double between 0 and 1, indicating the quantile to be displayed as the second number inside the square brackets in the bivariate table. To compute the maximum just type 1. Default value is 0.75 which means the third quartile.}
+
+  \item{simplify}{logical, indicating whether levels with no values must be removed for grouping variable and for row-variables. Default value is FALSE.}
+  
+  \item{ref}{an integer vector with as many components as row-variables. If its length is 1 it is recycled for all row-variables. It only applies for categorical row-variables. Or a named vector specifying which row-variables 'ref' is applied (a reserved name is '.else' which defines the reference category for the rest of the variables); if no '.else' variable is defined, default value is applied for the rest of the variables. Default value is 1.}
+  
+  \item{ref.no}{character specifying the name of the level to be the reference for Odds Ratio or Hazard Ratio. This is especially useful for yes/no variables. Default value is NA which means that category specified in 'ref' is the one selected to be the reference.}
+
+  \item{fact.ratio}{a double vector with as many components as row-variables  indicating  the units for the HR / OR (note that it does not affect the descriptives).  If its length is 1 it is recycled for all row-variables. Otherwise, a named vector specifying 'fact.ratio' row-variables is applied. '.else' is a reserved name that defines the reference category for the rest of the variables;  if no '.else' variable is defined, default value is applied. Default value is 1.}
+  
+  \item{ref.y}{an integer indicating the reference category of y variable for computing the OR, when y is a binary factor. Default value is 1.}
+  
+  \item{p.corrected}{logical, indicating whether p-values for pairwise comparisons must be corrected. It only applies when there is a grouping variable with more than 2 categories. Default value is TRUE.}  
+  
+  \item{x}{an object of class 'compareGroups'.}  
+
+  \item{file}{a character string giving the name of the file. A pdf file is saved with an appendix added to 'file' corresponding to the row-variable name. If missing, multiple devices are opened, one for each row-variable of 'x' object.}  
+
+  \item{bivar}{logical. If bivar=TRUE, it plots a boxplot or a barplot (for a continuous or categorical row-variable, respectively) stratified by groups. If bivar=FALSE, it plots a normality plot (for continuous row-variables) or a barplot (for categorical row-variables). Default value is FALSE.}
+
+  \item{z}{double. Indicates threshold limits to be placed in the deviation from normality plot. It is considered that too many points beyond this threshold indicates that current variable is far to be normal-distributed. Default value is 1.5.}
+
+  \item{n.breaks}{same as argument 'breaks' of \code{\link[graphics]{hist}}.} 
+  
+  \item{\dots}{further arguments passed to 'compareGroups.default' or other methods.}
 
 }
 
@@ -65,62 +92,103 @@ compareGroups(X, ...)
 
 Depending whether the row-variable is considered as continuous normal-distributed (1), continuous non-normal distributed (2) or categorical (3), the following descriptives and tests are performed: \cr
   1- mean, standard deviation and t-test or ANOVA \cr
-  2- median, 1st and 3rd quartiles, and Kruskall-Wallis test \cr
+  2- median, 1st and 3rd quartiles (by default), and Kruskall-Wallis test \cr
   3- or absolute and relative frequencies and chi-squared or exact Fisher test when the expected frequencies is less than 5 in some cell\cr
+Also, a row-variable can be of class 'Surv'. Then the probability of 'event' at a fixed time (set up with 'timemax' argument) is computed and a logrank test is performed.\cr 
 
 When there are more than 2 groups, it also performs pairwise comparisons adjusting for multiple testing (Tukey when row-variable is normal-distributed and Benjamini & Hochberg method otherwise), and computes p-value for trend. 
-The p-value for trend is computed from the Pearson test when row-variable is normal and from the Spearman test when it is continuous non normal. If the row-variable is categorical, the p-value for trend is computed as \code{1-pchisq(cor(as.integer(x),as.integer(y))^2*(length(x)-1),1)}, where 'x' is the row-variable and 'y' is the grouping variable.
+The p-value for trend is computed from the Pearson test when row-variable is normal and from the Spearman test when it is continuous non normal. If row-variable is of class 'Surv', the score test is computed from a Cox model where the grouping variable is introduced as an integer variable predictor. If the row-variable is categorical, the p-value for trend is computed as \cr
+\code{1-pchisq(cor(as.integer(x),as.integer(y))^2*(length(x)-1),1)} \cr
+where 'x' is the row-variable and 'y' is the grouping variable.   \cr
 
-See the vignette to see more detailed examples illustrating the use of this function and their methods.
+If there are two groups, the Odds Ratio is computed for each row-variable. While, if the response is of class 'Surv' (i.e. time to event) Hazard Ratios are computed. \cr
+
+The p-values for Hazard Ratios are computed using the logrank or Wald test under a Cox proportional hazard regression when row-variable is categorical or continuous, respectively. \cr
+
+See the vignette for more detailed examples illustrating the use of this function and the methods used.
 
 }
 
 
 \value{
 
- An object of class 'compareGroups'. 
+ An object of class 'compareGroups'.  \cr
 
-  'print' returns a table sample size, overall p-values, type of variable ('categorical', 'normal' or 'non-normal') and the subset of individuals selected.
+  'print' returns a table sample size, overall p-values, type of variable ('categorical', 'normal', 'non-normal' or 'Surv') and the subset of individuals selected.  \cr
 
-  'summary' returns a much more detailed list. Every component of the list is the result for each row-variable, showing frequencies, mean, standard deviations or quartiles as appropriate. Also, it shows overall p-values as well as p-trends and pairwise p-values among the groups.
+  'summary' returns a much more detailed list. Every component of the list is the result for each row-variable, showing frequencies, mean, standard deviations, quartiles or K-M probabilities as appropriate. Also, it shows overall p-values as well as p-trends and pairwise p-values among the groups. \cr
  
-  'plot' displays multiple devices with normality plots and Shapiro-Wilks test, for each of the continuous row-variables. If row-variable has less than 5 different values, it plots nothing.
+  'plot' displays, for all the analyzed variables, normality plots (with the Shapiro-Wilks test), barplots or Kaplan-Meier plots depending on whether the row-variable is continuous, categorical or time-to-response, respectevily. Also, bivariate plots can be displayed with stratified by groups boxplots or barplots, setting 'bivar' argument to TRUE.  \cr
   
-An update method for 'compareGroups' objects has been implemented and works as usual to change all the arguments of previous analysis.
+  An update method for 'compareGroups' objects has been implemented and works as usual to change all the arguments of previous analysis. \cr
+
+  A subset, '[', method has been implemented for 'compareGroups' objects. The subsetting indexes can be either integers (as usual), row-variables names or row-variable labels.       \cr
+  
+  Combine by rows,'rbind', method has been implemented for 'compareGroups' objects. It is useful to distinguish row-variable groups. \cr 
 
 See examples for further illustration about all previous issues. 
 
 }
-
+               
 
 \note{
 
-By default, the labels of the variables (row-variables and grouping variable) are displayed in the resulting tables. These labels are taken from the "label" attribute of each variable. And if this attribute is NULL, then the name of the variable is displayed, instead. 
-If a non-labelled variable is desired to be labelled, use the function \code{\link[Hmisc]{label}}.  \cr
+Arguments 'X', 'y' and 'Xext' from the \code{compareGroups.default} method are not recommended to be used. Use 'X', 'data' and 'subset' arguments from the \code{compareGroups.formula} method instead. \cr
 
-Currently, 'plot' method only works under Windows platform, since it opens multiple \code{\link[grDevices]{x11}} devices. \cr
+By default, the labels of the variables (row-variables and grouping variable) are displayed in the resulting tables. These labels are taken from the "label" attribute of each variable. And if this attribute is NULL, then the name of the variable is displayed, instead. 
+To label non-labeled variables, or to change their labels, use the function \code{\link[Hmisc]{label}}. \cr
+
+There may be no equivalence between the intervals of the OR / HR and p-values. For example, when the response variable is binary and the row-variable is continuous, p-value is based on Mann-Whitney U test or t-test depending on whether row-variable is normal distributed or not, respectively, while the confidence interval is build using the Wald method (log(OR) -/+ 1.95*se). Or when the answer is of class 'Surv', p-value is computed with the logrank test, while confidence intervals are based on the Wald method (log(HR) -/+ 1.95*se). 
+Finally, when the response is binary and the row variable is categorical, the p-value is based on the chi-squared or Fisher test when appropriate, while confidence intervals are constructed from the median-unbiased estimation method (see \code{\link[epitools]{oddsratio}}). \cr
+
+Subjects selection criteria specified in 'selec' and 'subset' arguments are combined using '&' to be applied to every row-variable.\cr
+
+Currently, 'plot' method only saves in pdf format. \cr
 
 }
 
 \seealso{
-\code{\link{createTable}}, \code{\link{cGroupsGUI}}
+\code{\link{createTable}}
 }
+
 \examples{
 
-data(myData)
+require(compareGroups)   
 
-# by formula
-ans<-compareGroups(y~.,data=myData)
-ans
-summary(ans)
-update(ans,y~.-a)
+# load REGICOR data
+data(regicor)
 
-# by data.frame
-X<-myData[,c("a","b","c")]
-y<-myData[,"y"]
-ans<-compareGroups(X,y)
-ans
-summary(ans)
+# compute a time-to-cardiovascular event variable
+regicor$tcv <- with(regicor, Surv(tocv, as.integer(cv=='Yes')))
+label(regicor$tcv)<-"Cardiovascular"
+
+# compute a time-to-overall death variable
+regicor$tdeath <- with(regicor, Surv(todeath, as.integer(death=='Yes')))
+label(regicor$tdeath) <- "Mortality"
+
+# descriptives by sex
+res <- compareGroups(sex ~ .-id-tocv-cv-todeath-death, data = regicor)
+res
+
+# summary of the first 4 row-variables
+summary(res[1:4])
+
+# univariate plots of all row-variables
+\dontrun{
+plot(res)
+}
+
+# plot of all row-variables by sex
+\dontrun{
+plot(res, bivar = TRUE)
+}
+
+# update changing the response: time-to-cardiovascular event.
+# note that time-to-death must be removed since it is not possible 
+# not compute descriptives of a 'Surv' class object by another 'Surv' class object.
+update(res, tcv ~ . + sex - tdeath - tcv)
+
+
 
 }
 

@@ -1,0 +1,43 @@
+\name{export2html}
+\alias{export2html}
+
+\title{
+Exporting descriptives table to HTML format
+}
+\description{
+This function takes the result of \code{createTable} and exports the tables to HTML format.
+}
+\usage{
+export2html(x, file, which.table="descr", nmax = TRUE, ...)
+}
+
+\arguments{
+
+  \item{x}{an object of class 'createTable'.}
+
+  \item{file}{file where table in HTML format will be written. Note that the the folder and the basename of the file must be written but not the extension (.html). Also, another file with the extension '_appendix' is written with the available data table.}
+
+  \item{which.table}{character indicating which table is printed. Possible values are 'descr', 'avail' or 'both' (partial matching allowed), exporting descriptives by groups table, availability data table or both tables, respectively. Default value is 'descr'.}
+
+  \item{nmax}{logical, indicating whether to show the maximum number of responses ("n" of a complete, or least-missing, variable) available by group. Default value is TRUE.}
+             
+  \item{\ldots}{currently ignored.}
+  
+}
+
+
+\seealso{
+  \code{\link{createTable}}, \code{\link{export2latex}}, \code{\link{export2csv}}
+} 
+\examples{
+
+\dontrun{
+require(compareGroups)
+data(regicor)
+res <- compareGroups(sex ~. -id-todeath-death-tocv-cv, regicor)
+export2html(createTable(res, hide.no = 'n'), file="table1")
+}
+
+}
+
+\keyword{utilities}

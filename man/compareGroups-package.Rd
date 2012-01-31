@@ -6,18 +6,18 @@
 Descriptives analysis by groups
 }
 \description{
-A package which quickly and efficiently generates descriptives by groups (bivariate tables) in plain text, or as LATEX instructions. Depending on the nature of the variable, different descriptive statistics can be calculated (mean, median, frequencies) and different tests are computed as appropriate (t-test, ANOVA, Kruskall-Wallis, Fisher,...). In order to facilitate construction of the bivariate table, we have implemented a graphical user interface.
+A package which quickly and efficiently generates descriptives by groups (bivariate tables) in plain text, HTML or as LATEX code. Depending on the nature of the variable, different descriptive statistics can be calculated (mean, median, frequencies, incidences) and different tests are computed as appropriate (t-test, ANOVA, Kruskall-Wallis, Fisher, log-rank, ...). In order to facilitate construction of the bivariate table, we have implemented a graphical user interface (GUI).
 }
 \details{
 \tabular{ll}{
 Package: \tab compareGroups\cr
 Type: \tab Package\cr
-Version: \tab 0.1-0\cr
-Date: \tab 2010-06-26\cr
+Version: \tab 1.0\cr
+Date: \tab 2011-10-04\cr
 License: \tab GPL version 2 or newer\cr
 LazyLoad: \tab yes\cr
 }
-Main functions: \code{\link{compareGroups}}, \code{\link{createTable}}, \code{\link{export2latex}}, \code{\link{export2latex}}, \code{\link{export2csv}}, \code{\link{cGroupsGUI}}    
+Main functions: \code{\link{compareGroups}}, \code{\link{createTable}}, \code{\link{export2latex}}, \code{\link{export2html}}, \code{\link{export2csv}}    
 }
 
 \author{

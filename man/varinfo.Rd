@@ -21,7 +21,7 @@ varinfo(x, ...)
 }
 
 \details{
-This function is useful when several or all variables are labelled. Then, by default, in the descriptives tables, the labels appear instead of the variable names. It may be necessary to remember the 'original'  variable names in a 'quicker way' in order to be easier to modify some options of the analysis or to change some of the variables included in the tables.
+By default, a compareGroup descriptives table lists variables by label (if one exists) rather than by name.  If researchers have assigned detailed labels to their variables, this function is very useful to quickly locate the original variable name if some modification is required. This function simply lists all "Analyzed variable names" by "Orig varname" (i.e. variable name in the data.frame) and "Shown varname" (i.e., label).
 }
 
 \value{
@@ -31,8 +31,7 @@ A 'matrix' with two columns
 }
 
 \note{
-If a variable has no "label" attribute, then the 'original name' is the same as the 'shown name'.
-The first variable in the table corresponds to the grouping variable. To label non-labelled variables, use the function \code{\link[Hmisc]{label}}.
+If a variable has no "label" attribute, then the 'original varname' is the same as the 'shown varname'. The first variable in the table corresponds to the grouping variable. To label non-labeled variables or to change the label, use the function \code{\link[Hmisc]{label}}.
 }
 
 \seealso{
@@ -40,14 +39,11 @@ The first variable in the table corresponds to the grouping variable. To label n
 }
 
 \examples{
-data(myData)
-label(myData$a)<-"variable a"
-label(myData$b)<-"variable b"
-label(myData$c)<-"variable c"
-label(myData$y)<-"grouping variable"
-ans<-compareGroups(y~.,data=myData)
-createTable(ans)
-varinfo(ans)
+require(compareGroups)
+data(regicor)
+res<-compareGroups(sex ~ . ,regicor)
+createTable(res, hide.no = 'no')
+varinfo(res)
 }
 
 \keyword{utilities}
