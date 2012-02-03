@@ -1,4 +1,4 @@
-export2csv<-function(x, file, sep=",", ...){
+export2csv<-function(x, file, which.table="descr", sep=",", nmax = TRUE, ...){
 
   if (!inherits(x,"createTable"))
     stop("x must be of class 'createTable'")
@@ -6,48 +6,50 @@ export2csv<-function(x, file, sep=",", ...){
   if (sep!="," & sep!=";")
     stop("sep must be ',' or ';'")
     
-  varnames<-attr(x,"varnames")
-  nr<-attr(x,"nr")
-
-  ii<-attr(x,"ny")+attr(x,"show.all")+1
-  Navail<-apply(x$avail[,1:(ii-1),drop=FALSE],2,as.integer)
-  if (nrow(x$avail[,1:(ii-1),drop=FALSE])==1)
-    Nmax<-Navail
-  if (ncol(x$avail[,1:(ii-1),drop=FALSE])==1)
-    Nmax<-max(Navail)
-  if (nrow(x$avail[,1:(ii-1),drop=FALSE])>1 & ncol(x$avail[,1:(ii-1),drop=FALSE])>1)
-    Nmax<-apply(Navail,2,max) 
-  
-  # table 1 #
-  desc<-x$desc
-  j<-1
-  ans<-NULL
-  for (i in 1:length(varnames)){
-    if (nr[i]==1){
-      t.i<-desc[j,,drop=FALSE]
-    } else{
-      t.i<-rbind(rep(NA,ncol(desc)),desc[j:(j+nr[i]-1),])
-      rownames(t.i)[1]<-paste(varnames[i],":",sep="")
-      rownames(t.i)[-1]<-sub(varnames[i],"",rownames(t.i)[-1])
-      rownames(t.i)[-1]<-sub(": ","    ",rownames(t.i)[-1])
-      t.i[1,ii:ncol(t.i)]<-t.i[2,ii:ncol(t.i)]
-      t.i[2,ii:ncol(t.i)]<-rep(NA,length(ii:ncol(t.i))) 
+  ww <- charmatch(which.table, c("descr","avail","both"))
+  if (is.na(ww))
+    stop(" argument 'which.table' must be either 'descr', 'avail' or 'both'")    
+    
+  if (ww%in%c(1,3)){
+    pp<-prepare(x,nmax=nmax)
+    table1<-prepare(x,nmax=nmax)[[1]]
+    cc<-unlist(attr(pp,"cc"))
+    ii<-ifelse(rownames(table1)[2]=='',2,1)
+    table1<-cbind(rownames(table1),table1)
+    if (!is.null(attr(x,"caption")))
+      table1[,1]<-paste("    ",table1[,1])
+    aux<-NULL
+    for (i in (ii+1):nrow(table1)){
+      if (!is.null(cc) && cc[i-ii]!=""){
+        aux<-rbind(aux,c(cc[i-ii],rep("",ncol(table1)-1)))
+        aux<-rbind(aux,table1[i,])
+      }else {
+        aux<-rbind(aux,table1[i,])      
+      }
     }
-    ans<-rbind(ans,t.i)
-    j<-j+nr[i]                    
+    table1<-rbind(table1[1:ii,],aux)
+    write.table(table1,file=paste(file,".csv",sep=""),na="",sep=sep,row.names=FALSE,col.names=FALSE,...)
   }
 
-  if (sep==",")
-    write.csv(ans,file=paste(file,".csv",sep=""),na="",...)
-  else 
-    write.csv2(ans,file=paste(file,".csv",sep=""),na="",...)  
-
-  # table 2 #
-  avail<-x$avail
-  if (sep==",")
-    write.csv(avail,file=paste(file,"_appendix.csv",sep=""),na="",...)
-  else
-    write.csv2(avail,file=paste(file,"_appendix.csv",sep=""),na="",...)
+  if (ww%in%c(2,3)){  
+    table2<-prepare(x,nmax=nmax)[[2]]
+    table2<-cbind(rownames(table2),table2)
+    if (!is.null(attr(x,"caption"))){
+      cc<-unlist(attr(x,"caption"))
+      table2[,1]<-paste("    ",table2[,1])
+    }
+    aux<-NULL
+    for (i in 2:nrow(table2)){
+      if (!is.null(cc) && cc[i-1]!=""){
+        aux<-rbind(aux,c(cc[i-1],rep("",ncol(table2)-1)))
+        aux<-rbind(aux,table2[i,])
+      }else {
+        aux<-rbind(aux,table2[i,])      
+      }
+    }
+    table2<-rbind(table2[1,],aux)
+    write.table(table2,file=paste(file,"_appendix.csv",sep=""),na="",sep=sep,row.names=FALSE,col.names=FALSE,...)
+  }
 
 }
 

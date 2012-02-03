@@ -1,0 +1,1237 @@
+\documentclass[11pt]{article}
+%\usepackage[authoryear,round]{natbib}
+\usepackage[ansinew]{inputenc}
+\usepackage{hyperref}
+\usepackage[pdftex]{color,graphicx,epsfig}
+\DeclareGraphicsRule{.pdftex}{pdf}{.pdftex}{}
+\usepackage{amssymb,amsmath}
+\usepackage{multirow}
+\usepackage{lscape}
+\usepackage{longtable}
+\usepackage{color}
+\usepackage{fancyvrb}
+\usepackage{enumerate}
+\usepackage{float}
+
+\newcommand{\Rlogo}{\protect\includegraphics[height=1.8ex,keepaspectratio]{Rlogo.pdf}}
+\newenvironment{itemize*}%
+  {\begin{itemize}%
+    \setlength{\itemsep}{-0.35cm}%
+    \setlength{\parskip}{10pt}}%
+  {\end{itemize}}
+\usepackage{Sweave}
+\usepackage[pdftex]{graphicx}
+%\usepackage{tikz} % paquete para flow-chart
+%\usetikzlibrary{shapes,arrows} % paquete para dibujar clouds, elipse, 
+\usepackage[a4paper,left=2cm,right=2cm,top=1.5cm,bottom=1.5cm]{geometry}
+
+\definecolor{Soutput*}{rgb}{1,0,0}
+\DefineVerbatimEnvironment{Verbatim*}{Verbatim}{formatcom={\color{Soutput*}},fontsize=\scriptsize \selectfont}
+
+
+\definecolor{Scode*}{rgb}{0,0,1}
+\DefineVerbatimEnvironment{Verbatim**}{Verbatim}{formatcom={\color{Scode*}},fontsize=\normalsize \selectfont}
+
+\newenvironment{changemargin1}{
+  \begin{list}{}{
+    \setlength{\leftmargin}{+5cm}
+    \setlength{\rightmargin}{3cm}
+    \footnotesize
+  }
+  \item[]
+  }{\end{list}}
+
+
+
+<<echo=FALSE>>=
+rm(list=ls())
+options(warn = -1)
+@
+
+
+
+\begin{document}
+%\setkeys{Gin}{width=0.99\textwidth}
+\title{\bf {\tt compareGroups}: Descriptives by groups}
+
+\vspace{1cm}
+
+\author{Isaac Subirana\,$^{1,2,3}$, Héctor Sanz\,$^{2,4}$,Joan Vila\,$^{2,1}$}
+%\VignetteIndexEntry{compareGroups}
+
+
+\maketitle
+
+
+\begin{center}
+
+$^{1}$CIBER Epidemiology and Public Health (CIBERESP)\\
+$^{2}$IMIM-Institut de Recerca Hospital del Mar\\
+$^{3}$Statistics Department, University of Barcelona\\
+$^{4}$Consorcio de Apoyo a la Investigación Biomédica en Red (CAIBER)\\
+
+\vspace{1cm}
+
+\texttt{isubirana@imim.es}, \texttt{hsanz@imim.es}, \texttt{jvila@imim.es}
+\end{center}
+
+\vspace{2cm}
+
+\tableofcontents
+\newpage
+
+% create GUI, univar and bivar folders
+<<echo=FALSE,results=hide>>=
+dir.create("./univar",showWarnings = FALSE)
+dir.create("./bivar",showWarnings = FALSE)
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction} \label{section-Introduction}
+
+The \textbf{{\tt compareGroups}} package allows users to create tables displaying results of univariate analyses, stratified or not by categorical variable groupings.
+
+
+Tables can easily be exported to CSV, \LaTeX{} or HTML. \\
+
+This package can be used from the \Rlogo~ prompt or from a user-friendly GUI.\\
+
+This document provides an overview of the usage of the {\tt compareGroups} package.\\
+
+To load the package using the \Rlogo~ prompt, enter:
+
+<<echo=TRUE>>=
+library(compareGroups)
+@
+
+Once the package is loaded, non-R users can follow the GUI instructions in Section \ref{gui}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Design: classes and methods} \label{Design}
+
+
+The {\tt compareGroups} package has three functions:
+\begin{itemize*}
+\item {\tt compareGroups} creates an object of class {\tt compareGroups}. This object can be:
+\begin{itemize*}
+\item printed
+\item summarized
+\item plotted
+\item updated
+\end{itemize*}
+\item {\tt createTable} creates an object of class {\tt createTable}. This object can be:
+\begin{itemize*}
+\item printed
+\item summarized
+\end{itemize*}
+\item {\tt export2latex}, {\tt export2csv}, {\tt export2html} will export results to CSV, \LaTeX{} or HTML, respectively. 
+\end{itemize*}
+
+Figure \ref{fig:classes} shows the diagram of the package.
+
+\begin{figure}[H]
+\begin{center}
+%\begin{changemargin1}
+\includegraphics[width=0.8\textwidth]{classes.pdf}
+\caption{Diagram of the {\tt compareGroups} package} \label{fig:classes}
+%\end{changemargin1}
+\end{center}
+\end{figure}
+\
+\\
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Data used as example} \label{data}
+To illustrate how this package works we used data from a cohort study aimed to establish risk factors related to coronary heart disease. Some variables have been partially modified to provide a better example for the use of this package.\\
+\\
+<<echo=TRUE>>=
+data(regicor)
+head(regicor)
+@
+
+Variables and labels in this data frame are:
+
+<<echo=FALSE,results=tex>>=
+dicc<-data.frame(
+"Name"=I(names(regicor)),
+"Label"=I(unlist(lapply(regicor,label))),
+"Codes"=I(unlist(lapply(regicor,function(x) paste(levels(x),collapse="; "))))
+)
+dicc$Codes<-sub(">=","$\\\\geq$",dicc$Codes)  
+print(xtable(dicc,align=rep("l",4)),include.rownames=FALSE,size="small",tabular.environment="longtable", sanitize.text.function=function(x) x)
+@
+\
+\\
+
+
+\noindent OBSERVATIONS:
+
+\begin{enumerate}[1.]
+
+\item It is important to note that {\tt compareGroups} is not aimed to perform quality control of the data.
+Other useful packages such as {\tt r2lh} \cite{r2lh} are available for this purpose. 
+
+\item It is strongly recommended that the \textit{data.frame} contain only the variables to be analyzed; the ones not needed in the present analysis should be removed from the list.
+
+\item The nature of variables to be analyzed should be known, or at least which variables are to be used as categorical. It is important to code categorical variables as factors and the order of their levels is meaningful in this package.
+
+\item The function {\tt label} from the {\tt Hmisc} package could be used to label the variables properly. The tables of results will contain the variable labels (by default).
+
+\end{enumerate}  
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Time-to-event variables} \label{timeto}
+
+
+A variable of class {\tt Surv} must be created to deal with time-to-event variables (i.e., time to Cardiovascular event/censored in our example): 
+
+<<echo=TRUE>>=
+regicor$tdeath <- with(regicor, Surv(todeath, death == 'Yes'))
+label(regicor$tdeath) <- "Mortality"
+
+regicor$tcv <- with(regicor, Surv(tocv, cv == 'Yes'))
+label(regicor$tcv) <- "Cardiovascular"
+@
+\
+\\
+
+Note that variables \textit{tdeath} and \textit{tcv} are created as time-to-death and time-to-cardiovascular event, respectively; both take censoring into account (i.e. they are of class {\tt Surv}).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Using {\tt R} syntax} \label{section-using R syntax}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%
+\subsection{\texttt{compareGroups}} \label{compareGroups}
+
+This is the main function. It does all the calculus. It is needed to store results in an object. Later, applying the function {\tt createTable} (Section \ref{createTable}) to this object will create tables of the analysis results.
+
+For example, to perform a univariate analysis with the \textit{regicor} data between \textit{year} (``response'' variable) and all other variables (``explanatory'' variables), this formula is required:
+
+<<echo=TRUE, results=hide>>=
+compareGroups(year ~ . , data=regicor)
+@
+
+%%%%
+\subsubsection{\texttt{Selecting response variables}} \label{selevar}
+
+
+If only a dot occurs on the right side of the ``$\thicksim$'' all variables in the data frame will be used.\\
+
+To remove the variable \textit{id} from the analysis:
+
+<<echo=TRUE, results=hide>>=
+compareGroups(year ~ . -id, data=regicor)
+@
+\
+\\
+
+To select some explanatory variables (e.g., \textit{age}, \textit{sex}, \textit{smoker} and \textit{triglyc}) and store results in an object of class {\tt compareGroups}:
+
+<<echo=TRUE>>=
+res<-compareGroups(year ~ age + sex + smoker + triglyc , data=regicor)
+res
+@
+
+\noindent Note: Although we have full data (n= 2294) for Age and Sex there are some missing data in Smoking status and Triglycerides. \\
+
+Year groups have some differences in Age although these don't reach statistical significance (p-value=0.078); however, Smoking status is clearly different.\\
+
+Age \& Triglycerides has been used as continuous and normal distributed. Sex \& Smoking status as categorical. \\
+
+No filters have been used (e.g., selecting only treated patients); therefore, the \textit{selection} column lists ``ALL'' (for all variables). \\
+
+\
+\\
+
+%%%%%%%%%%%%%%%%
+\subsubsection{Subsetting} \label{subsetting}
+
+
+
+To perform the analysis in a subset of participants (e.g., ``male'' participants):
+
+<<echo=TRUE, results=verbatim>>=
+compareGroups(year ~ age + smoker + triglyc, data=regicor, subset = sex=='Male')
+@
+
+Note that only results for male participants are shown. \\
+
+To subset specific variable/s (e.g., \textit{triglyc} and \textit{sbp}):
+
+<<echo=FALSE, results=hide>>=
+options(width=80)
+@
+<<echo=TRUE, results=hide>>=
+compareGroups(year ~ age + smoker + triglyc + sbp, data=regicor, 
+            selec = list(triglyc=txchol=='No', sbp=txhtn=='No'))
+@
+<<echo=FALSE, results=verbatim>>=
+compareGroups(year ~ age + smoker + triglyc + sbp, data=regicor, 
+            selec = list(triglyc=txchol=='No', sbp=txhtn=='No'))
+@
+
+Combinations are also allowed, e.g.:
+
+<<echo=FALSE, results=hide>>=
+options(width=80)
+@
+<<echo=TRUE, results=hide>>=
+compareGroups(year ~ age + smoker + triglyc + sbp, data=regicor, 
+    selec = list(triglyc=txchol=='No', sbp=txhtn=='No'), 
+    subset = sex=='Male')
+@
+
+<<echo=FALSE, results=verbatim>>=
+options(width=80)
+compareGroups(year ~ age + smoker + triglyc + sbp, data=regicor, 
+    selec = list(triglyc=txchol=='No', sbp=txhtn=='No'), 
+    subset = sex=='Male')
+@
+
+A variable can appear twice in the formula, e.g.:
+
+<<echo=FALSE, results=hide>>=
+options(width=80)
+@
+<<echo=TRUE, results=verbatim>>=
+compareGroups(year ~ age + smoker + triglyc + triglyc, data=regicor, 
+	selec = list(triglyc.1=txchol=='No'))
+@
+
+In this case results for \textit{triglyc} will be reported for all participants (n= 2231) and also for only those not treated with anti-cholesterol drugs (txchol=='No'). Note that ``triglyc.1'' in the \textbf{selec} statement refers to the second time that \textit{triglyc} appears in the formula.
+                                
+\
+\\
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Methods for continuous variables} \label{method}
+
+
+By default continuous variables are analyzed as normal-distributed. When a table is built (see {\tt createTable} function, Section \ref{createTable}), continuous variables will be described with mean and standard deviation. To change default options, e.g., Triglycerides used as non-normal distributed:
+
+<<echo=FALSE, results=hide>>=
+options(width=80)
+@
+<<echo=TRUE, results=verbatim>>=
+compareGroups(year ~ age + smoker + triglyc + sbp, data=regicor, method = c(triglyc=2))
+@
+<<echo=FALSE, results=hide>>=
+options(width=120)
+@
+
+Note that ``continuous non-normal'' is shown in the \textit{method} column for the variable Triglycerides.\\
+
+Possible values in  methods statement are:
+\begin{itemize*}
+\item 1: forces analysis as normal-distributed 
+\item 2: forces analysis as continuous non-normal
+\item 3: forces analysis as categorical
+\item NA: performs a Shapiro-Wilks test to decide between normal or non-normal
+\end{itemize*}
+
+If the \textbf{method} for a variable is stated as \textbf{= NA}, then a Shapiro-Wilk test for normality is used to decide if the variable is normal or non-normal distributed. To change the significance threshold:
+
+<<echo=FALSE, results=hide>>=
+options(width=80)
+@
+<<echo=TRUE, results=verbatim>>=
+compareGroups(year ~ age + smoker + triglyc + sbp, data=regicor, 
+              method = c(triglyc=NA), alpha= 0.01)
+@
+<<echo=FALSE, results=hide>>=
+options(width=120)
+@
+
+According to Shapiro-Wilk test, stating the cutpoint at 0.01 level, Triglycerides departed significantly from the normal distribution and therefore the method for this variable will be ``continuous non-normal''. \\
+\
+\\
+
+All non factor variables are considered as continuous. Exception is made (by default) for those that have fewer than 5 different values. This threshold can be changed in the \textbf{min.dis} statement:
+
+<<echo=TRUE, results=verbatim>>=
+cuts<-"lo:40=1; 41:45=2; 46:50=3; 51:55=4; 56:60=5; 61:65=6; 66:hi=7"
+regicor$age7gr<-car::recode(regicor$age, cuts)
+compareGroups(year ~ age7gr, data=regicor, method = c(age7gr=NA))
+compareGroups(year ~ age7gr, data=regicor, method = c(age7gr=NA), min.dis=8)
+@
+
+To avoid errors the maximum categories for the response variable is set at 5 in this example (default value). If this variable has more than 5 different values, the function {\tt compareGroups} returns an error message. For example:
+
+\begin{Verbatim**}
+> compareGroups(age7gr ~ smoker + triglyc + sbp, data=regicor)
+\end{Verbatim**}
+
+\begin{Verbatim*}
+Error en compareGroups.default(X = X, y = y, include.label = include.label,  :
+  number of groups must be less or equal to 5
+\end{Verbatim*}
+
+Defaults setting can be changed with the \textbf{max.ylev} statement:
+
+<<echo=TRUE, results=verbatim>>=
+compareGroups(age7gr ~ smoker + triglyc + sbp, data=regicor, max.ylev=7)
+@
+
+Similarly, by default there is a limit for the maximum number of levels for an explanatory variable. If this level is exceeded, the variable is removed from the analysis and a warning message is printed:
+
+<<echo=TRUE, results=verbatim>>=
+compareGroups(year ~ smoker + age7gr, method= (age7gr=3), data=regicor, max.xlev=5)
+@
+\begin{Verbatim*}
+Warning in compareGroups.default(X = X, y = y, include.label = include.label,  :
+ Variables 'age7gr' have been removed since some errors ocurred
+\end{Verbatim*}
+\
+\\
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Dressing up the output} \label{costum}
+
+Although the options described in this section correspond to {\tt compareGroups} function, results of changing/setting them won't be visible until the table is created with the {\tt createTable} function (explained later).\\
+\
+\\
+
+\paragraph{include.label} By default the variable labels are shown in the output (if there is no label the name will be printed). Changing the statement include.label from ``= TRUE'' (default) to ``= FALSE'' will cause variable names to be printed instead.
+
+<<echo=TRUE, results=verbatim>>=
+compareGroups(year ~ smoker + triglyc + sbp, data=regicor, include.label= FALSE)
+@
+\
+\\
+
+\paragraph{Q1, Q3} When the method for a variable is stated as ``2'' (i.e., to be analyzed as continuous non-normal; see section \ref{method}), by default the median and quartiles 1 and 3 will be shown in the final results, after applying the function \texttt{createTable} (see Section \ref{createTable}).
+
+<<echo=FALSE, results=hide>>=
+options(width=80)
+@
+<<echo=TRUE, results=verbatim>>=
+resu1<-compareGroups(year ~ age + smoker + triglyc + sbp, data=regicor, 
+                     method = c(triglyc=2))
+createTable(resu1)
+@
+
+\noindent Note: percentiles 25 and 75 are calculated for \textit{Triglycerides}.\\
+
+To get instead percentile 2.5 and 97.5:
+
+<<echo=TRUE, results=verbatim>>=
+resu2<-compareGroups(year ~ age + smoker + triglyc + sbp, data=regicor, 
+                     method = c(triglyc=2), Q1=0.025, Q3=0.975)
+createTable(resu2)
+@
+
+\noindent Note: percentiles 2.5 and 97.5 are calculated for Triglycerides. \\
+
+To get minimum and maximum:
+
+<<echo=FALSE>>=
+options(width=80)
+@
+<<echo=TRUE, results=hide>>=
+compareGroups(year ~ age + smoker + triglyc + sbp, data=regicor, 
+              method = c(triglyc=2), Q1=0, Q3=1)
+@
+<<echo=FALSE, results=hide>>=
+options(width=120)
+@
+\
+\\
+
+\paragraph{simplify} Sometimes a categorical variable has no individuals for a specific group. For example, \textit{smoker} has 3 levels. As an example and to illustrate this problem, we have created a new variable \textit{smk} with a new category (``Unknown''):
+
+<<echo=TRUE, results=verbatim>>=
+regicor$smk<-regicor$smoker
+levels(regicor$smk)<- c("Never smoker", "Current or former < 1y", 
+                        "Never or former >= 1y", "Unknown")
+cbind(table(regicor$smk))
+@
+
+Note that this new category (``unknown'') has no individuals: 
+
+\begin{Verbatim**}
+> compareGroups(year ~ age + smk + sbp, data=regicor)
+\end{Verbatim**}
+
+\begin{Verbatim*}
+Error in fisher.test(obj) : FEXACT error 6.
+LDKEY is too small for this problem.
+Try increasing the size of the workspace.
+
+
+-------- Summary of results by groups of 'Recruitment year'---------
+
+
+  var                     N    p.value  method            selection
+1 Age                     2294 0.078*   continuous normal ALL
+2 Smoking status          2233 .        categorical       ALL
+3 Systolic blood pressure 2280 <0.001** continuous normal ALL
+-----
+Signif. codes:  0 '**' 0.05 '*' 0.1 ' ' 1
+\end{Verbatim*}
+
+Note that an ``Error'' message is printed and no p-values for \textit{smk} are calculated.\\
+\
+\\
+
+To avoid using empty categories, {\tt simplify} must be stated as {\tt TRUE}
+
+<<echo=TRUE, results=verbatim>>=
+compareGroups(year ~ age + smk + sbp, data=regicor, simplify=TRUE)
+@
+\
+\\
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Summary} \label{summary}
+
+
+Applying the \textbf{summary} function to an object of class \texttt{createTable} will obtain a more detailed output:
+
+<<echo=TRUE>>=
+res<-compareGroups(year ~ age + sex + smoker + txchol + triglyc + sbp, 
+                   method = c(triglyc=2), data=regicor)
+summary(res[c(1, 3, 4)])
+@
+
+Note that because only variables 1, 3 \& 4 are selected, only results for Age, Cholesterol treatment \& Triglycerides are shown. Age is summarized by the mean and the standard deviation, Cholesterol treatment by frequencies and percentage, and Triglycerides (method =2) by the median and quartiles.
+\
+\\
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Plotting} \label{plotting}
+
+Variables can be plotted to see their distribution. Plots differ according to whether the variable is continuous or categorical. Plots can be seen on-screen or saved as PDF.
+
+<<echo=TRUE>>=
+plot(res[c(1,2)], file="./univar/")
+@
+
+\begin{flushleft}
+\begin{figure}[!h]
+\begin{minipage}{9cm}
+\includegraphics[width=0.8\textwidth]{./univar/age.pdf}
+\caption{Plot of Age}
+\end{minipage}
+\begin{minipage}{9cm}
+\includegraphics[width=0.8\textwidth]{./univar/sex.pdf}
+\caption{Plot of Sex}
+\end{minipage}
+\end{figure}
+\end{flushleft}
+
+Plots also can be done according to grouping variable. In this case only a boxplot is shown for continuous variables:
+
+<<echo=TRUE>>=
+plot(res[c(1,2)], bivar=TRUE, file="./bivar/")
+@
+
+\begin{flushleft}
+\begin{figure}[!h]
+\begin{minipage}{9cm}
+\includegraphics[width=0.9\textwidth]{./bivar/age.pdf}
+\caption{Plot of Age}
+\end{minipage}
+\begin{minipage}{9cm}
+\includegraphics[width=0.9\textwidth]{./bivar/sex.pdf}
+\caption{Plot of Sex}
+\end{minipage}
+\end{figure}
+\end{flushleft}
+\
+\\
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Updating} \label{updating}
+
+The object from {\tt compareGroups} can later be updated. For example:
+
+<<echo=TRUE, results=verbatim>>=
+res<-compareGroups(year ~ age + sex + triglyc, data=regicor)
+res
+@
+
+The object \textit{res} is updated using:
+
+<<echo=FALSE, results=hide>>=
+options(width=80)
+@
+<<echo=TRUE, results=hide>>=
+res<-update(res, . ~. - sex + smoker +  chol, subset = sex=='Male', 
+                method = c(triglyc=2, chol = 2), 
+                selec = list(triglyc=txchol=='No', sbp=txhtn=='No'))
+@
+<<echo=FALSE, results=hide>>=
+options(width=120)
+@
+<<echo=TRUE, results=verbatim>>=
+res
+@
+
+Note that ``Sex'' is removed as an explanatory variable but used as a filter, subsetting only ``Male'' participants. Variable ``Triglycerides'' has been changed to ``continuous non-normal'' and to show results only for non-treated male participants. Two new variables have been added: Smoking status and Total cholesterol.
+\
+\\
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Odds Ratios \& Hazard Ratios} \label{orhr}
+
+When the response variable is binary, the Odds Ratio (OR) can be printed in the final table. If the response variable is time-to-event (see Section \ref{timeto}), the Hazard Ratio (HR) can be printed instead.
+\
+\\
+
+\paragraph{ref} This statement can be used to change the reference category:
+
+<<echo=TRUE, results=verbatim>>=
+res1<-compareGroups(sex ~ age + smoker + txchol + sbp, data=regicor, ref=1)
+createTable(res1, show.ratio=TRUE)
+@
+
+Note that for categorical response variables the reference category is the first one in the statement:
+
+<<echo=FALSE, results=hide>>=
+options(width=80)
+@
+<<echo=TRUE, results=verbatim>>=
+res2<-compareGroups(sex ~ age + smoker + txchol + sbp, data=regicor, 
+                    ref=c(smoker=1, txchol=2))
+createTable(res2, show.ratio=TRUE)
+@
+
+Note that the reference category for Smoking status is the first and for Cholesterol treatment the second.
+
+<<echo=FALSE, results=hide>>=
+options(width=120)
+@
+\
+\\
+
+\paragraph{ref.no} Similarly to the ``ref'' statement, {\tt ref.no} is used to state ``no'' as the reference category for all variables with this category:
+
+<<echo=TRUE, results=verbatim>>=
+res<-compareGroups(sex ~ age + smoker + txchol + sbp, data=regicor, ref.no='NO')
+createTable(res, show.ratio=TRUE)
+@
+
+Note: 'no', 'No' or 'NO' will produce the same results; the coding is not case sensitive.
+\
+\\
+
+\paragraph{fact.ratio} By default OR or HR for continuous variables are calculated for each unit increase. It can be changed by the {\tt fact.or} statement:
+
+<<echo=TRUE, results=verbatim>>=
+res<-compareGroups(sex ~ age + txchol + sbp, data=regicor)
+createTable(res, show.ratio=TRUE)
+@
+
+Here the OR is for the increase of one unit for Age and Systolic blood pressure.
+
+<<echo=FALSE, results=hide>>=
+options(width=80)
+@
+<<echo=TRUE, results=verbatim>>=
+res<-compareGroups(sex ~ age + txchol + sbp, data=regicor, fact.ratio= c(age=10, sbp=100))
+createTable(res, show.ratio=TRUE)
+@
+<<echo=FALSE, results=hide>>=
+options(width=120)
+@
+
+Here the OR is for the increase of 10 years for Age and 100 mmHg for Systolic blood pressure.
+\
+\\
+
+\paragraph{ref.y} By default when OR or HR are calculated, the reference category for the response variable is the first. The reference category could be changed using the {\tt ref.y} statement:  
+
+<<echo=TRUE, results=verbatim>>=
+res<-compareGroups(sex ~ histchol + txchol + sbp, data=regicor)
+createTable(res, show.ratio=TRUE)
+@
+
+\noindent Note: This output shows the OR of being female. Therefore, 'male' is the reference category.
+
+<<echo=TRUE, results=verbatim>>=
+res<-compareGroups(sex ~ histchol + txchol + sbp, data=regicor, ref.y=2)
+createTable(res, show.ratio=TRUE)
+@
+
+\noindent Note: This output shows the OR of being male.
+\
+\\
+
+Note: This output shows the OR of being male, and 'female' is now the reference category.\\
+\
+\\
+
+When the response variable is of class \texttt{Surv}, the bivariate {\tt plot} function returns a Kaplan-Meier figure if the explanatory variable is categorical. For continuous variables the function returns a line for each individual, ending with a circle for censored and with a plus sign for uncensored.
+
+<<echo=TRUE>>=
+plot(compareGroups(tcv ~ txchol, data=regicor), bivar=TRUE, file="./bivar/")
+plot(compareGroups(tcv ~ sbp, data=regicor), bivar=TRUE, file="./bivar/")
+@
+
+\begin{flushleft}
+\begin{figure}[!h]
+\begin{minipage}{9cm}
+\includegraphics[width=0.8\textwidth]{./bivar/txchol.pdf}
+\caption{Categorical}
+\end{minipage}
+\begin{minipage}{9cm}
+\includegraphics[width=0.8\textwidth]{./bivar/sbp.pdf}
+\caption{Continuous}
+\end{minipage}
+\end{figure}
+\end{flushleft}
+\
+\\
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Time-to-event explanatory variables} \label{timevar}
+
+When a variable of class \texttt{Surv} (see Section \ref{timeto}) is used as explanatory it will be described with the probability of event, computed by Kaplan-Meier, up to a stated time.
+\
+\\
+
+\paragraph{timemax} By default probability is calculated at the median of the follow-up period. {\tt timemax} option allows us to change at what time probability is calculated.
+
+<<echo=FALSE, results=hide>>=
+options(width=80)
+@
+<<echo=TRUE, results=hide>>=
+res<-compareGroups(sex ~  age + tdeath + tcv, timemax=c(tcv=365.25*5, tdeath=365.25*3), 
+                   data=regicor)
+res
+@
+<<echo=FALSE, results=hide>>=
+options(width=120)
+@
+
+Note that \textit{tdeath} is calculated at 5 years and \textit{tcv} at 3 years (see section \ref{timeto}).\\
+\
+\\
+
+The {\tt plot} function applied to a variable of class \texttt{Surv} returns a Kaplan-Meier figure. The figure can be stratified by the grouping variable.
+
+<<echo=TRUE>>=
+plot(res[2], file="./univar/")
+plot(res[2], bivar=TRUE, file="./bivar/")
+@
+
+\begin{flushleft}
+\begin{figure}[!h]
+\begin{minipage}{9cm}
+\includegraphics[width=0.8\textwidth]{./univar/tdeath.pdf}
+\caption{Univariate}
+\end{minipage}
+\begin{minipage}{9cm}
+\includegraphics[width=0.8\textwidth]{./bivar/tdeath.pdf}
+\caption{Stratified by \textit{year}}
+\end{minipage}
+\end{figure}
+\end{flushleft}
+\
+\\
+
+
+%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{\texttt{createTable}} \label{createTable}
+
+\texttt{createTable} function, applied to an object of \texttt{compareGroups} class, returns tables with descriptives that can be displayed on-screen or exported to CSV, \LaTeX{} or HTML.
+
+
+<<echo=FALSE, results=hide>>=
+options(width=100)
+@
+
+<<echo=TRUE>>=
+res<-compareGroups(year ~ age + sex + smoker + triglyc , method= c(triglyc=2), 
+       data=regicor)
+restab<-createTable(res)
+@
+
+Two tables are created with the \texttt{createTable} function: one with the descriptives and the other with the available data. The {\tt print} command print applied to an object of class {\tt createTable} returns one or both tables:
+
+<<echo=TRUE>>=
+print(restab,which.table='descr')
+@
+
+Note that the option ``descr'' returns descriptives.
+
+<<echo=TRUE>>=
+print(restab,which.table='avail')
+@
+
+Note that the option ``avail'' returns the available data, as well as methods and selections.
+\
+\\
+
+By default only the descriptives table is shown. Stating ``both'' in {\tt which.table} options returns both tables.
+\
+\\
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Dressing up tables} \label{costum}
+
+\paragraph{hide} If the explanatory variable is dichotomous, one of the categories often is hidden in the results displayed (i.e., if 47.8\% are male, obviously 52.2\% are female). To hide some category, e.g., Male:
+
+<<echo=TRUE>>=
+update(restab, hide = c(sex='Male'))
+@
+
+Note that the percentage of males is hidden.
+\
+\\
+
+\paragraph{hide.no} Similarly, as explained above, if the category ``no'' is to be hidden for all variables:
+
+<<echo=TRUE>>=
+res<-compareGroups(year ~ age + sex + histhtn + txhtn, data=regicor)
+createTable(res, hide.no='no')
+@
+
+Note: 'no', 'No' or 'NO' will produce the same results; the coding is not case sensitive.
+\
+\\
+
+\paragraph{digits} The number of digits that appear in the results can be changed, e.g:
+
+<<echo=TRUE>>=
+createTable(res, digits= c(age=2, sex = 3))
+@
+
+Note that mean and standard deviation has two decimal places for age, while percentage in sex has been set to three decimal places.
+\
+\\
+
+\paragraph{type} By default categorical variables are summarized by frequencies and percentages. This can be changed by the {\tt type} command:
+
+<<echo=TRUE>>=
+createTable(res, type=1)
+@
+
+Note that only percentages are displayed.
+
+<<echo=TRUE>>=
+createTable(res, type=3)
+@
+
+Note that only frequencies are displayed.\\
+\\ 
+
+Values 2 or ``NA'' return the same results, i.e., the default option.
+\
+\\
+
+\paragraph{show.n} If option \texttt{show.n} is set to ``TRUE'' a column with available data for each variable appears in the results:
+
+<<echo=TRUE>>=
+createTable(res, show.n=TRUE)
+@
+\
+\\
+
+\paragraph{show.descr} If option \texttt{show.descr} is set to ``FALSE'' only p-values are displayed:
+
+<<echo=TRUE>>=
+createTable(res, show.descr=FALSE)
+@
+\
+\\
+
+\paragraph{show.all} If \texttt{show.all} option is set to ``TRUE'' a column is displayed with descriptives for all data:
+
+<<echo=TRUE>>=
+createTable(res, show.all=TRUE)
+@
+\
+\\
+
+\paragraph{show.p.overall} If option \texttt{show.p.overall} is set to ``FALSE'' p-values are omitted from the table:
+<<echo=TRUE>>=
+createTable(res, show.p.overall=FALSE)
+@
+\
+\\
+
+\paragraph{show.p.trend} If the response variable has more than two categories a p-value for trend can be calculated. Results are displayed if the \texttt{show.p.trend} option is set to ``TRUE'':
+
+<<echo=TRUE>>=
+createTable(res, show.p.trend=TRUE)
+@
+
+\noindent Note: The p-value for trend is computed from the Pearson test when row-variable is normal and from the Spearman test when it is continuous non-normal. If row-variable is of class {\tt Surv}, the test score is computed from a Cox model where the grouping variable is introduced as an integer variable predictor. If the row-variable is categorical, the p-value for trend is computed as $
+1-pchisq(cor(as.integer(x),as.integer(y))^2*(length(x)-1),1)$
+\
+\\
+
+\paragraph{show.p.mul} For a response variable with more than two categories a pairwise comparison of p-values, corrected for multiple comparisons, can be calculated. Results are displayed if the \texttt{show.p.mul} option is set to ``TRUE'':
+
+<<echo=TRUE>>=
+createTable(res, show.p.mul=TRUE)
+@
+
+\noindent Note: Tukey method is used when explanatory variable is normal-distributed and Benjamini \& Hochberg \cite{BH} method otherwise.
+\
+\\
+
+\paragraph{show.ratio} If response variable is dichotomous or has been defined as class {\tt survival} (see Section \ref{timeto}), Odds Ratios and Hazard Ratios can be displayed in the results by stating ``TRUE'' at the show.ratio option:
+
+<<echo=TRUE>>=
+createTable(update(res, subset= year!=2005), show.ratio=TRUE)
+@
+
+Note that category ``2005'' of the response variable has been omitted in order to have only two categories (i.e., a dichotomous variable). No Odds Ratios would be calculated if response variable has more than two categories.
+
+<<echo=TRUE>>=
+createTable(compareGroups(tcv ~  age + sex, data=regicor), show.ratio=TRUE)
+@
+
+Note that when response variable is of class {\tt Surv}, Hazard Ratios are calculated instead of Odds Ratios.
+\
+\\
+
+\paragraph{digits.ratio} The number of decimal places for Odds/Hazard ratios can be changed by the \texttt{digits.ratio} option:
+
+<<echo=TRUE>>=
+createTable(compareGroups(tcv ~  age + sex, data=regicor), show.ratio=TRUE, 
+             digits.ratio= 3)
+@
+\
+\\
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Combining tables by row} \label{combirow}  
+
+Tables made with the same response variable can be combined by row:
+
+<<echo=TRUE>>=
+restab1 <- createTable(compareGroups(year~ age + sex, data=regicor))
+restab2 <- createTable(compareGroups(year~ smoker + triglyc, data=regicor))
+rbind("Epidemiological"=restab1,"History"=restab2)
+@
+
+Note how variables are grouped under ``Epidemiological'' and ``History'' because of an epigraph defined in the {\tt rbind} command in the example.\\
+\
+\\
+
+The resulting object is of class {\tt rbind.createTable}, which can be subset but not updated. It inherits the class 'createTable'. Therefore, columns and other arguments from the {\tt createTable} function cannot be modified:\\
+\
+\\
+
+
+To select only Age and Triglycerides:
+
+<<echo=TRUE>>=
+rbind("Epidemiological"=restab1,"History"=restab2)[c(1,4)]
+@
+
+To change the order:
+
+<<echo=TRUE>>=
+rbind("Epidemiological"=restab1,"History"=restab2)[c(4,3,2,1)]
+@
+\
+\\
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Combining tables by column} \label{combicol}  
+
+Columns from tables built with the same explanatory and response variables but done with a different subset (i.e. ALL, Male and Female) can be combined:
+
+\begin{landscape}
+
+<<echo=TRUE>>=
+res<-compareGroups(year ~ age +  smoker + sbp + histhtn +triglyc , data=regicor)
+alltab <- createTable(res,  show.p.overall = FALSE)
+femaletab <- createTable(update(res,subset=sex=='Female'), show.p.overall = FALSE)
+maletab <- createTable(update(res,subset=sex=='Male'), show.p.overall = FALSE)
+cbind("ALL"=alltab,"FEMALE"=femaletab,"MALE"=maletab)
+@
+
+With the argument \textit{caption} set to {\tt NULL} no name is displayed for columns. \\
+
+<<echo=TRUE>>=
+cbind(alltab,femaletab,maletab,caption=NULL)
+@
+
+By default the name of the table is displayed for each set of columns.
+
+<<echo=TRUE>>=
+cbind(alltab,femaletab,maletab)
+@
+\end{landscape}
+\
+\\  
+
+\noindent NOTE: The resulting object is of class {\tt cbind.createTable} and inherits also the class {\tt createTable}. This cannot be updated. It can be nicely printed on the R console and also exported to \LaTeX{} but it cannot be exported to CSV or HTML.
+\
+\\
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{{\tt createTable} miscellaneous} \label{miscellaneous}
+
+\paragraph{print} By default only the table with the descriptives is printed. With the \texttt{which.table} command it can be changed: \texttt{`avail'} returns data available and \texttt{'both'} returns both tables:
+
+<<echo=TRUE>>=
+print(createTable(compareGroups(year ~ age +  smoker + sbp, data=regicor)), 
+       which.table='both')
+@
+
+With the \texttt{print} command setting \texttt{nmax} option = FALSE, the total maximum ``n'' in the available data is omitted in the first row.
+
+<<echo=TRUE>>=
+print(createTable(compareGroups(year ~ age +  smoker + sbp, data=regicor)), nmax=FALSE)
+@
+
+\paragraph{summary} returns the same table as that generated with \texttt{print} command setting {\tt which.table='avail'}:
+
+<<echo=TRUE>>=
+summary(createTable(compareGroups(year ~ age +  smoker + sbp, data=regicor)))
+@
+
+\paragraph{update} An object of class {\tt createTable} can be updated:
+
+<<echo=TRUE>>=
+res<-compareGroups(year ~ age +  smoker + sbp + txhtn, data=regicor)
+restab<-createTable(res, type=1, show.ratio=TRUE )
+restab
+update(restab, show.n=TRUE)
+@
+
+In just one statement it is possible to update an object of class \texttt{compareGroups} and \texttt{createTable}:
+
+<<echo=TRUE>>=
+update(restab, x = update(res, subset=c(sex=='Male')), show.n=TRUE)
+@
+
+Note that the \texttt{compareGroups} object (\textit{res}) is updated, selecting only 'Male' participants, and the \texttt{createTable} object (\textit{restab}) is updated to add a column with the maximum available data for each explanatory variable.\\
+
+\paragraph{subsetting} Objects from \texttt{createTable} function can also be subsetted using ``['':
+
+<<echo=TRUE>>=
+createTable(compareGroups(year~ age + sex + smoker +sbp, data=regicor))
+@
+<<echo=TRUE>>=
+createTable(compareGroups(year~ age + sex + smoker +sbp, data=regicor))[1:2, ]
+@
+\
+\\
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Exporting tables} \label{exporting} 
+
+Tables can be exported to CSV, HTML or \LaTeX{}:
+
+\begin{itemize*}
+\item export2csv(restab, file="table1"), exports to CSV format
+\item export2html(restab, file="table1"), exports to HTML format
+\item export2latex(restab, file="table1"), exports to \LaTeX{} format
+\end{itemize*}
+
+File extensions are added automatically. Only the filename is needed (and the path if necessary) without the extension. \\
+\
+\\
+
+%%%%%%%%%
+\subsubsection{General exporting options} \label{exportoption}
+
+\paragraph{which.table} By default only the table with the descriptives is exported. This can be changed with the \texttt{which.table} command: \texttt{`avail'} exports only available data and \texttt{'both'} both tables.
+\
+\\
+
+
+\paragraph{nmax} By default a first row with the maximum ``n'' for available data (i.e. the number of participants minus the least missing data) is exported. Stating \texttt{nmax} = FALSE this first row is omitted.
+\
+\\
+
+\paragraph{sep} Only relevant when table is exported to csv. Stating, for example, \texttt{sep} = ``;'' table will be exported to csv with columns separated by ``;''
+\
+\\
+
+
+%%%%%%%%%%
+\subsubsection{Exporting to \LaTeX{}} \label{exportolatex}
+
+A special case of exporting is when tables are exported to \LaTeX{}. The function \texttt{export2latex} returns an object with the tex code as a character that can be changed in the \Rlogo~ session.
+\
+\\
+
+\paragraph{file} If the {\tt file} argument in \texttt{export2latex} is missing, the code is printed in the \Rlogo~ console. This can be useful when \Rlogo~ code is inserted in a \LaTeX{} document chunk to be processed with {\tt Sweave}.
+
+<<echo=TRUE>>=
+restab<-createTable(compareGroups(year~ age + sex, data=regicor))
+export2latex(restab)
+@
+\
+\\
+
+\paragraph{size} The font size of exported tables can be changed by this option. Possible values are 'tiny', 'scriptsize', 'footnotesize', 'small', 'normalsize', 'large', 'Large', 'LARGE','huge', 'Huge' or 'same'. Default is 'same', which means that font size of the table is the same as specified in the main \LaTeX{} document where the table will be inserted.   \\
+\
+\\
+
+\paragraph{caption} The table caption for descriptives table and available data table. If which.table='both' the first element of 'caption' will be assigned to descriptives table and the second to available data table. Default value is {\tt NULL}, which writes 'Summary descriptives table by groups of ``y'' for descriptives table and 'Available data by groups of ``y'' for the available data table.\\
+\
+\\
+
+\paragraph{loc.caption} Table caption location. Possible values are 'top' or 'bottom'. Default value is 'top'.  \\
+\
+\\
+
+\paragraph{label} Used to cite tables in a \LaTeX{} document. If {\tt which.table}='both' the first element of 'label' will be assigned to the descriptives table and the second to the available data table. Default value is {\tt NULL}, which assigns no label to the table/s.    \\
+\
+\\
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Using GUI} \label{gui}
+
+Once the {\tt compareGroups} package is loaded, a Graphical User Interface (GUI) is displayed in response to typing {\tt cGroupsGUI}. The GUI is meant to make it feasible for users who are unfamiliar with \Rlogo~ to construct bivariate tables.
+\\
+
+In this section we illustrate, step by step, how to construct a bivariate table containing descriptives by year from the \textit{regicor} data  using the GUI:
+
+\begin{center}
+\small
+\input{gui_example.tex}
+\normalsize
+\end{center}
+ 
+
+\newpage
+
+\begin{itemize}
+
+\item[Step 1.] Browse for and select the data to be loaded. Valid file types include SPSS or \Rlogo~ format, CSV plain text file or a \textit{data.frame} already existing in the Workspace. By default, the \textit{regicor} example data is loaded when the GUI is opened.
+\begin{center}
+\includegraphics[width=0.8\textwidth]{step1_load_data.JPG}
+\end{center}
+
+\item[Step 2.] Choose the variables to be described (row-variables).
+\begin{center}
+\includegraphics[width=0.8\textwidth]{step2_select_row_variables.JPG}
+\end{center}
+
+\newpage
+
+\item[Step 3.] If descriptives by year are desired (for example), move the variable \textit{year} to the GUI top frame, making it the factor variable. To report descriptives for the whole sample (i.e., no groups), click on the 'none' button.
+\begin{center}
+\includegraphics[width=0.8\textwidth]{step3_select_group_variable.JPG}
+\end{center}
+
+\item[Step 4.] It is possible to hide the first, last or no categories of a categorical row-variable. In this example, 'no' levels will be hidden for History of hypertension, Hypertension treatment, History of hypercholesterolemia and Cholesterol treatment; conversely, all categories will be shown for smoking. 
+\begin{center}
+\includegraphics[width=0.8\textwidth]{step4_hide_categ.JPG}
+\end{center}
+
+\newpage
+
+\item[Step 5.] For each continuous variable, it is possible to specify whether to treat it as normal or non-normal or to transform a numerical variable into a categorical one. This last option can be interesting if a categorical variable has been coded as numerical. By default, all continuous variables are treated as normal. In this example, triglycerides and physical activity will be treated as non-normal, i.e., median and quartiles will be reported instead of mean and standard deviation.
+\begin{center}
+\includegraphics[width=0.8\textwidth]{step5_select_method.JPG}
+\end{center}
+
+\item[Step 6.] For each row-variable, it is possible to select a subset of individuals from the data set to be included. In this example, descriptives of cholesterol, HDL-cholesterol, triglycerides and LDL-cholesterol will be reported only for non-treated individuals. Also, it is possible to specify criteria to select a subset of individuals to be included for all row-variables: type the logical condition (selection criteria of individuals) on the 'Global subset' window instead of 'Variable subset'.
+\begin{center}
+\includegraphics[width=0.8\textwidth]{step6_subsetting.JPG}
+\end{center}
+
+\newpage
+
+\item[Step 7.] Some bivariate table characteristics can be set by clicking on 'Report options' from the main menu, such as to report descriptives (mean, frequencies, medians, etc.), display the p-trend, and show only relative frequencies.
+\begin{center}
+\includegraphics[width=0.8\textwidth]{step7_report_options.JPG}
+\end{center}
+
+\item[Step 8.] Finally, specify the bivariate table format (\LaTeX{}, CVS plain text or HTML). Clicking on 'print' will then display the bivariate table, as well as a summary (available data, etc.), on the \Rlogo~ console. The table can also be exported to the file formats listed.
+\begin{center}
+\includegraphics[width=0.8\textwidth]{step8_export_table.JPG}
+\end{center}
+
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%
+\newpage
+\subsection{Computing Odds Ratio}
+
+For a case-control study, it may be necessary to report the Odds Ratio between cases and controls for each variable. The table below contains Odds Ratios for each row-variable by cardiovascular disease status.
+\begin{center}
+\small
+\input{gui_or_example.tex}
+\normalsize
+\end{center}
+
+To build this table, as illustrated in the screens below, you would select \textit{cv} variable (cardiovascular disease status) as the factor variable, indicate 'no' category on the 'reference' pull-down menu, and mark 'Show odds/hazard ratio' in the 'Report Options' menu before exporting the table.
+
+\newpage
+
+\begin{itemize}
+
+\item[] Select \textit{cv} variable and define the reference.
+\begin{center}
+\includegraphics[width=0.8\textwidth]{step3_OR_select_group_variable.JPG}
+\end{center}
+
+\item[] Mark 'Show odds/hazard ratio' in the 'Report options' menu and click on 'Accept'.
+\begin{center}
+\includegraphics[width=0.8\textwidth]{step7_OR_report_options.JPG}
+\end{center}
+
+\item[] Finally, choose the desired output mode from the 'Export' options. 
+
+\end{itemize}
+
+
+%%%
+\newpage
+\subsection{Computing Hazard Ratio}
+
+In a cohort study, it may be more informative to compute Hazard Ratios taking into account time-to-event.
+\begin{center}
+\small
+\input{gui_hr_example.tex}
+\normalsize
+\end{center}
+
+To generate this table, select \textit{tocv} variable and \textit{cv}, indicating the time-to-event and the status, respectively, and select the event category for the status variable. Finally, as for Odds Ratios, mark 'Show odds/hazard ratio' in the 'Report Options' menu before exporting the table.
+
+\begin{itemize}
+
+\newpage
+
+\item[] Select \textit{cv} variable and \textit{tocv}.
+\begin{center}
+\includegraphics[width=0.8\textwidth]{step3_HR_select_group_variable.JPG}
+\end{center}
+
+\item[] Mark 'Show odds/hazard ratio' in the 'Report options' menu.
+\begin{center}
+\includegraphics[width=0.8\textwidth]{step7_HR_report_options.JPG}
+\end{center}
+
+\item[] Finally, choose the Export option.
+
+\end{itemize}
+
+\vspace{1cm}
+To return to the \Rlogo~ console, just close the GUI window.
+
+
+\newpage
+%\section*{Bibliography}
+%\bibliographystyle{bmc_article}  % Style BST file
+\bibliographystyle{plain}  % Style BST file
+\bibliography{compareGroups_vignette}
+
+
+
+\end{document}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

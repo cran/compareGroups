@@ -1,6 +1,61 @@
+v1.0
+2011-11-29
+-MAIN CHANGES
+	- new method '[' implemented for createTable objects.
+	- new method rbind implemented for compareGroups and createGroups objects.
+	- new method cbind implemented for createTable objects.
+	- new method summary implemented for createTable objects.
+- createTable: new value for type (3) displays only absolute frequencies for categorical variables.
+- export2latex.createTable, export2latex.cbind.createTable: new argument 'label' implemented to put a label for each table to be cited in the main LaTeX document.
+- chisq.test2: computes simulated p-values for the chi-squared test when it is not possible to compute assymptotic nor exact fisher test. 
+- compareGroups: new argument 'p.mult.corrected' added that gives the option of computing multiple comparison corrected p-values or non-corrected p-values.
+- regicor: some variables names have been changed (gender to sex, histbp to histhtn).
+- example data sets: 'myData' example data set has been removed and 'regicor' data set is used in the examples instead.
+
+
+v0.1-6
+2010-03-25
+- MAIN CHANGES
+	- compareGroups: can deal with Surv objects as response variables in order to compute appropiate p-values for a cohort (time-to-response) studies.
+	- plot.compareGroups: perform appropiate plots when response is of class 'Surv' (kaplan-meier, etc.)
+	- export2html: new function created to export tables to HTML format
+	- plot.compareGroups: new internal functions created to draw proper plots for survival class variables	
+- createTable: new argument 'show.p.overall'.
+- createTable: change default value for 'show.p.all' argument to FALSE.
+- export2csv and export2html: new argument created which is the same as 'which.table' in 'export2latex' function
+- plot.compareGroups: bug fixed in performing shapiro-Wilks test on >5000 size sample.
+- export2latex: new arguments 'caption' and 'loc.caption' added.
+- argument silent set to TRUE in all functions where try have been applied.
+
+
+v0.1-5
+2010-08-20
+- print.createTable: lines in header and botoom of the tables are printed, using some characters from integer2ascii function of oce package.
+- print.createTable, export2latex, export2csv: new argument 'nmax' added.
+- export2latex: environment longtable is used, instead of table.
+- compareGroups: new argument 'simplify' added.
+- MAIN change: it is possible not to specify any grouping variable, and descriptives for all sample are performed without p-values.
+- print.createTable, export2latex, export2csv: bug fixed when row-variables with no data present.
+- plot.compareGroups method now plots barplots for categorical variable, as well as bivariate plots (row-variables vs grouping variable).
+- [.summary.compareGroups method deleted and new [.compareGroups method created instead.
+- export2csv: now writes the N (sample size) for each group in the header line.
+- createTable: argument 'hide' changed, now the user can specify either the position of the cateogory to be hidden or the name of this category.
+- createTable: new argument 'hide.no' added, that allows the user to specify which category to be hidden for all 2-level row-variables.
+- createTable: bug fixed, when only 1 row-variable and show.all=FALSE.
+- print.createTable changed: 'which.table' argument added that specifyies which table is printed (descr, avail or both). By default, only 'descr' table is printed.
+- export2latex: 'which.table' argument added add an argument that specifyies which table is printed (descr, avail or both). By default, only 'descr' table is printed.
+- export2latex: 'file' argument can be missing. In this case, LaTex code is printed in the R console. This function returns the LaTeX code like print.xtable does. 
+- export2latex: 'size' argument added.
+- compareGroups.formula: bug fixed in removing variables using '-'.
+- compare.i: bug fixed in p-value for multiple comparison for a normal row-variable.
+- createTable: automatacally detects if grouping variable is an ordered factor to display p-trend.
+
 v0.1-4
-2011-04-26
-- fixed: problems when checking Windows version
+2010-07-30
+- print.compareGroups: fix a bug, significant p-values codes 0.01 has been replaced by 0.1 
+- export2latex: substitute some special character ($, <, >, >=, <=, &, ...) in the grouping variable label, and '&' for row-variables and group levels.
+- compareGroups.default: added an option to specify different quantiles from Q1 and Q3  (min and max for example) for non-normal variables.
+- [.summary.compareGroups method
 
 V0.1-3
 2010-07-27

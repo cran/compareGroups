@@ -4,15 +4,26 @@
 \alias{compareGroups-internal}
 \alias{chisq.test2}
 \alias{combn2}
-\alias{compare.i}
+\alias{compare.i}       
 \alias{descrip}
+\alias{descripSurv}
 \alias{flip}
 \alias{format2}
-\alias{norm.plot}
+\alias{logrank.pval}
+\alias{rcorr.cens.pval}
 \alias{signifdec.i}
 \alias{signifdec}
 \alias{summ.i}
 \alias{table.i}
+\alias{udpate.formula2}
+\alias{KMg.plot}
+\alias{Cox.plot}
+\alias{bar2.plot}
+\alias{box.plot}
+\alias{KM.plot}
+\alias{bar.plot}
+\alias{norm.plot}
+\alias{prepare}
 
 
 \title{Internal compareGroups functions}
@@ -20,17 +31,26 @@
 \usage{
 chisq.test2(obj)
 combn2(x)
-compare.i(x, y, selec.i, method.i, alpha, min.dis, max.xlev, varname)
-descrip(x, y, method = "param")
+compare.i(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, Q1, Q3, groups, simplify, Xext, ref, fact.ratio, ref.y, p.corrected)
+descripSurv(x, y, timemax)
+descrip(x, y, method, Q1, Q3)
 flip(x)
 format2(x, digits = NULL, ...)
 formula.compareGroups(x, ...) 
-norm.plot(var,var.label,z,n.breaks,plot.new=TRUE)
+logrank.pval(x,y)
 signifdec.i(x, digits)
 signifdec(x, digits)
 summ.i(x)
-table.i(x, hide.i, digits, type, varname, show.all, show.p.trend, show.p.mul, show.n)
+table.i(x, hide.i, digits, digits.ratio, type, varname, hide.i.no)
 update.formula2(old, new, ...) 
+KMg.plot(x, y, file, var.label.x, var.label.y)
+Cox.plot(x, y, file, var.label.x, var.label.y)
+bar2.plot(x, y, file, var.label.x, var.label.y)
+box.plot(x, y, file, var.label.x, var.label.y)
+KM.plot(x, file, var.label.x)
+bar.plot(x, file, var.label.x)
+norm.plot(x, file, var.label.x, z, n.breaks)
+prepare(x, nmax)
 }
 
 \details{These are not to be called by the user}

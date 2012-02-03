@@ -1,36 +1,72 @@
 \name{export2latex}
 \alias{export2latex}
+\alias{export2latex.createTable}
+\alias{export2latex.cbind.createTable}
 
 \title{
-Exporting descriptives table to Latex format
+Exporting descriptives table to LaTeX format
 }
+
 \description{
 This function takes the result of \code{createTable} and exports the tables to LaTeX format.
 }
+
 \usage{
-export2latex(x, file,...)
+export2latex(x, ...)
+\method{export2latex}{createTable}(x, file, which.table = 'descr', size = 'same', 
+    nmax = TRUE, caption = NULL, loc.caption = 'top', label = NULL, ...)
+\method{export2latex}{cbind.createTable}(x, file, which.table = 'descr', size = 'same', 
+    nmax = TRUE, caption = NULL, loc.caption = 'top', label = NULL, ...)
 }
 
 \arguments{
 
-  \item{x}{an object of class 'createTable'}
+  \item{x}{an object of class 'createTable'.}
 
-  \item{file}{file where table in LaTeX format will be written. Note that the the folder and the basename of the file must be written but not the extension (.tex). Also, another file with the extension '_appendix' is written with the available data table.}
+  \item{file}{Name of file where the resulting code should be saved. If file is missing, output is displayed on screen. Note that the folder and the basename of the file must be written but not the extension (.tex). Also, another file with the extension '_appendix' is written with the available data table.}
 
-  \item{\ldots}{other arguments passed to \code{\link[utils]{write.table}}.}
+  \item{which.table}{character indicating which table is exported. Possible values are 'descr', 'avail' or 'both' (partial matching allowed), exporting descriptives by groups table, availability data table or both tables, respectively. Default value is 'descr'.}
+  
+  \item{size}{character indicating the size of the table elements. Possible values are: 'tiny', 'scriptsize', 'footnotesize', 'small', 'normalsize', 'large', 'Large', 'LARGE','huge', 'Huge' or 'same' (partial matching allowed). Default value is 'same' which means that font size of the table is the same as specified in the main LaTeX document.}  
+
+  \item{nmax}{logical, indicating whether to show the maximum number of responses ("n" of a complete, or least-missing, variable) available by group. Default value is TRUE.}
+
+  \item{caption}{character specifying the table caption for descriptives and available data table. If which.table='both' the first element of 'caption' will be assigned to descriptives table and the second to available data table. Default value is NULL, which writes 'Summary descriptives table by groups of 'y'' for descriptives table and 'Available data by groups of 'y'' for the available data table. }
+
+  \item{label}{character specifying the table label for descriptives and available data table. This may be useful to cite the tables elsewhere in the LaTeX document. If which.table='both' the first element of 'label' will be assigned to descriptives table and the second to available data table. Default value is NULL, which assigns no label to the table/s. }
+
+  \item{loc.caption}{character specifying the table caption location. Possible values are 'top' or 'bottom' (partial matching allowed). Default value is 'top'.}
+      
+  \item{...}{currently ignored.}
   
 }
 
 
+\value{
+
+  List of two possible components corresponding to the code of 'descr' table and 'avail' table. Each component of the list is a character corresponding to the LaTeX code of these tables which can be helpful for post-processing.
+
+}
+
+\note{
+
+  The table is created in Latex language using the longtable environment. Therefore, it is necessary to type \code{\\includepackage{longtable}} in the preamble of the LaTeX main document where the table code is inserted.
+
+}
+
+
 \seealso{
-  \code{\link{createTable}}, \code{\link{export2csv}}
-}                               
+  \code{\link{createTable}}, \code{\link{export2csv}}, \code{\link{export2html}}
+} 
+
+                              
 \examples{
 
 \dontrun{
-data(myData)
-ans<-compareGroups(y~.,myData)
-export2latex(createTable(ans),file="c:/example/tables/table1")
+require(compareGroups)
+data(regicor)
+res <- compareGroups(sex ~. -id-todeath-death-tocv-cv, regicor)
+export2latex(createTable(res, hide.no = 'n'), file="table1")
 }
 
 }

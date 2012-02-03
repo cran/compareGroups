@@ -1,53 +1,77 @@
 print.createTable <-
-function(x,...){
+function(x, which.table="descr", nmax=TRUE, ...){
+
   if (!inherits(x,"createTable"))
     stop("x must be of class 'createTable'")
     
-  if (!inherits(x,"createTable"))
-    stop("x must be of class 'createTable'")
   varnames<-attr(x,"varnames")
   nr<-attr(x,"nr")
   
-  ii<-attr(x,"ny")+attr(x,"show.all")+1
-  Navail<-apply(x$avail[,1:(ii-1),drop=FALSE],2,as.integer)
-  if (nrow(x$avail[,1:(ii-1),drop=FALSE])==1)
-    Nmax<-Navail
-  if (ncol(x$avail[,1:(ii-1),drop=FALSE])==1)
-    Nmax<-max(Navail)
-  if (nrow(x$avail[,1:(ii-1),drop=FALSE])>1 & ncol(x$avail[,1:(ii-1),drop=FALSE])>1)
-    Nmax<-apply(Navail,2,max) 
+  ww <- charmatch(which.table, c("descr","avail","both"))
+  if (is.na(ww))
+    stop(" argument 'which.table' must be either 'descr', 'avail' or 'both'")
   
-  # table 1 #
-  desc<-x$desc
-  j<-1
-  table1<-NULL
-  for (i in 1:length(varnames)){
-    if (nr[i]==1){
-      t.i<-desc[j,,drop=FALSE]
-    } else{
-      t.i<-rbind(rep(NA,ncol(desc)),desc[j:(j+nr[i]-1),])
-      rownames(t.i)[1]<-paste(varnames[i],":",sep="")
-      rownames(t.i)[-1]<-sub(varnames[i],"",rownames(t.i)[-1])
-      rownames(t.i)[-1]<-sub(": ","    ",rownames(t.i)[-1])
-      ii<-attr(x,"ny")+attr(x,"show.all")+1  
-      t.i[1,ii:ncol(t.i)]<-t.i[2,ii:ncol(t.i)]
-      t.i[2,ii:ncol(t.i)]<-rep(NA,length(ii:ncol(t.i))) 
-    }
-    table1<-rbind(table1,t.i)
-    j<-j+nr[i]
+  yname<-attr(x,"yname")   
+  
+  if (ww%in%c(1,3)){
+    pp<-prepare(x,nmax=nmax)
+    table1<-prepare(x,nmax=nmax)[[1]]
+    cc<-attr(pp,"cc")
+    if (attr(x,"groups"))
+      cat("\n--------Summary descriptives table by '",yname,"'---------\n\n",sep="")
+    else
+      cat("\n--------Summary descriptives table ---------\n\n",sep="")
+    ii<-ifelse(rownames(table1)[2]=='',2,1)
+    if (!is.null(attr(x,"caption")))
+      rownames(table1)<-paste("   ",rownames(table1))
+    table1<-cbind(rownames(table1),table1)
+    table1<-as.matrix(table1)
+    table1<-ifelse(is.na(table1),"",table1)    
+    table1[,1]<-format(table1[,1],justify="left")
+    nn<-max(nchar(apply(table1,1,paste,collapse="")))+ncol(table1)-1
+    hline.over<-paste(rep(integerToAscii(0175L),nn),collapse="")
+    hline.under<-paste(rep("_",nn),collapse="")
+    cat(hline.under,"\n")
+    for (i in 1:ii) 
+      cat(table1[i,],"\n")
+    cat(hline.over,"\n")
+    for (i in (ii+1):nrow(table1)){ 
+      if (!is.null(attr(x,"caption")) && cc[i-ii]!=""){
+        cat(cc[i-ii],":\n",sep="")
+        cat(table1[i,],"\n")
+      }else{
+        cat(table1[i,],"\n")                  
+      }      
+    }  
+    cat(hline.over,"\n")
   }
   
-  table1<-rbind(colnames(table1),c(paste("N=",Nmax,sep=""),rep("",ncol(table1)-ii+1)),table1)
-  table1<-ifelse(is.na(table1),"",table1)
-  table1<-format(table1,justify="centre")    
-  colnames(table1)<-rep("",ncol(table1))
-    
-  yname<-attr(x,"yname")
-  cat("\n--------Summary descriptives table by '",yname,"'---------\n\n",sep="")
-  print.default(table1,quote=FALSE,...)  
+  if (ww%in%c(2,3)){
+    table2<-prepare(x,nmax=nmax)[[2]]  
+    if (!is.null(attr(x,"caption")))
+      rownames(table2)<-paste("   ",rownames(table2))
+    cat("\n\n\n---Available data----\n\n")
+    table2<-cbind(rownames(table2),table2)
+    table2<-as.matrix(table2)
+    table2<-ifelse(is.na(table2),"",table2)    
+    table2[,-1]<-apply(table2[,-1,drop=FALSE],2,format,justify="centre")
+    table2[,1]<-format(table2[,1],justify="left")
+    nn<-max(nchar(apply(table2,1,paste,collapse="")))+ncol(table2)-1
+    hline.over<-paste(rep(integerToAscii(0175L),nn),collapse="")
+    hline.under<-paste(rep("_",nn),collapse="")
+    cat(hline.under,"\n")
+    cat(table2[1,],"\n")
+    cat(hline.over,"\n")
+    for (i in 2:nrow(table2)){
+      if (!is.null(attr(x,"caption")) && attr(x,"caption")[[i-1]]!=""){
+        cat(attr(x,"caption")[[i-1]],":\n",sep="")
+        cat(table2[i,],"\n")
+      }else{
+        cat(table2[i,],"\n")                  
+      }
+    }
+    cat(hline.over,"\n")
+  }
 
-  # table 2
-  cat("\n\n\n---Available data----\n\n")
-  print.default(x[[2]],na.print="",quote=FALSE,...)  
 }
 

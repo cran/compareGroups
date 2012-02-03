@@ -1,7 +1,7 @@
 summ.i <-
 function(x){
   ny<-dim(x$descriptive)[1]-1
-  if (attr(x,"method")[1]%in%c("no-data","continuous")){
+  if (attr(x,"method")[1]%in%c("no-data","continuous","Surv")){
     if (ny<=2){
       out <- cbind(x$sam, x$descriptive,c(NA,x$p.overall,rep(NA,ny-1)))
       colnames(out)[ncol(out)] <- "p.overall"
@@ -26,6 +26,14 @@ function(x){
       out <- cbind(nn, pp, pvalues)
     }
   }
+  if (!attr(x,"groups")){
+    out<-out[-2,,drop=FALSE]
+    out<-out[,-ncol(out),drop=FALSE]
+  }
+  if (!is.null(attr(x,"OR")))     
+    attr(out,"OR")<-attr(x,"OR")    
+  if (!is.null(attr(x,"HR")))
+    attr(out,"HR")<-attr(x,"HR")    
   out
 }
 

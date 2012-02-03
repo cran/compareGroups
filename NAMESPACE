@@ -1,29 +1,56 @@
-import(
-tcltk, 
-utils
-)
+importFrom(xtable, xtable)
+importFrom(Hmisc, label, spss.get, rcorr.cens)
+importFrom(gdata, trim)
+importFrom(survival, Surv, coxph)
+importFrom(oce,integerToAscii)
+import(tcltk2)
+importFrom(epitools, oddsratio)
+
 
 export(
 compareGroups,
 compareGroups.default,
 compareGroups.formula,
+summary.compareGroups,
+print.summary.compareGroups,
+varinfo,
 varinfo.compareGroups,
 createTable,
-varinfo,
+print.createTable,
+summary.createTable,
+print.summary.createTable,
 export2latex,
+export2latex.createTable,
+export2latex.cbind.createTable,
 export2csv,
-cGroupsGUI                
+export2html,
+cGroupsGUI
 )
 
+
+S3method("[",compareGroups) 
+S3method("[",createTable)
+S3method("[",rbind.compareGroups)
+S3method("[",rbind.createTable)
+S3method("[",cbind.createTable)
 S3method(compareGroups,default)      
 S3method(compareGroups,formula)      
 S3method(print,compareGroups) 
 S3method(plot,compareGroups)            
 S3method(print,createTable)          
 S3method(print,summary.compareGroups)
+S3method(print,summary.createTable)
+S3method(print,cbind.createTable)
+S3method(rbind,compareGroups)
+S3method(rbind,createTable)
+S3method(cbind,createTable)  
 S3method(summary,compareGroups)  
+S3method(summary,createTable)  
 S3method(update,compareGroups)    
-S3method(varinfo,compareGroups)    
+S3method(varinfo,compareGroups)  
+S3method(export2latex,createTable) 
+S3method(export2latex,cbind.createTable) 
+
 
 # not exported:
   # chisq.test2                
