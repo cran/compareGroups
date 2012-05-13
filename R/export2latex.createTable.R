@@ -1,4 +1,4 @@
-export2latex.createTable<-function(x, file, which.table='descr', size='same', nmax = TRUE, caption = NULL, loc.caption = 'top', label = NULL, ...){   
+export2latex.createTable<-function(x, file, which.table='descr', size='same', nmax = TRUE, caption = NULL, loc.caption = 'top', label = NULL, ...){  
 
   if (!inherits(x,"createTable"))
     stop("x must be of class 'createTable'")
@@ -42,21 +42,21 @@ export2latex.createTable<-function(x, file, which.table='descr', size='same', nm
   } else {
     if (ww==1){
       if (attr(x,"groups"))
-        caption<-paste("Summary descriptives table by groups of '",y.name.label,"'",sep="")
+        caption<-paste("Summary descriptives table by groups of `",y.name.label,"'",sep="")
       else
         caption<-"Summary descriptives table"   
     }
     if (ww==2){
       if (attr(x,"groups"))
-        caption<-paste("Available data by groups of '",y.name.label,"'",sep="")
+        caption<-paste("Available data by groups of `",y.name.label,"'",sep="")
       else
         caption<-"Available data"
     }  
     if (ww==3){
       caption<-c("","")
       if (attr(x,"groups")){
-        caption[1]<-paste("Summary descriptives table by groups of '",y.name.label,"'",sep="")
-        caption[2]<-paste("Available data by groups of '",y.name.label,"'",sep="")      
+        caption[1]<-paste("Summary descriptives table by groups of `",y.name.label,"'",sep="")
+        caption[2]<-paste("Available data by groups of `",y.name.label,"'",sep="")      
       } else {
         caption[1]<-"Summary descriptives table"     
         caption[2]<-"Available data"
@@ -163,9 +163,9 @@ export2latex.createTable<-function(x, file, which.table='descr', size='same', nm
     head.loc<-paste(c("l",rep("c",nc)),collapse="")
   
     tex<-paste(
-    if (size!='same') paste("\\begin{", size ,"}",sep="") else "","
-    \\begin{longtable}{",head.loc,"} 
-    ",ifelse(loc.caption=='top',paste("\\caption{",caption[1],"}\\\\",sep=""),""),"
+    if (size!='same') paste("\\begin{", size ,"}",sep="") else "","    
+    \\begin{longtable}{",head.loc,"}" 
+    ,ifelse(loc.caption=='top',paste("\\caption{",caption[1],"}\\\\",sep=""),""),"
     \\hline  
     ",head.tex,"  
     \\hline
@@ -183,10 +183,10 @@ export2latex.createTable<-function(x, file, which.table='descr', size='same', nm
     \\multicolumn{",nchar(head.loc),"}{l}{}  \\\\ 
     \\endlastfoot 
     ",body.tex," 
-    \\hline
-    ",ifelse(loc.caption=='bottom',paste("\\\\ \\caption{",caption[1],"}\\\\",sep=""),""),"
+    \\hline",
+    ifelse(loc.caption=='bottom',paste("\\\\ \\caption{",caption[1],"}\\\\",sep=""),""),"
     \\end{longtable}",
-    if (size!='same') paste("\\end{", size ,"}",sep="") else ""
+    if (size!='same') paste("\\end{", size ,"}",sep="") else ""    
     ,sep="")
     
     if (ww%in%c(1,3)){
@@ -250,9 +250,9 @@ export2latex.createTable<-function(x, file, which.table='descr', size='same', nm
       caption<-c(NA,caption)
       
     tex<-paste(
-    if (size!='same') paste("\\begin{", size ,"}",sep="") else "","
-    \\begin{longtable}{",head.loc,"} 
-    ",ifelse(loc.caption=='top',paste("\\caption{",caption[2],"}\\\\",sep=""),""),"
+    if (size!='same') paste("\\begin{", size ,"}",sep="") else "","    
+    \\begin{longtable}{",head.loc,"}", 
+    ifelse(loc.caption=='top',paste("\\caption{",caption[2],"}\\\\",sep=""),""),"
     \\hline  
     ",head.tex," 
     \\hline 
@@ -270,10 +270,10 @@ export2latex.createTable<-function(x, file, which.table='descr', size='same', nm
     \\multicolumn{",nchar(head.loc),"}{l}{}  \\\\ 
     \\endlastfoot 
     ",body.tex,"
-    \\hline
-    ",ifelse(loc.caption=='bottom',paste("\\\\ \\caption{",caption[2],"}\\\\",sep=""),""),"
+    \\hline",
+    ifelse(loc.caption=='bottom',paste("\\\\ \\caption{",caption[2],"}\\\\",sep=""),""),"
     \\end{longtable}",
-    if (size!='same') paste("\\end{", size ,"}",sep="") else ""
+    if (size!='same') paste("\\end{", size ,"}",sep="") else ""    
     ,sep="")    
     
     if (missing(file))

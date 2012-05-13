@@ -1,6 +1,9 @@
 compare.i <-
-function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, Q1, Q3, groups, simplify, Xext, ref, fact.ratio, ref.y, p.corrected) {
+function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, Q1, Q3, groups, simplify, Xext, ref, fact.ratio, ref.y, p.corrected, compute.ratio) {
 
+  x.orig <- x
+  y.orig <- y
+  
   if (!inherits(x,"Surv") && !is.factor(x) && !is.na(method.i) && method.i==3)
     x <- as.factor(x)
     
@@ -299,7 +302,7 @@ function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, 
     }
   }
   
-  if (groups && ny==2){
+  if (groups && ny==2 && compute.ratio){
     if (inherits(y,"Surv")){
       if (length(x)==0){
         ci<-matrix(NaN,1,3)
@@ -360,7 +363,7 @@ function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, 
             if (sum(table(y)>0)<2 | inherits(fit,"try-error")){
               ci<-matrix(NaN,1,3)
             }else{
-              ci<-rbind(exp(c(coef(fit)[-1],suppressMessages(confint(fit)[-1,]))))
+              ci<-rbind(exp(c(coef(fit)[-1],suppressMessages(confint.default(fit)[-1,]))))
               if (ref.y==2)
                 ci<-1/ci
             }
@@ -376,7 +379,9 @@ function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, 
   }
 
   attr(ans,"x")<-x
+  attr(ans,"x.orig")<-x.orig
   attr(ans,"y")<-y
+  attr(ans,"y.orig")<-y.orig
   attr(ans,"selec")<-selec.i
   attr(ans,"fact.ratio")<-fact.ratio
   attr(ans,"groups")<-groups

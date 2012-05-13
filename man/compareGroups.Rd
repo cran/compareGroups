@@ -21,8 +21,8 @@ This function performs descriptives by groups for several variables. Depending o
 compareGroups(X, ...)
 \method{compareGroups}{default}(X, y = NULL, Xext = NULL, selec = NA, method = 1, timemax = NA, 
 alpha = 0.05, min.dis = 5, max.ylev = 5, max.xlev = 10, include.label = TRUE, 
-Q1 = 0.25, Q3 = 0.75, simplify = FALSE, ref = 1, ref.no = NA, fact.ratio = 1, 
-ref.y = 1, p.corrected = TRUE, ...)
+Q1 = 0.25, Q3 = 0.75, simplify = TRUE, ref = 1, ref.no = NA, fact.ratio = 1, 
+ref.y = 1, p.corrected = TRUE, compute.ratio = TRUE, ...)
 \method{compareGroups}{formula}(X, data, subset, na.action=NULL, include.label=TRUE, ...)
 \method{plot}{compareGroups}(x, file, bivar = FALSE, z=1.5, n.breaks = "Sturges", ...)
 }
@@ -62,7 +62,7 @@ ref.y = 1, p.corrected = TRUE, ...)
   
   \item{Q3}{double between 0 and 1, indicating the quantile to be displayed as the second number inside the square brackets in the bivariate table. To compute the maximum just type 1. Default value is 0.75 which means the third quartile.}
 
-  \item{simplify}{logical, indicating whether levels with no values must be removed for grouping variable and for row-variables. Default value is FALSE.}
+  \item{simplify}{logical, indicating whether levels with no values must be removed for grouping variable and for row-variables. Default value is TRUE.}
   
   \item{ref}{an integer vector with as many components as row-variables. If its length is 1 it is recycled for all row-variables. It only applies for categorical row-variables. Or a named vector specifying which row-variables 'ref' is applied (a reserved name is '.else' which defines the reference category for the rest of the variables); if no '.else' variable is defined, default value is applied for the rest of the variables. Default value is 1.}
   
@@ -74,6 +74,8 @@ ref.y = 1, p.corrected = TRUE, ...)
   
   \item{p.corrected}{logical, indicating whether p-values for pairwise comparisons must be corrected. It only applies when there is a grouping variable with more than 2 categories. Default value is TRUE.}  
   
+  \item{compute.ratio}{logical, indicating whether Odds Ratio (for a binary response) or Hazard Ratio (for a time-to-event response) must be computed. Default value is TRUE.}  
+
   \item{x}{an object of class 'compareGroups'.}  
 
   \item{file}{a character string giving the name of the file. A pdf file is saved with an appendix added to 'file' corresponding to the row-variable name. If missing, multiple devices are opened, one for each row-variable of 'x' object.}  

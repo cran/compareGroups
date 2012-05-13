@@ -3,7 +3,6 @@ importFrom(Hmisc, label, spss.get, rcorr.cens)
 importFrom(gdata, trim)
 importFrom(survival, Surv, coxph)
 importFrom(oce,integerToAscii)
-import(tcltk2)
 importFrom(epitools, oddsratio)
 
 

@@ -1,11 +1,10 @@
 Package: compareGroups
 Type: Package
 Title: descriptives by groups
-Version: 1.0
-Date: 2012-01-31
-Depends: R (>= 2.13.1), xtable, Hmisc, gdata, survival, oce, tcltk2,
-        epitools
-Suggests: car
+Version: 1.1
+Date: 2012-05-13
+Depends: R (>= 2.13.1), xtable, Hmisc, gdata, survival, oce, epitools
+Suggests: tcltk2, car
 Author: Isaac Subirana, Héctor Sanz, Joan Vila
 Maintainer: Isaac Subirana <isubirana@imim.es>
 Description: This package is meant to facilitate the construction of
@@ -17,6 +16,6 @@ License: GPL (>= 2)
 LazyLoad: yes
 Encoding: latin1
 BuildVignettes: False
-Packaged: 2012-02-03 10:38:37 UTC; isubirana
+Packaged: 2012-05-13 10:42:33 UTC; Administrador
 Repository: CRAN
-Date/Publication: 2012-02-03 11:35:11
+Date/Publication: 2012-05-13 14:48:09

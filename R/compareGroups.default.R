@@ -1,5 +1,5 @@
 compareGroups.default <-
-function(X, y = NULL, Xext = NULL, selec = NA, method = 1, timemax = NA, alpha = 0.05, min.dis = 5, max.ylev = 5, max.xlev = 10, include.label = TRUE, Q1 = 0.25, Q3 = 0.75, simplify = FALSE, ref = 1, ref.no = NA, fact.ratio = 1, ref.y = 1, p.corrected = TRUE,  ...) {
+function(X, y = NULL, Xext = NULL, selec = NA, method = 1, timemax = NA, alpha = 0.05, min.dis = 5, max.ylev = 5, max.xlev = 10, include.label = TRUE, Q1 = 0.25, Q3 = 0.75, simplify = TRUE, ref = 1, ref.no = NA, fact.ratio = 1, ref.y = 1, p.corrected = TRUE, compute.ratio = TRUE, ...) {
 
    if (!is.null(Xext)){
     if (!is.matrix(Xext) & !is.data.frame(Xext))
@@ -210,24 +210,24 @@ function(X, y = NULL, Xext = NULL, selec = NA, method = 1, timemax = NA, alpha =
    if (NROW(X)!=NROW(y))
     stop("data doesn't mach")
 
-   ans <- lapply(1:nvars, function(i) try(compare.i(X[,i],y=y, selec.i=selec[i], method.i=method[i], timemax.i=timemax[i], alpha=alpha, min.dis=min.dis, max.xlev=max.xlev, varname=names(X)[i], Q1=Q1, Q3=Q3, groups=groups, simplify=simplify, Xext=Xext, ref=ref[i], fact.ratio=fact.ratio[i], ref.y=ref.y, p.corrected=p.corrected),silent=TRUE))
+   ans <- lapply(1:nvars, function(i) try(compare.i(X[,i],y=y, selec.i=selec[i], method.i=method[i], timemax.i=timemax[i], alpha=alpha, min.dis=min.dis, max.xlev=max.xlev, varname=names(X)[i], Q1=Q1, Q3=Q3, groups=groups, simplify=simplify, Xext=Xext, ref=ref[i], fact.ratio=fact.ratio[i], ref.y=ref.y, p.corrected=p.corrected, compute.ratio=compute.ratio),silent=TRUE))
    
    names(ans)<-names.X    
    
-   ww<-character()
-   k<-1
-   for (i in names(ans)){     
-    if (inherits(ans[[i]],"try-error")){
-      ans[[i]]<-NULL
-      ww<-c(ww,names(X)[k])
-    }
-    k<-k+1
+   ww<-ii<-NULL
+   for (i in 1:length(ans)){
+    if (inherits(ans[[i]],"try-error"))
+      ww<-c(ww,i)
+    else
+      ii<-c(ii,i)
    }
+   ans<-ans[ii]
+   
    if (length(ans)==0)
     stop("None variable can be computed")
     
    if (length(ww)>0)
-    warning(paste("Variables '",paste(ww,collapse="', '"),"' have been removed since some errors ocurred",sep=""))
+    warning(paste("Variables '",paste(names(X)[ww],collapse="', '"),"' have been removed since some errors ocurred",sep=""))
   
    if (groups){
    attr(ans,"yname")<-yname
@@ -243,6 +243,7 @@ function(X, y = NULL, Xext = NULL, selec = NA, method = 1, timemax = NA, alpha =
    if (any(attr(ans,"names")=='')) 
      attr(ans,"names")[attr(ans,"names")=='']<-attr(ans,"varnames.orig")[attr(ans,"names")=='']
    attr(ans,"groups")<-groups
+   attr(ans,"Xext")<-Xext
    class(ans)<-"compareGroups"
    ans
    
