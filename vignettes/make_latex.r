@@ -8,7 +8,7 @@ Sweave("compareGroups_vignette")
 shell("pdflatex compareGroups_vignette")
 shell("bibtex compareGroups_vignette")
 shell("pdflatex compareGroups_vignette")
-
+shell("pdflatex compareGroups_vignette")
 
 file.remove("compareGroups_vignette.bbl")
 file.remove("compareGroups_vignette.toc")

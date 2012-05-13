@@ -1,3 +1,12 @@
+v1.1
+2012-05-13
+-. [.compareGroups: a bug fixed when a row-variable present multiple times.
+-. compareGroups: new argument 'compute.ratio'.
+-. compareGroups: default value for argument 'simplify' changed to TRUE.
+-. load tcltk only when cGroupsGUI is called.
+-. bug fixed in export2latex.cbind.createTable when drawing hlines.
+-. export2latex: apostrophes have been changed from '' to `' in writing default table caption.
+
 v1.0
 2011-11-29
 -MAIN CHANGES

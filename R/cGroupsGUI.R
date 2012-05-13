@@ -1,4 +1,5 @@
 cGroupsGUI <- function(X){
+      require(tcltk2)
       call <- match.call()
       if (!missing(X)){
          if (!is.matrix(X) & !is.data.frame(X))  stop("X must be a matrix or a data.frame")

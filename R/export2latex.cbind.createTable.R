@@ -115,8 +115,12 @@ export2latex.cbind.createTable<-function(x, file, which.table='descr', size='sam
   
     desc<-aux.desc[,-ncol(aux.desc),drop=FALSE]
     if (nmax){
-      mr.pos<-  trim(desc[2,])=='' & desc[1,]!=''
-      desc[1,mr.pos]<-paste("\\multirow{2}{*}{",desc[1,mr.pos],"}",sep="")
+      mr.pos<-  grep("^N=[0-9]+$",trim(desc[2,]))
+      if (length(mr.pos)>0){
+        mr.pos<-!(1:ncol(desc))%in%mr.pos
+        desc[1,mr.pos]<-paste("\\multirow{2}{*}{",desc[1,mr.pos],"}",sep="")
+      } else 
+        nmax <- FALSE
     }  
     
     rownames(desc)<-gsub("\\$","\\\\$",rownames(desc))
@@ -174,9 +178,9 @@ export2latex.cbind.createTable<-function(x, file, which.table='descr', size='sam
     body.tex<-paste(body,collapse="")
   
     tex<-paste(
-    if (size!='same') paste("\\begin{", size ,"}",sep="") else "","
-    \\begin{longtable}{",head.loc,"} 
-    ",ifelse(loc.caption=='top',paste("\\caption{",caption[1],"}\\\\",sep=""),""),"
+    if (size!='same') paste("\\begin{", size ,"}",sep="") else "","    
+    \\begin{longtable}{",head.loc,"}",
+    ifelse(loc.caption=='top',paste("\\caption{",caption[1],"}\\\\",sep=""),""),"
     ",head.tex,"  
     \\endfirsthead 
     \\multicolumn{",nchar(head.loc),"}{l}{\\tablename\\ \\thetable{} \\textit{-- continued from previous page}}\\\\ 
@@ -188,10 +192,10 @@ export2latex.cbind.createTable<-function(x, file, which.table='descr', size='sam
     \\multicolumn{",nchar(head.loc),"}{l}{}  \\\\ 
     \\endlastfoot 
     ",body.tex," 
-    \\hline
-    ",ifelse(loc.caption=='bottom',paste("\\\\ \\caption{",caption[1],"}\\\\",sep=""),""),"
+    \\hline",
+    ifelse(loc.caption=='bottom',paste("\\\\ \\caption{",caption[1],"}\\\\",sep=""),""),"
     \\end{longtable}",
-    if (size!='same') paste("\\end{", size ,"}",sep="") else ""
+    if (size!='same') paste("\\end{", size ,"}",sep="") else ""    
     ,sep="")
     
     if (missing(file))
@@ -278,9 +282,9 @@ export2latex.cbind.createTable<-function(x, file, which.table='descr', size='sam
       caption<-c(NA,caption)
     
     tex<-paste(
-    if (size!='same') paste("\\begin{", size ,"}",sep="") else "","
-    \\begin{longtable}{",head.loc,"} 
-    ",ifelse(loc.caption=='top',paste("\\caption{",caption[2],"}\\\\",sep=""),""),"
+    if (size!='same') paste("\\begin{", size ,"}",sep="") else "","    
+    \\begin{longtable}{",head.loc,"}",
+    ifelse(loc.caption=='top',paste("\\caption{",caption[2],"}\\\\",sep=""),""),"
     ",head.tex,"  
     \\endfirsthead 
     \\multicolumn{",nchar(head.loc),"}{l}{\\tablename\\ \\thetable{} \\textit{-- continued from previous page}}\\\\ 
@@ -292,10 +296,10 @@ export2latex.cbind.createTable<-function(x, file, which.table='descr', size='sam
     \\multicolumn{",nchar(head.loc),"}{l}{}  \\\\ 
     \\endlastfoot 
     ",body.tex," 
-    \\hline
+    \\hline","
     ",ifelse(loc.caption=='bottom',paste("\\\\ \\caption{",caption[2],"}\\\\",sep=""),""),"
     \\end{longtable}",
-    if (size!='same') paste("\\end{", size ,"}",sep="") else ""
+    if (size!='same') paste("\\end{", size ,"}",sep="") else ""    
     ,sep="")
     
     if (missing(file))
@@ -306,8 +310,7 @@ export2latex.cbind.createTable<-function(x, file, which.table='descr', size='sam
     out$avail<-tex
 
   }
-    
-   
+  
   return(invisible(out))
 
 }
