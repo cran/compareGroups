@@ -1,4 +1,4 @@
-c07e9b517ae5d509f5bd64d5ff8012d5 *DESCRIPTION
+bae90bbd6b95b9be8251dbe2557fae1b *DESCRIPTION
 43082a1cf2393df1f002be531215eef5 *NAMESPACE
 cf4a8bcdb52469a3010381eba4284ee4 *R/Cox.plot.R
 9237f27c5b2fee1a88ff9126d5981896 *R/KM.plot.R
@@ -19,7 +19,7 @@ d9bb250ad248e0db97365d4429636c8d *R/compareGroups.formula.R
 8056668fbc9fa5ca5ee75687e2952f5f *R/descrip.R
 dda100dc6ac23399e53226851ce1f750 *R/descripSurv.R
 14aef8dd5056dfd5e055f426f5b38efd *R/export2csv.R
-55b20e95778ed7b7137c7c5e463fa0db *R/export2html.R
+912ace40ad46836e73a167148daf1150 *R/export2html.R
 f7ed66c63c8d57417167b2098bd66927 *R/export2latex.R
 d03cc5e6dc07ce0fb3d576e7e98e9167 *R/export2latex.cbind.createTable.R
 d7905a0c8399d7b4a8641b80bde3e55d *R/export2latex.createTable.R
@@ -39,12 +39,13 @@ c7a9629a1e2dfe0dd0455b57afcb92ba *R/print.createTable.R
 e020493c391770599b932a2b17246a12 *R/rbind.createTable.R
 e0d6a72b9363a7af7226d1089b390f52 *R/signifdec.R
 71667afece48322641d0fef49d16da2e *R/signifdec.i.R
+e45ba77b13067e8dd563ac6b11213fcd *R/simplify.formula.R
 4926e34c24cb8aba00961ba089f5d9d3 *R/summ.i.R
 ffdb1ec97f4f60231e8b707936f7c17e *R/summary.compareGroups.R
 360854efa256dd8611dd566a87ea2ae1 *R/summary.createTable.R
 39ff02b6f711d5cb9db4342ca01675c2 *R/table.i.R
 af7d5f8bdb4466e8a8c9186c71b34e4f *R/update.compareGroups.R
-fbfeaf4344c30e3701e257318bc0c417 *R/update.formula2.R
+2540a5b4fe4ca4af872b8f8a48da672d *R/update.formula2.R
 9d56a6109c93ed09a29525292406ee55 *R/varinfo.R
 6e50fa06d3e86028755e3e11581011e9 *R/varinfo.compareGroups.R
 b4e52cba5b4c4c21c7ab6b01555f0b0c *R/z[.cbind.createTable.R
@@ -54,10 +55,10 @@ a31dde95b1cbb9d89593806abf1f86c3 *R/z[.rbind.compareGroups.R
 7f39cd400837b4127acd942bdd0499b6 *R/z[.rbind.createTable.R
 2e67532556157567f1bdd8f693f10b39 *compareGroups-Ex.R
 2522743e76ae259a047ab61dcf250a8e *data/regicor.rda
-a90dd9d8d16bf76ee9191d4096785606 *inst/doc/changelog.txt
+65a7989d2909e34e5ae338b8edc6bfd6 *inst/doc/changelog.txt
 ca74b09b4fe30d739c5dcbe6b367aa48 *inst/doc/compareGroups_vignette.pdf
 ae2455fb0c0e934f4c9e530d52c3ac4e *man/cGroupsGUI.Rd
-1107fd21bcc88324ea13af075bf539e0 *man/compareGroups-internal.Rd
+8ca3065e668aaa09abe3bdee127006eb *man/compareGroups-internal.Rd
 431324cedcd5627b7c59e4e8a44e1885 *man/compareGroups-package.Rd
 946b58f8a1f9137db3959639bfd2c560 *man/compareGroups.Rd
 8a04915371ef0787c6f80c40e69625f4 *man/createTable.Rd
