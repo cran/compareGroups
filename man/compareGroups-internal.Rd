@@ -16,6 +16,7 @@
 \alias{summ.i}
 \alias{table.i}
 \alias{udpate.formula2}
+\alias{simplify.formula}
 \alias{KMg.plot}
 \alias{Cox.plot}
 \alias{bar2.plot}
@@ -42,7 +43,8 @@ signifdec.i(x, digits)
 signifdec(x, digits)
 summ.i(x)
 table.i(x, hide.i, digits, digits.ratio, type, varname, hide.i.no)
-update.formula2(old, new, ...) 
+update.formula2(old, new) 
+simplify.formula(form)
 KMg.plot(x, y, file, var.label.x, var.label.y)
 Cox.plot(x, y, file, var.label.x, var.label.y)
 bar2.plot(x, y, file, var.label.x, var.label.y)
