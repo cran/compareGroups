@@ -226,12 +226,20 @@ function(X, y = NULL, Xext = NULL, selec = NA, method = 1, timemax = NA, alpha =
    if (length(ans)==0)
     stop("None variable can be computed")
     
-   if (length(ww)>0)
+   if (length(ww)>0){
     warning(paste("Variables '",paste(names(X)[ww],collapse="', '"),"' have been removed since some errors ocurred",sep=""))
-  
+    varnames.orig<-varnames.orig[-ww]
+   }
+
+   Xlong <- NULL
+   for (i in 1:length(ans))
+    Xlong <- cbind(Xlong, attr(ans[[i]],"xlong"))
+   colnames(Xlong) <- varnames.orig
+   ylong <- attr(ans[[1]],"ylong")
+
    if (groups){
-   attr(ans,"yname")<-yname
-   attr(ans,"yname.orig")<-yname.orig
+    attr(ans,"yname")<-yname
+    attr(ans,"yname.orig")<-yname.orig
    } else {
     attr(ans,"yname")<-NULL
     attr(ans,"yname.orig")<-NULL
@@ -239,11 +247,13 @@ function(X, y = NULL, Xext = NULL, selec = NA, method = 1, timemax = NA, alpha =
    attr(ans,"call")<-list()
    attr(ans,"call")$call<-cl
    attr(ans,"ny")<-ny
-   attr(ans,"varnames.orig")<-varnames.orig[which(!varnames.orig%in%ww)]
+   attr(ans,"varnames.orig")<-varnames.orig
    if (any(attr(ans,"names")=='')) 
      attr(ans,"names")[attr(ans,"names")=='']<-attr(ans,"varnames.orig")[attr(ans,"names")=='']
    attr(ans,"groups")<-groups
    attr(ans,"Xext")<-Xext
+   attr(ans,"Xlong")<-Xlong
+   attr(ans,"ylong")<-ylong
    class(ans)<-"compareGroups"
    ans
    

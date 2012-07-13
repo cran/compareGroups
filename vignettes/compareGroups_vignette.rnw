@@ -51,6 +51,7 @@ options(warn = -1)
 
 
 \begin{document}
+\SweaveOpts{concordance=TRUE}
 %\setkeys{Gin}{width=0.99\textwidth}
 \title{\bf {\tt compareGroups}: Descriptives by groups}
 
@@ -590,7 +591,7 @@ When the response variable is binary, the Odds Ratio (OR) can be printed in the 
 
 <<echo=TRUE, results=verbatim>>=
 res1<-compareGroups(sex ~ age + smoker + txchol + sbp, data=regicor, ref=1)
-createTable(res1, show.ratio=TRUE)
+createTable(res1, show.ratio=TRUE, show.p.overall=FALSE)
 @
 
 Note that for categorical response variables the reference category is the first one in the statement:
@@ -601,7 +602,7 @@ options(width=80)
 <<echo=TRUE, results=verbatim>>=
 res2<-compareGroups(sex ~ age + smoker + txchol + sbp, data=regicor, 
                     ref=c(smoker=1, txchol=2))
-createTable(res2, show.ratio=TRUE)
+createTable(res2, show.ratio=TRUE, show.p.overall=FALSE)
 @
 
 Note that the reference category for Smoking status is the first and for Cholesterol treatment the second.
@@ -616,7 +617,7 @@ options(width=120)
 
 <<echo=TRUE, results=verbatim>>=
 res<-compareGroups(sex ~ age + smoker + txchol + sbp, data=regicor, ref.no='NO')
-createTable(res, show.ratio=TRUE)
+createTable(res, show.ratio=TRUE, show.p.overall=FALSE)
 @
 
 Note: 'no', 'No' or 'NO' will produce the same results; the coding is not case sensitive.
@@ -627,7 +628,7 @@ Note: 'no', 'No' or 'NO' will produce the same results; the coding is not case s
 
 <<echo=TRUE, results=verbatim>>=
 res<-compareGroups(sex ~ age + txchol + sbp, data=regicor)
-createTable(res, show.ratio=TRUE)
+createTable(res, show.ratio=TRUE, show.p.overall=FALSE)
 @
 
 Here the OR is for the increase of one unit for Age and Systolic blood pressure.
@@ -637,7 +638,7 @@ options(width=80)
 @
 <<echo=TRUE, results=verbatim>>=
 res<-compareGroups(sex ~ age + txchol + sbp, data=regicor, fact.ratio= c(age=10, sbp=100))
-createTable(res, show.ratio=TRUE)
+createTable(res, show.ratio=TRUE, show.p.overall=FALSE)
 @
 <<echo=FALSE, results=hide>>=
 options(width=120)
@@ -651,14 +652,14 @@ Here the OR is for the increase of 10 years for Age and 100 mmHg for Systolic bl
 
 <<echo=TRUE, results=verbatim>>=
 res<-compareGroups(sex ~ histchol + txchol + sbp, data=regicor)
-createTable(res, show.ratio=TRUE)
+createTable(res, show.ratio=TRUE, show.p.overall=FALSE)
 @
 
 \noindent Note: This output shows the OR of being female. Therefore, 'male' is the reference category.
 
 <<echo=TRUE, results=verbatim>>=
 res<-compareGroups(sex ~ histchol + txchol + sbp, data=regicor, ref.y=2)
-createTable(res, show.ratio=TRUE)
+createTable(res, show.ratio=TRUE, show.p.overall=FALSE)
 @
 
 \noindent Note: This output shows the OR of being male.
@@ -883,13 +884,14 @@ createTable(res, show.p.mul=TRUE)
 \paragraph{show.ratio} If response variable is dichotomous or has been defined as class {\tt survival} (see Section \ref{timeto}), Odds Ratios and Hazard Ratios can be displayed in the results by stating ``TRUE'' at the show.ratio option:
 
 <<echo=TRUE>>=
-createTable(update(res, subset= year!=2005), show.ratio=TRUE)
+createTable(update(res, subset= year!=2005), show.ratio=TRUE, show.p.overall=FALSE)
 @
 
 Note that category ``2005'' of the response variable has been omitted in order to have only two categories (i.e., a dichotomous variable). No Odds Ratios would be calculated if response variable has more than two categories.
 
 <<echo=TRUE>>=
-createTable(compareGroups(tcv ~  age + sex, data=regicor), show.ratio=TRUE)
+createTable(compareGroups(tcv ~  age + sex, data=regicor), show.ratio=TRUE, 
+              show.p.overall=FALSE)
 @
 
 Note that when response variable is of class {\tt Surv}, Hazard Ratios are calculated instead of Odds Ratios.
@@ -1000,7 +1002,7 @@ summary(createTable(compareGroups(year ~ age +  smoker + sbp, data=regicor)))
 
 <<echo=TRUE>>=
 res<-compareGroups(year ~ age +  smoker + sbp + txhtn, data=regicor)
-restab<-createTable(res, type=1, show.ratio=TRUE )
+restab<-createTable(res, type=1, show.ratio=TRUE, show.p.overall=FALSE)
 restab
 update(restab, show.n=TRUE)
 @
@@ -1019,7 +1021,7 @@ Note that the \texttt{compareGroups} object (\textit{res}) is updated, selecting
 createTable(compareGroups(year~ age + sex + smoker +sbp, data=regicor))
 @
 <<echo=TRUE>>=
-createTable(compareGroups(year~ age + sex + smoker +sbp, data=regicor))[1:2, ]
+createTable(compareGroups(year~ age + sex + smoker +sbp, data=regicor))[1:2]
 @
 \
 \\

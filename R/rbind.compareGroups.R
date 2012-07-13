@@ -34,6 +34,7 @@ rbind.compareGroups<-function(..., caption)
   out<-list()
   nn<-varnames.orig<-character(0)
   k<-1
+  Xlong<-NULL
   for (i in 1:length(args)){    
     args.i<-args[[i]]
     if (!is.null(caption) && !is.null(attr(args.i,"caption")))
@@ -43,6 +44,7 @@ rbind.compareGroups<-function(..., caption)
       k<-k+1
     }
     nn<-c(nn,names(args.i))
+    Xlong<-cbind(Xlong,attr(args.i,"Xlong"))
     varnames.orig<-c(varnames.orig,attr(args.i,"varnames.orig"))
   }
   
@@ -52,6 +54,8 @@ rbind.compareGroups<-function(..., caption)
   attr(out,"ny")<-attr(args[[1]],"ny")
   attr(out,"groups")<-attr(args[[1]],"groups")
   attr(out,"varnames.orig")<-varnames.orig
+  attr(out,"Xlong")<-Xlong
+  attr(out,"ylong")<-attr(args.i,"ylong")
   
   if (!is.null(caption)){
     lc<-cumsum(unlist(lapply(args,length)))

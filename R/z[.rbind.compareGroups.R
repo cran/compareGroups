@@ -22,6 +22,8 @@
     attr(y,"groups") <- attr(x, "groups")
     attr(y,"groups") <- attr(x, "groups")  
     attr(y,"ny") <- attr(x, "ny")
+    attr(y,"ylong") <- attr(x, "ylong")
+    attr(y,"Xlong") <- attr(x, "Xlong")[,i,drop=FALSE]
     caption<- attr(x, "caption")
     if (length(caption)>1){
       for (k in 2:length(caption))

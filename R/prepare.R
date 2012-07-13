@@ -1,5 +1,5 @@
-prepare <- function(x, nmax) 
-{
+prepare <- function(x, nmax)
+{      
 
   varnames<-attr(x,"varnames")
   nr<-attr(x,"nr")
@@ -19,7 +19,17 @@ prepare <- function(x, nmax)
     nmax.avail.pos<-c(1,nmax.pos[[2]])
     
   if (length(nmax.avail.pos)>0 && nmax){
-      Nmax<-apply(avail[,nmax.avail.pos,drop=FALSE],2,function(x) max(as.double(x)))  
+    Xlong<-attr(x,"Xlong")
+    ylong<-attr(x,"ylong")
+    uu<-unique(ylong)
+    uu<-uu[!is.na(uu)]
+    if (length(uu)>1){
+      Nmax<-sum(!apply(is.na(Xlong[!is.na(ylong),,drop=FALSE]),1,all))
+      Nmax<-c(Nmax,sapply(sort(uu), function(i) sum(!apply(is.na(subset(Xlong,ylong==i)),1,all))))
+    } else {
+      Nmax<-sum(!apply(is.na(Xlong),1,all))
+    }  
+    Nmax<-Nmax[nmax.avail.pos]
   }else{
     Nmax<-NULL
     nmax<-FALSE

@@ -1,5 +1,5 @@
-createTable <-
-function(x,hide=NA,digits=NA,type=NA,show.p.overall=TRUE,show.all,show.p.trend,show.p.mul=FALSE,show.n,show.ratio=FALSE,show.descr=TRUE,hide.no=NA,digits.ratio=NA){
+createTable <- function(x, hide = NA, digits = NA, type = NA, show.p.overall = TRUE, show.all, show.p.trend, show.p.mul = FALSE, show.n, show.ratio = FALSE, show.descr = TRUE, hide.no = NA, digits.ratio = NA, show.p.ratio = show.ratio, digits.p = 3, sd.type = 1, q.type = c(1,1))
+{
 
   if (!inherits(x,"compareGroups"))
     stop("x must be of class 'compareGroups'")
@@ -7,8 +7,10 @@ function(x,hide=NA,digits=NA,type=NA,show.p.overall=TRUE,show.all,show.p.trend,s
   if (!type%in%c(1,2,3,NA))
     stop("type must be 1 '%', 2 'n(%)' or 3 'n'")
 
-
   cl<-match.call()
+  
+  if (!show.ratio)
+    show.p.ratio <- FALSE
 
   if (!is.null(attr(digits,"names"))){
    temp<-rep(NA,length(x))
@@ -62,7 +64,7 @@ function(x,hide=NA,digits=NA,type=NA,show.p.overall=TRUE,show.all,show.p.trend,s
     if (nlevels(y)>2 & is.ordered(y))
       show.p.trend<-TRUE
   }
-    
+
   ans<-list()
   ans$descr<-NULL
   ans$avail<-NULL
@@ -70,7 +72,7 @@ function(x,hide=NA,digits=NA,type=NA,show.p.overall=TRUE,show.all,show.p.trend,s
   nr<-NULL
   k<-1
   for (i in 1:length(x)){
-    t.i<-t(table.i(x[[i]],hide.i=hide[[i]],digits=digits[i],digits.ratio=digits.ratio[i],type=type,varname=varnames[i],hide.no))
+    t.i<-t(table.i(x[[i]],hide.i=hide[[i]],digits=digits[i],digits.ratio=digits.ratio[i],type=type,varname=varnames[i],hide.no,digits.p=digits.p,sd.type=sd.type,q.type=q.type))
     nr<-c(nr,nrow(t.i))
     ans$descr<-rbind(ans$descr,t.i)
     s.i<-attr(x[[i]],"selec")
@@ -91,7 +93,8 @@ function(x,hide=NA,digits=NA,type=NA,show.p.overall=TRUE,show.all,show.p.trend,s
   ny<-attr(x,"ny")
   desc.pos<-2:(1+ny)
   or.pos<-max(desc.pos)+1 
-  poverall.pos<-max(or.pos)+1
+  pratio.pos<-or.pos+1
+  poverall.pos<-pratio.pos+1
   ptrend.pos<-poverall.pos+1
   pmult.pos<-(ptrend.pos+1):(ptrend.pos+max(c(1,choose(ny,2))))
   n.pos<-max(pmult.pos)+1
@@ -106,8 +109,10 @@ function(x,hide=NA,digits=NA,type=NA,show.p.overall=TRUE,show.all,show.p.trend,s
       elim.pos<-c(elim.pos,all.pos)
     if (!show.descr)
       elim.pos<-c(elim.pos,desc.pos)
+    if (!show.p.ratio)
+      elim.pos<-c(elim.pos,pratio.pos)
     if (all(is.na(ans[[1]][,or.pos])) || !show.ratio){
-      elim.pos<-c(elim.pos,or.pos)
+      elim.pos<-c(elim.pos,or.pos,pratio.pos)
       show.ratio<-FALSE
     }
     if (!show.p.overall)
@@ -122,7 +127,7 @@ function(x,hide=NA,digits=NA,type=NA,show.p.overall=TRUE,show.all,show.p.trend,s
       elim.pos<-c(elim.pos,n.pos)
   } else {
     show.descr<-FALSE
-    elim.pos<-c(elim.pos,desc.pos,or.pos,poverall.pos,ptrend.pos,pmult.pos)
+    elim.pos<-c(elim.pos,desc.pos,or.pos,pratio.pos,poverall.pos,ptrend.pos,pmult.pos)
     if (missing(show.n))
       show.n<-TRUE
     if (!show.n)
@@ -147,9 +152,15 @@ function(x,hide=NA,digits=NA,type=NA,show.p.overall=TRUE,show.all,show.p.trend,s
   dd.pos<-unlist(nmax.pos)
   if (show.ratio){
     if (length(dd.pos)>0)
-      dd.pos<-c(dd.pos,max(dd.pos)+1)
+      if (show.p.ratio)
+        dd.pos<-c(dd.pos,max(dd.pos)+1:2)
+      else
+        dd.pos<-c(dd.pos,max(dd.pos)+1)  
     else
-      dd.pos<-1
+      if (show.p.ratio)
+        dd.pos<-1:2
+      else
+        dd.pos<-1
   }
 
   attr(ans,"yname")<-attr(x,"yname")
@@ -169,10 +180,13 @@ function(x,hide=NA,digits=NA,type=NA,show.p.overall=TRUE,show.all,show.p.trend,s
   attr(ans,"show.p.trend")<-show.p.trend      
   attr(ans,"show.p.mul")<-show.p.mul      
   attr(ans,"show.n")<-show.n      
-  attr(ans,"show.ratio")<-show.ratio      
+  attr(ans,"show.ratio")<-show.ratio  
+  attr(ans,"show.p.ratio")<-show.p.ratio    
   attr(ans,"show.descr")<-show.descr      
   attr(ans,"hide.no")<-hide.no      
   attr(ans,"x")<-list(x)
+  attr(ans,"Xlong")<-attr(x,"Xlong")
+  attr(ans,"ylong")<-attr(x,"ylong")  
       
   if (!is.null(elim.pos))
     ans[[1]]<-ans[[1]][,-elim.pos,drop=FALSE]

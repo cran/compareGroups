@@ -21,6 +21,14 @@ function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, 
       y <- y[select.eval]
   }
 
+  xlong <- x  
+  ylong <- y
+  
+  if (inherits(ylong,"Surv")) 
+    ylong<-ylong[,2]
+  if (inherits(xlong,"Surv"))
+    xlong<-ifelse(is.na(xlong[,1]) | is.na(xlong[,2]), NA, xlong[,2])
+  
   keep <- !is.na(x) & !is.na(y)
   
   x <- x[keep]
@@ -301,11 +309,12 @@ function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, 
       }
     }
   }
-  
+
   if (groups && ny==2 && compute.ratio){
     if (inherits(y,"Surv")){
       if (length(x)==0){
         ci<-matrix(NaN,1,3)
+        p.ratio<-NaN
       } else {
         if (is.factor(x)){
           if (ref>nlevels(x)){
@@ -313,22 +322,33 @@ function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, 
             warning(paste("Variable",varname,": reference > nlevels, reference set to 1"))
           }           
           ci<-matrix(NA,nlevels(x),3)
+          p.ratio<-rep(NA,nlevels(x))
           ci[ref,1]<-1
           fit<-try(coxph(y~C(x,base=ref)),silent=TRUE)
           if (inherits(fit,"try-error")){
             ci<-matrix(NaN,nlevels(x),3)
             ci[ref,]<-c(1,NA,NA)
-          }else
+            p.ratio<-rep(NaN,nlevels(x))
+            p.ratio[ref]<-NA
+          }else{
             ci[-ref,]<-exp(cbind(coef(fit),suppressMessages(confint(fit))))
-          rownames(ci)<-levels(x)    
+            p.ratio[-ref]<-coef(summary(fit))[,5]
+          }
+          rownames(ci)<-levels(x)
+          names(p.ratio)<-levels(x)
         } else {
           if (!inherits(x,"Surv")){
             x <- x / fact.ratio
             fit<-try(coxph(y~x),silent=TRUE)
             if (inherits(fit,"try-error")){
               ci<-matrix(NaN,1,3)
+              p.ratio<-NaN
             } else
               ci<-rbind(exp(c(coef(fit),suppressMessages(confint(fit)))))
+              p.ratio<-coef(summary(fit))[1,5]
+          } else {
+            ci<-matrix(NaN,1,3)
+            p.ratio<-NaN          
           }
         }
       }
@@ -337,6 +357,7 @@ function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, 
     }else{
       if (length(x)==0){
         ci<-matrix(NaN,1,3)
+        p.ratio<-NaN
       } else {    
         if (is.factor(x)){
           if (ref>nlevels(x)){
@@ -348,34 +369,43 @@ function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, 
             tb<-tb[,2:1]
           if (ref!=1)
             tb<-rbind(tb[ref,,drop=FALSE],tb[-ref,,drop=FALSE])
-          ci<-try(oddsratio(tb)$measure,silent=TRUE)
-          if (inherits(ci,"try-error")){
+          or.res<-try(oddsratio(tb),silent=TRUE)
+          if (inherits(or.res,"try-error")){
             ci<-matrix(NaN,nlevels(x),3)
             ci[ref,]<-c(1,NA,NA)          
-            rownames(ci)<-levels(x)
-          }else
+            rownames(ci)<-levels(x)            
+            p.ratio<-rep(NaN,nlevels(x))
+            p.ratio[ref]<-NA
+            names(p.ratio)<-levels(x)
+          } else {
+            ci<-or.res$measure
             ci<-ci[levels(x),]
-          ci<-cbind(ci)    
+            p.ratio<-or.res$p.value[levels(x),1]
+          }
+          ci<-cbind(ci)
         } else {
           if (!inherits(x,"Surv")){
             x <- x / fact.ratio
             fit<-try(glm(y~x,family="binomial"),silent=TRUE)
             if (sum(table(y)>0)<2 | inherits(fit,"try-error")){
               ci<-matrix(NaN,1,3)
+              p.ratio<-NaN
             }else{
               ci<-rbind(exp(c(coef(fit)[-1],suppressMessages(confint.default(fit)[-1,]))))
               if (ref.y==2)
                 ci<-1/ci
+              p.ratio<-coef(summary(fit))[2,4]
             }
           } else {
             ci<-matrix(NaN,1,3)
+            p.ratio<-NaN
           }
         }
       }
       colnames(ci)<-c("OR","OR.lower","OR.upper")  
       attr(ans,"OR")<-ci
-    }    
-
+    }
+    attr(ans,"p.ratio")<-p.ratio      
   }
 
   attr(ans,"x")<-x
@@ -385,8 +415,8 @@ function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, 
   attr(ans,"selec")<-selec.i
   attr(ans,"fact.ratio")<-fact.ratio
   attr(ans,"groups")<-groups
+  attr(ans,"xlong")<-xlong
+  attr(ans,"ylong")<-ylong
   ans
-
-
 
 }

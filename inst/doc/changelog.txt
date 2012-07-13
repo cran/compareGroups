@@ -1,3 +1,16 @@
+v1.3
+2012-07-19
+-. createTable objects can be plotted and it is also possible to apply varinfo function on them.
+-. cGroupsGUI: new smaller frame.
+-. createTable: new argument q.type, to specify how the quartiles (percentiles) are displayed for a non-normal distributed row-variable.
+-. createTable: new argument sd.type, to allow the user change the format in displaying SD; 1-inside brackets (default), 2- mean +/- SD.
+-. createTable: new argument digits.p added, to allow the user specify the number of decimals for all p-values displayed on the bivariate table.
+-. createTable: new argument p.ratio has been added. This computes de p-value corresponding to each OR/HR individually.
+-. Nmax reported changed: now it represents the number of patients with at least un valid value across all analized variables.
+-. a bug fixed in compareGroup: when some row-variable could not be performed 'varnames.orig' attribute was bad built. This affected other functions such as createTable.
+-. a bug fixed in [.createTable: an error ocurred when a literal category specified to be hiden when subsetting a createTable object.
+-. MINOR CHANGE: 1.95 replaced by 1.96 in 'compareGroups.Rd' file.
+
 v1.2
 2012-07-10
 -. export2html: a bug fixed in N.

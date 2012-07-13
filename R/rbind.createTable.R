@@ -1,4 +1,4 @@
-rbind.createTable<-function(..., caption)
+rbind.createTable <- function(..., caption)
 {
 
   cl<-match.call()
@@ -35,6 +35,7 @@ rbind.createTable<-function(..., caption)
     
   out<-list()
   descr<-avail<-nr<-varnames<-NULL
+  Xlong<-NULL
   for (i in 1:length(args)){
     args.i<-args[[i]]
     if (!is.null(caption) && !is.null(attr(args.i,"caption"))){
@@ -44,6 +45,7 @@ rbind.createTable<-function(..., caption)
     descr<-rbind(descr,args.i[[1]])
     avail<-rbind(avail,args.i[[2]])
     nr<-c(nr,attr(args.i,"nr"))
+    Xlong<-cbind(Xlong,attr(args.i,"Xlong"))
     varnames<-c(varnames,attr(args.i,"varnames"))
 
   }
@@ -51,15 +53,17 @@ rbind.createTable<-function(..., caption)
   out$avail<-avail
   attr(out,"nmax.pos")<-attr(args.i,"nmax.pos")
   attr(out,"yname")<-attr(args.i,"yname")
-  attr(out, "ny")<- attr(args.i, "ny")
-  attr(out, "show.all")<- attr(args.i, "show.all")
-  attr(out, "groups")<-attr(args.i, "groups") 
-  attr(out, "dd.pos")<- attr(args.i, "dd.pos")
-  attr(out, "ylevels")<- attr(args.i, "ylevels")
-  attr(out, "nr")<-nr
-  attr(out, "varnames")<-varnames
-  attr(out, "x") <- lapply(args,function(aa) attr(aa,"x")[[1]])
-  attr(out, "args")<-args  
+  attr(out,"ny")<- attr(args.i, "ny")
+  attr(out,"show.all")<- attr(args.i, "show.all")
+  attr(out,"groups")<-attr(args.i, "groups") 
+  attr(out,"dd.pos")<- attr(args.i, "dd.pos")
+  attr(out,"ylevels")<- attr(args.i, "ylevels")
+  attr(out,"nr")<-nr
+  attr(out,"varnames")<-varnames
+  attr(out,"x") <- lapply(args,function(aa) attr(aa,"x")[[1]])
+  attr(out,"args")<-args  
+  attr(out,"Xlong")<-Xlong
+  attr(out,"ylong")<-attr(args.i,"ylong")
   
   if (!is.null(caption)){
     nv<-unlist(lapply(args,function(x) length(attr(x,"varnames"))))
