@@ -19,10 +19,17 @@ export2html(x, file, which.table="descr", nmax = TRUE, ...)
 
   \item{which.table}{character indicating which table is printed. Possible values are 'descr', 'avail' or 'both' (partial matching allowed), exporting descriptives by groups table, availability data table or both tables, respectively. Default value is 'descr'.}
 
-  \item{nmax}{logical, indicating whether to show the maximum number of responses ("n" of a complete, or least-missing, variable) available by group. Default value is TRUE.}
+  \item{nmax}{logical, indicating whether to show the number of subjects with at least one valid value across all row-variables. Default value is TRUE.}
              
   \item{\ldots}{currently ignored.}
   
+}
+
+
+\note{
+
+The way to compute the 'N' shown in the bivariate table header, controlled by 'nmax' argument, has been changed from previous versions (<1.3). In the older versions 'N' was computed as the maximum across the cells withing each column (group) from the 'available data' table ('avail').
+
 }
 
 

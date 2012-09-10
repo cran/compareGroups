@@ -2,6 +2,9 @@ export2html<-function(x, file, which.table="descr", nmax = TRUE, ...){
 
   if (!inherits(x,"createTable"))
     stop("x must be of class 'createTable'")
+    
+  if (inherits(x,"cbind.createTable"))
+    stop("x cannot be of class 'cbind.createTable'")    
 
   ww <- charmatch(which.table, c("descr","avail","both"))
   if (is.na(ww))

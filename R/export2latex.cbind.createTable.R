@@ -63,6 +63,7 @@ export2latex.cbind.createTable<-function(x, file, which.table='descr', size='sam
   cap<-gsub("<=","$\\\\leq$",cap)
   cap<-gsub(">","$>$",cap)
   cap<-gsub("<","$<$",cap) 
+  cap<-gsub("\261","$\\\\pm$",cap)   
   
   desc<-lapply(x,function(vv) prepare(vv,nmax=nmax)[[1]])
   avail<-lapply(x,function(vv) prepare(vv,nmax=nmax)[[2]])
@@ -111,6 +112,7 @@ export2latex.cbind.createTable<-function(x, file, which.table='descr', size='sam
       cc<-gsub("<=","$\\\\leq$",cc)
       cc<-gsub(">","$>$",cc)
       cc<-gsub("<","$<$",cc)
+      cc<-gsub("\261","$\\\\pm$",cc)      
     }
   
     desc<-aux.desc[,-ncol(aux.desc),drop=FALSE]
@@ -132,6 +134,7 @@ export2latex.cbind.createTable<-function(x, file, which.table='descr', size='sam
     rownames(desc)<-gsub(">","$>$",rownames(desc))
     rownames(desc)<-gsub("<","$<$",rownames(desc))
     rownames(desc)<-sub("^    ","$\\\\qquad$",rownames(desc))
+    rownames(desc)<-gsub("\261","$\\\\pm$",rownames(desc))          
     desc<-gsub("\\$","\\\\$",desc)
     desc<-sub("%","\\\\%",desc)  
     desc<-sub("&","\\\\&",desc)  
@@ -140,6 +143,7 @@ export2latex.cbind.createTable<-function(x, file, which.table='descr', size='sam
     desc<-gsub("<=","$\\\\leq$",desc)
     desc<-gsub(">","$>$",desc)
     desc<-gsub("<","$<$",desc)
+    desc<-gsub("\261","$\\\\pm$",desc)            
   
     nc<-ncol(desc)
 
@@ -221,6 +225,7 @@ export2latex.cbind.createTable<-function(x, file, which.table='descr', size='sam
       cc<-gsub("<=","$\\\\leq$",cc)
       cc<-gsub(">","$>$",cc)
       cc<-gsub("<","$<$",cc)
+      cc<-gsub("\261","$\\\\pm$",cc)              
     }
 
     avail<-aux.avail[,-ncol(aux.avail),drop=FALSE]  
@@ -233,6 +238,7 @@ export2latex.cbind.createTable<-function(x, file, which.table='descr', size='sam
     rownames(avail)<-gsub(">","$>$",rownames(avail))
     rownames(avail)<-gsub("<","$<$",rownames(avail))
     rownames(avail)<-sub("^    ","$\\\\qquad$",rownames(avail))
+    rownames(avail)<-gsub("\261","$\\\\pm$",rownames(avail))   
     avail<-gsub("\\$","\\\\$",avail)
     avail<-sub("%","\\\\%",avail)  
     avail<-sub("&","\\\\&",avail)  
@@ -241,7 +247,7 @@ export2latex.cbind.createTable<-function(x, file, which.table='descr', size='sam
     avail<-gsub("<=","$\\\\leq$",avail)
     avail<-gsub(">","$>$",avail)
     avail<-gsub("<","$<$",avail)
-  
+    avail<-gsub("\261","$\\\\pm$",avail)    
     nc<-ncol(avail)
 
     head.loc<-paste(c("l",rep("c",nc)),collapse="")

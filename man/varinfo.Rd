@@ -1,6 +1,7 @@
 \name{varinfo}
 \alias{varinfo}
 \alias{varinfo.compareGroups}
+\alias{varinfo.createTable}
 
 \title{
 Variable names and labels extraction
@@ -13,10 +14,11 @@ This functions builds and prints a table with the variable names and their label
 \usage{
 varinfo(x, ...)
 \method{varinfo}{compareGroups}(x, ...)
+\method{varinfo}{createTable}(x, ...)
 }
 
 \arguments{
-  \item{x}{an object of class 'compareGroups'}
+  \item{x}{an object of class 'compareGroups' or 'createTable'}
   \item{\dots}{other arguments currently ignored}
 }
 

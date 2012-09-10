@@ -33,7 +33,7 @@ cGroupsGUI <- function(X){
       }
       matrix.info[,3] <- 1
       matrix.info[,4] <- 0
-      matrix.info <- matrix.info[matrix.info$type!=0,]
+      matrix.info <- subset(matrix.info,type!=0)
       matrix.info$subset.part <- ""
       matrix.info$subset.all <- ""
       matrix.info$type[matrix.info$type==1] <- "Normal"
@@ -87,23 +87,30 @@ cGroupsGUI <- function(X){
             }
          return(mat)
       }
+      
+  #################################    
       tt <- tktoplevel()
       tktitle(tt) <- paste("Compare Groups : ",datatemp.name,sep="")
       tkwm.resizable(tt,0,0)
       topframe <- tkframe(tt)
       tkgrid(topframe, column=0, row=0, sticky="nwes", ipadx=3,ipady=3,padx=12,pady=20)
-      frame1 <- tkwidget(topframe, "labelframe", text ="Variables in data frame", fg="blue",padx=10,pady=10)
+      
+      frame1 <- tkwidget(topframe, "labelframe", text ="Variables", fg="blue",padx=10,pady=10)
       var.scr  <- tkscrollbar(frame1, repeatinterval=5,command=function(...)tkyview(tlist.var,...))
       tlist.var <- tklistbox(frame1,height=5,selectmode="extended", yscrollcommand=function(...)tkset(var.scr,...),
-                    background="white",exportselection=FALSE, height =37, width =15)
+                    background="white",exportselection=FALSE, height =21, width =10)
       for (i in 1:nrow(matrix.info)){
           tkinsert(tlist.var,"end",matrix.info[i,1])
       }
       tkbind(tlist.var)
       tkgrid(tlist.var,var.scr)
       tkgrid.configure(var.scr,sticky="nsw")
-      tkgrid(frame1, padx=5,pady=5, column=1,rowspan=40,sticky="ns")
+      tkgrid(frame1, padx=5,pady=5, row=0, column=0,rowspan=16,columnspan=1,sticky="ns")
       tk2tip(tlist.var,"List of variables in data frame")
+      
+      
+    #### Enter frame 2
+    
       frame2 <- tkwidget(topframe, "labelframe", text ="Factor to report", fg="blue")
       disable1 <- function(){
         tk2state.set(tlist.factor.selection, state='disabled')
@@ -240,7 +247,6 @@ cGroupsGUI <- function(X){
           timeto <- tmp.data[,var.name]
           eventto <- as.integer(tmp.data[, var.name2]==event)
           variableF <- Surv(timeto, eventto)
-          label(variableF)<-label(tmp.data[,var.name2])
           KM.plot(x = variableF, file = NULL, var.label.x = label(x[, var.name2]))
     }  
     plot.uni.surv <- function(){
@@ -250,7 +256,11 @@ cGroupsGUI <- function(X){
     } 
     factor.plot <- tkbutton(frame2,text="Plot",command = plot.uni.surv ,height=1, width=10)
     tkgrid(factor.plot,row=2,column=8,padx=5,pady=5)
-    tkgrid(frame2,column=3,columnspan=5, rowspan=5, row=0,padx=5,pady=5,sticky="nw")
+    tkgrid(frame2,column=3,columnspan=5, rowspan=6, row=0,padx=5,pady=5,sticky="nw")
+    
+    
+    
+    #### Enter frame 3
     tk2state.set(tlist.factor.selection, state='disabled')
     tk2state.set(tlist.timeto.selection, state='disabled')
     tk2state.set(tlist.status.selection, state='disabled')
@@ -264,7 +274,7 @@ cGroupsGUI <- function(X){
       frame3 <- tkwidget(topframe, "labelframe", text ="Variable to report", fg="blue",padx=5,pady=5)
       var.scry  <- tkscrollbar(frame3, repeatinterval=5,command=function(...)tkyview(report.list ,...))
       var.scrx  <- tkscrollbar(frame3, orient="horizontal",command=function(...)tkxview(report.list ,...))
-      report.list <- tk2mclistbox(frame3, width = 99, height=25,resizablecolumns = TRUE,selectmode="extended",
+      report.list <- tk2mclistbox(frame3, width = 90, height=10,resizablecolumns = TRUE,selectmode="extended",
                                   yscrollcommand=function(...)tkset(var.scry,...),
                                   xscrollcommand=function(...)tkset(var.scrx,...))
       tk2column(report.list , "add", "var", label = "Name", width = 25)
@@ -277,7 +287,12 @@ cGroupsGUI <- function(X){
       tkgrid(report.list,var.scrx)
       tkgrid.configure(var.scry,sticky="nse")
       tkgrid.configure(var.scrx,sticky="sew")
-      tkgrid(frame3,column=3,columnspan=5, rowspan=25, row=6,padx=5,pady=5,sticky="ew")
+      tkgrid(frame3,column=3,columnspan=8, rowspan=9, row=7,padx=5,pady=5,sticky="new")
+
+
+      
+ #### Enter frame 4     
+      
     insert.var <- function(){
           var.name <- as.numeric(tkcurselection(tlist.var))
           if(length(var.name)==0) tkmessageBox(message = "No variable selected", icon = "info", type="ok")
@@ -306,16 +321,16 @@ cGroupsGUI <- function(X){
                   }
           }
       }
-      select.report.var <- tkbutton(topframe,text="u",command = insert.var,height=1, width=4, font="{Wingdings 3} {10}" )
+      select.report.var <- tkbutton(topframe,text="u",command = insert.var,height=1, width=2, font="{Wingdings 3} {8}" )
       tkbind(report.list , select.report.var)
       tkgrid(select.report.var,column=2,row=11,padx=5,padx=10,sticky="s")
-      exclude.report.var <- tkbutton(topframe,text="t",command =exclude.var,height=1, width=4, font="{Wingdings 3} {10}" )
+      exclude.report.var <- tkbutton(topframe,text="t",command =exclude.var,height=1, width=2, font="{Wingdings 3} {8}" )
       tkbind(report.list , select.report.var)
       tkgrid(exclude.report.var,column=2,row=12,padx=5,padx=10,sticky="n")
       frame4 <- tkwidget(topframe, "labelframe", text ="Global subset", fg="blue",padx=5,pady=5)
       subset.glob <- tclVar("")
       subset.glob.sel <- tclvalue(subset.glob)
-      text.subset.glob <- tkentry(frame4, width= 40,textvariable = subset.glob)
+      text.subset.glob <- tkentry(frame4, width= 30, textvariable = subset.glob)
       tkbind(text.subset.glob)
       assign(".global.subset.selection","", envir = .GlobalEnv)
       send.subset.glob <- function(){
@@ -334,13 +349,17 @@ cGroupsGUI <- function(X){
       tkbind(send.subset.glob)
       subset.but.glob <-tkbutton(frame4,text="Apply subset",command=send.subset.glob, width=15)
       tkbind(subset.but.glob, "<Return>",send.subset.glob)
-      tkgrid(frame4,column=3,columnspan=3, rowspan=2, row=40,padx=5,pady=5,sticky="ew")
-      tkgrid(subset.but.glob, column=3,columnspan=3,row=0,rowspan=2)
+      tkgrid(frame4,column=3,columnspan=4, rowspan=2, row=17,padx=5,pady=5,sticky="w")
+      tkgrid(subset.but.glob, column=9,columnspan=3, row=0,rowspan=2,sticky="e")
       tk2tip(frame4, "Subset for dataframe")
+
+
+ #### Enter frame 5        
+ 
       frame5 <- tkwidget(topframe, "labelframe", text ="'Variable' subset", fg="blue",padx=5,pady=5)
       subset.part <- tclVar("")
       subset.part.sel <- tclvalue(subset.part)
-      text.subset.part <- tkentry(frame5, width= 40,textvariable = subset.part)
+      text.subset.part <- tkentry(frame5, width= 30,textvariable = subset.part)
       tkbind(text.subset.part)
       send.subset.part <- function(){
           var.name <- (as.numeric(tkcurselection(report.list)))+1
@@ -366,9 +385,13 @@ cGroupsGUI <- function(X){
       tkbind(send.subset.part)
       subset.but.part <-tkbutton(frame5,text="Apply subset",command=send.subset.part, width=15)
       tkbind(subset.but.part, "<Return>",send.subset.part)
-      tkgrid(frame5,column=3,columnspan=3, rowspan=2, row=45,padx=5,pady=5,sticky="ew")
-      tkgrid(subset.but.part,column=3,columnspan=3,row=0,rowspan=2)
+      tkgrid(frame5,column=5,columnspan=3, rowspan=2, row=17,padx=5,pady=5,sticky="e")
+      tkgrid(subset.but.part,column=5,columnspan=3,row=0,rowspan=2)
       tk2tip(frame5, "Subset for a selected report variable")
+      
+      
+ #### Enter frame 6
+      
       frame6 <- tkwidget(topframe, "labelframe", text ="Method", fg="blue",padx=5,pady=5)
       type.var.function <- function(){
           var.name <- (as.numeric(tkcurselection(report.list)))+1
@@ -425,11 +448,19 @@ cGroupsGUI <- function(X){
       tkgrid(tklabel(frame6,text="Normal"),type.var3)
       tkgrid(tklabel(frame6,text="Test (S-W)"),type.var4)
       swtest <- tclVar("0.05")
-      tspin <- tk2spinbox(frame6, from = 0, to = 1, increment = 0.01,state="readonly", width=4,readonlybackground="white",textvariable=swtest)
-      tkgrid(tspin,row=3,column=2)
+      tspin <- tk2spinbox(frame6, from = 0, to = 1, increment = 0.01,state="readonly", width=4,readonlybackground="white",textvariable=swtest,font="-size 8")
+      tkgrid(tspin,row=4,column=0,sticky="w")
+      
+      tkgrid(tklabel(frame6,text="\U03B1 level",font="-size 8"),row=4,column=0,sticky="e")
+      
       tk2tip(tspin, "Significance level for Shapiro-Wilks test")
       tk2tip(frame6, "Select method for analyze each variable")
-      tkgrid(frame6,column=15, rowspan=5, row=5,padx=5,pady=5,sticky="nw")
+      tkgrid(frame6,column=12, rowspan=6, row=0,padx=5,pady=5,sticky="n")
+      
+      
+      
+### Enter frame 8      
+      
       frame8 <- tkwidget(topframe, "labelframe", text ="Plots", fg="blue",padx=5,pady=5)
       plots.uni <- function(){
           var.name <- (as.numeric(tkcurselection(report.list)))+1
@@ -497,7 +528,6 @@ cGroupsGUI <- function(X){
             timeto <- tmp.data[,var.name]
             eventto <- as.integer(tmp.data[, var.name2]==event)
             variableF <- Surv(timeto, eventto)
-            label(variableF)<-label(tmp.data[,var.name2])
             if(variable[,2]=='Categorical'){ 
               KMg.plot(x = tmp.data[,as.character(variable[1])], y= variableF, file=NULL, var.label.x=label(x[,as.character(variable[1])]), var.label.y = label(x[,var.name2]))
             }
@@ -507,14 +537,18 @@ cGroupsGUI <- function(X){
             }
          }
       }
-      uni.plot <- tkbutton(frame8,text="Univariate",command = plots.uni,height=1, width=20)
-      bi.plot <- tkbutton(frame8,text="Bivariate",command = plots.bi, height=1, width=20)
+      uni.plot <- tkbutton(frame8,text="Univariate",command = plots.uni,height=1, width=10)
+      bi.plot <- tkbutton(frame8,text="Bivariate",command = plots.bi, height=1, width=10)
       tkbind(uni.plot, plots.uni)
       tkbind(bi.plot, plots.bi)
       tkgrid(uni.plot)
       tkgrid(bi.plot)
-      tkgrid(frame8,column=15, rowspan=5, row=10,padx=5,pady=5,sticky="new")
+      tkgrid(frame8,column=12, row=7, rowspan=3, padx=5,pady=5,sticky="n")
       tk2tip(frame8, "Plot the selected variable/s") 
+      
+      
+      
+### Enter frame 7
       frame7 <- tkwidget(topframe, "labelframe", text ="Decimals digits", fg="blue",padx=5,pady=5)
       decimals.function <- function(){
           var.name <- (as.numeric(tkcurselection(report.list)))+1
@@ -545,7 +579,12 @@ cGroupsGUI <- function(X){
       tkgrid(tklabel(frame7,text="3 dec"),dec3)
       tkgrid(tklabel(frame7,text="Default dec"),dec4)
       tk2tip(frame7, "Number of decimals in report")
-      tkgrid(frame7,column=15,row=15,padx=5,pady=5,sticky="s")
+      tkgrid(frame7,column=12,row=10,padx=5,pady=5,sticky="n",rowspan=5)
+      
+      
+      
+      
+### Enter frame 9
       frame9 <- tkwidget(topframe, "labelframe", text ="Hide (Ref.) category", fg="blue",padx=5,pady=5)
       hide.function <- function(){
               var.name <- (as.numeric(tkcurselection(report.list)))+1
@@ -576,7 +615,11 @@ cGroupsGUI <- function(X){
       tkgrid(tklabel(frame9,text="Last"),hide2)
       tkgrid(tklabel(frame9,text="No category"),hide3)
       tk2tip(frame9, "Hide a category in categorical variable")
-      tkgrid(frame9,column=15,row=20,padx=5,pady=5,sticky="s")
+      tkgrid(frame9,column=12,row=15,padx=5,pady=5,rowspan=4)  
+      
+      
+      
+#### Enter menu      
       spssLoad <- function(){
               name <- tclvalue(tkgetOpenFile(parent = tt, title = "SPSS Data",filetypes = "{{SPSS Files} {.sav}}"))
               if (name=="") return(" ")
@@ -709,17 +752,13 @@ cGroupsGUI <- function(X){
              if (!exists(".show.haz", envir = .GlobalEnv))  assign(".show.haz","0", envir = .GlobalEnv)
              if (!exists(".show.n", envir = .GlobalEnv))   assign(".show.n","1", envir = .GlobalEnv)
              if (!exists(".type.cat.value", envir = .GlobalEnv))  assign(".type.cat.value","nperc", envir = .GlobalEnv)
-             if (aux==1 & nx>=3 & tclvalue(type.var.valuex)=='factor'){
+             if (aux==1 & nx>=3){
                   stat.mult <- "normal"
                   stat <- "normal"
                   if (exists(".p.trend", envir = .GlobalEnv))    assign(".p.trend" ,.p.trend , envir = .GlobalEnv)
                   if (exists(".p.mult", envir = .GlobalEnv))   assign( ".p.mult" , .p.mult, envir = .GlobalEnv)
              }
-              if (aux==1 & nx==2 & tclvalue(type.var.valuex)=='factor'){
-                  stat <- "normal"
-                  if (exists(".p.overall", envir = .GlobalEnv))    assign(".p.overall" ,.p.overall , envir = .GlobalEnv)
-             }
-              if (tclvalue(type.var.valuex)=='surv'){
+              if (aux==1 & nx==2){
                   stat <- "normal"
                   if (exists(".p.overall", envir = .GlobalEnv))    assign(".p.overall" ,.p.overall , envir = .GlobalEnv)
              }
@@ -729,8 +768,10 @@ cGroupsGUI <- function(X){
              if (exists(".show.n", envir = .GlobalEnv))   assign( ".show.n"  , .show.n , envir = .GlobalEnv)
              if (exists(".type.cat.value", envir = .GlobalEnv))  assign( ".type.cat.value"  , .type.cat.value, envir = .GlobalEnv)
              pos <- as.character(tkwm.geometry(tt))
-             pos <- paste("+",paste(strsplit(pos,"+", fixed=TRUE)[[1]][2:3],collapse="+"),sep="")
-             pos <- paste("220x322", pos, sep="")
+             pos1 <- paste("+",paste(strsplit(pos,"+", fixed=TRUE)[[1]][2:3],collapse="+"),sep="")
+             size1 <- round(as.numeric(strsplit(pos,"x", fixed=TRUE)[[1]][1])/4.3)
+             size2 <- round(as.numeric(strsplit( strsplit(pos,"x", fixed=TRUE)[[1]][2],"+",fixed=TRUE)[[1]][1])/1.3)
+             pos <- paste(size1,"x",size2,pos1,sep="")
              report <- tktoplevel(parent=topframe)
              tktitle(report) <- "Options for report"
              tkwm.resizable(report,0,0)
@@ -824,7 +865,6 @@ cGroupsGUI <- function(X){
               timeto <- tmp.data[,var.name]
               eventto <- as.integer(tmp.data[, var.name2]==event)
               variableF <- Surv(timeto, eventto)
-              label(variableF)<-label(tmp.data[,var.name2])
               ref.y <- 1
           } 
     
@@ -995,4 +1035,3 @@ cGroupsGUI <- function(X){
      tkadd(openRecentMenu,"command",label="Sep: semicolon (;)", command=export2csv.aux2)
      tkadd(fileMenu2,"cascade",label="CSV",menu=openRecentMenu)
 }
-

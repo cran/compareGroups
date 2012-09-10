@@ -29,7 +29,7 @@ export2latex(x, ...)
   
   \item{size}{character indicating the size of the table elements. Possible values are: 'tiny', 'scriptsize', 'footnotesize', 'small', 'normalsize', 'large', 'Large', 'LARGE','huge', 'Huge' or 'same' (partial matching allowed). Default value is 'same' which means that font size of the table is the same as specified in the main LaTeX document.}  
 
-  \item{nmax}{logical, indicating whether to show the maximum number of responses ("n" of a complete, or least-missing, variable) available by group. Default value is TRUE.}
+  \item{nmax}{logical, indicating whether to show the number of subjects with at least one valid value across all row-variables. Default value is TRUE.}
 
   \item{caption}{character specifying the table caption for descriptives and available data table. If which.table='both' the first element of 'caption' will be assigned to descriptives table and the second to available data table. Default value is NULL, which writes 'Summary descriptives table by groups of 'y'' for descriptives table and 'Available data by groups of 'y'' for the available data table. }
 
@@ -50,9 +50,12 @@ export2latex(x, ...)
 
 \note{
 
-  The table is created in Latex language using the longtable environment. Therefore, it is necessary to type \code{\\includepackage{longtable}} in the preamble of the LaTeX main document where the table code is inserted.
+  The table is created in LaTeX language using the longtable environment. Therefore, it is necessary to type \code{\\includepackage{longtable}} in the preamble of the LaTeX main document where the table code is inserted. Also, it it necessary to include the 'multirow' LaTeX package.
+  
+  The way to compute the 'N' shown in the bivariate table header, controlled by 'nmax' argument, has been changed from previous versions (<1.3). In the older versions 'N' was computed as the maximum across the cells withing each column (group) from the 'available data' table ('avail').
 
 }
+
 
 
 \seealso{

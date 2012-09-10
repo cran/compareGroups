@@ -31,6 +31,7 @@ export2latex.createTable<-function(x, file, which.table='descr', size='same', nm
     y.name.label<-gsub("<=","$\\\\leq$",y.name.label)  
     y.name.label<-gsub(">","$>$",y.name.label)
     y.name.label<-gsub("<","$<$",y.name.label)
+    y.name.label<-gsub("\261","$\\\\pm$",y.name.label)
   }  
   
   if (!is.null(caption)){
@@ -88,7 +89,8 @@ export2latex.createTable<-function(x, file, which.table='descr', size='same', nm
     cap<-gsub(">=","$\\\\geq$",cap)
     cap<-gsub("<=","$\\\\leq$",cap)  
     cap<-gsub(">","$>$",cap)
-    cap<-gsub("<","$<$",cap)  
+    cap<-gsub("<","$<$",cap)
+    cap<-gsub("\261","$\\\\pm$",cap)      
   }
   
   out <- list()
@@ -106,7 +108,8 @@ export2latex.createTable<-function(x, file, which.table='descr', size='same', nm
       cc<-gsub(">=","$\\\\geq$",cc)
       cc<-gsub("<=","$\\\\leq$",cc)  
       cc<-gsub(">","$>$",cc)
-      cc<-gsub("<","$<$",cc)  
+      cc<-gsub("<","$<$",cc) 
+      cc<-gsub("\261","$\\\\pm$",cc) 
     }
     nmax<-rownames(table1)[2]==''
     if (nmax)
@@ -121,6 +124,7 @@ export2latex.createTable<-function(x, file, which.table='descr', size='same', nm
     rownames(table1)<-gsub(">","$>$",rownames(table1))
     rownames(table1)<-gsub("<","$<$",rownames(table1))
     rownames(table1)<-sub("^    ","$\\\\qquad$",rownames(table1))
+    rownames(table1)<-gsub("\261","$\\\\pm$",rownames(table1))     
       
     if (!is.null(cc))
       rownames(table1)<-paste("$\\qquad$",rownames(table1))
@@ -130,6 +134,7 @@ export2latex.createTable<-function(x, file, which.table='descr', size='same', nm
       table1<-sub("%","\\\\%",table1)
       table1<-gsub("<","$<$",table1)
       table1<-gsub(">","$>$",table1)
+      table1<-gsub("\261","$\\\\pm$",table1)           
       if (nmax)
         table1[1,!nmax.pos]<-paste("\\multirow{2}{*}{",table1[1,!nmax.pos],"}",sep="")
     }
@@ -217,7 +222,8 @@ export2latex.createTable<-function(x, file, which.table='descr', size='same', nm
     colnames(table2)<-gsub(">=","$\\\\geq$",colnames(table2))
     colnames(table2)<-gsub("<=","$\\\\leq$",colnames(table2))
     colnames(table2)<-gsub(">","$>$",colnames(table2))
-    colnames(table2)<-gsub("<","$<$",colnames(table2))        
+    colnames(table2)<-gsub("<","$<$",colnames(table2))   
+    colnames(table2)<-gsub("\261","$\\\\pm$",colnames(table2))              
     head.loc<-paste(c("l",rep("c",ncol(table2))),collapse="")
     
     if (!is.null(attr(x,"caption")))

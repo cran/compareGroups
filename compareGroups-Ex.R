@@ -91,7 +91,7 @@ flush(stderr()); flush(stdout())
 ### Name: createTable
 ### Title: Table of descriptives by groups: bivariate table
 ### Aliases: createTable print.createTable summary.createTable
-###   print.summary.createTable
+###   print.summary.createTable plot.createTable
 ### Keywords: misc
 
 ### ** Examples
@@ -255,7 +255,7 @@ flush(stderr()); flush(stdout())
 
 ### Name: varinfo
 ### Title: Variable names and labels extraction
-### Aliases: varinfo varinfo.compareGroups
+### Aliases: varinfo varinfo.compareGroups varinfo.createTable
 ### Keywords: utilities
 
 ### ** Examples

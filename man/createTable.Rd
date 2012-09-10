@@ -3,6 +3,7 @@
 \alias{print.createTable}
 \alias{summary.createTable}
 \alias{print.summary.createTable}
+\alias{plot.createTable}
 
 \title{
 Table of descriptives by groups: bivariate table 
@@ -13,8 +14,10 @@ This functions builds a "compact" and "nice" table with the descriptives by grou
 \usage{
 createTable(x, hide = NA, digits = NA, type = NA, show.p.overall = TRUE,
            show.all, show.p.trend, show.p.mul = FALSE, show.n, show.ratio =
-           FALSE, show.descr = TRUE, hide.no = NA, digits.ratio = NA)
+           FALSE, show.descr = TRUE, hide.no = NA, digits.ratio = NA,
+           show.p.ratio = show.ratio, digits.p = 3, sd.type = 1, q.type = c(1, 1))
 \method{print}{createTable}(x, which.table = "descr", nmax = TRUE, ...)
+\method{plot}{createTable}(x, ...)
 }
 
 \arguments{
@@ -44,10 +47,18 @@ createTable(x, hide = NA, digits = NA, type = NA, show.p.overall = TRUE,
   \item{hide.no}{character specifying the name of the level to be hidden for all categorical variables with 2 categories. The result is one row for the variable with only the name displayed and not the category. This is especially useful for yes/no variables. It is ignored for the categorical row-variables with 'hide' argument different from NA. Default value is NA which means that no category is hidden.}
   
   \item{digits.ratio}{The same as 'digits' argument but applied for the Hazard Ratio or Odds Ratio.}
+
+  \item{show.p.ratio}{logical indicating whether p-values corresponding to each Hazard Ratio / Odds Ratio are shown.}
+  
+  \item{digits.p}{integer indicating the number of decimals displayed for all p-values. Default value is 3.}
+  
+  \item{sd.type}{an integer that indicates how standard deviation is shown: 1 - mean (SD), 2 -  mean ± SD.}
+  
+  \item{q.type}{a vector with two integer components. The first component refers to the type of brackets to be displayed for non-normal row-variables (1 - rounded and 2 - squared), while the second refers to the percentile separator (1 - ';', 2 - ',' and 3 - '-'. Default value is c(1, 1).}
   
   \item{which.table}{character indicating which table is printed. Possible values are 'descr', 'avail' or 'both' (partial matching allowed), printing descriptives by groups table, availability data table or both tables, respectively. Default value is 'descr'.}
   
-  \item{nmax}{logical, indicating whether to show the maximum number of responses ("n" of a complete, or least-missing, variable) available by group. Default value is TRUE.}
+  \item{nmax}{logical, indicating whether to show the number of subjects with at least one valid value across all row-variables. Default value is TRUE.}
 
   \item{...}{other arguments passed to \code{\link[base]{print.default}}.}
   
@@ -68,6 +79,8 @@ An object of class 'createTable', which contains a list of 2 matrix:
   
   'update' modifies previous results from 'createTable'.
   
+  'plot' see the method in \code{\link{compareGroups}} function.
+  
   subsetting, '[', can also be applied to 'createTable' objects in the same way as 'compareGroups' objects.
   
   combine by rows, 'rbind', method can be applied to 'createTable' objects, but only if all 'createTable' objects have the same columns. It is useful to distinguish row-variable groups. The resulting object is of class 'rbind.createTable' and 'createTable'.
@@ -77,6 +90,17 @@ An object of class 'createTable', which contains a list of 2 matrix:
   See the vignette for more details.
   
 }
+
+
+\note{
+
+The way to compute the 'N' shown in the bivariate table header, controlled by 'nmax' argument, has been changed from previous versions (<1.3). In the older versions 'N' was computed as the maximum across the cells withing each column (group) from the 'available data' table ('avail').
+
+The p-values corresponding to the OR of a two level row-variable may not me equal to its p.overall p-value. This is because statistical tests are different: the option 'midp.exact' (see \code{\link[epitools]{oddsratio}} for more details) is taken in the first case and Chi-square or Fisher exact test in the second. The same happens when OR for a continuous value is performed: the p-value corresponding to this OR is computed form a logistic regression and therefore may differ from the one computed using a Student-T test or Kruskall Wallis test.
+This discordance may also be present when computing the p-value corresponding to a Hazard Ratio for a categorical two level row-variable: a Wald test or a long-rank test are peformed.
+
+}
+
 
 
 \seealso{

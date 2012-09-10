@@ -3,6 +3,7 @@
     stop("x cannot be of class rbind.createTable")
   cc<-x$call
   hide<-attr(x,"hide")[i]
+  hide<-sapply(hide,function(x) if(is.character(x) && !is.na(x)) paste("'",x,"'",sep="") else x)
   digits<-attr(x,"digits")[i]
   digits.ratio<-attr(x,"digits.ratio")[i]
   hide<-paste("c(",paste(hide,collapse=","),")")

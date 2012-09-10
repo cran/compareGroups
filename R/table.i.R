@@ -1,5 +1,5 @@
 table.i <-
-function(x, hide.i, digits, digits.ratio, type, varname, hide.i.no){
+function(x, hide.i, digits, digits.ratio, type, varname, hide.i.no, digits.p, sd.type, q.type){
 
   method<-attr(x,"method")
 
@@ -14,29 +14,36 @@ function(x, hide.i, digits, digits.ratio, type, varname, hide.i.no){
 
   pvals<-c(x$p.overall,x$p.trend,x$p.mul)
   names(pvals)[1:2]<-c("p.overall","p.trend")
-  pvals<-format2(pvals,3)
+  pvals<-format2(pvals,digits.p)
   pvals<-ifelse(is.na(pvals) | is.nan(pvals),".",pvals)
   N<-x$sam[1]
   or<-attr(x,"OR")
   hr<-attr(x,"HR")
 
   ci <- if(!is.null(or)) or else hr
+  p.ratio <- attr(x,"p.ratio")
+
   if (!is.null(ci)){
     rr <- apply(is.na(ci) & !is.nan(ci),1,any)
     ci <- ifelse(is.nan(ci),".",format2(ci,digits.ratio))
     ci <- t(ci)
     ci <- apply(ci,2,function(vv) paste(vv[1]," [",vv[2],";",vv[3],"]",sep="")) 
     ci[rr]<-"Ref."
-  } 
-  if (is.null(ci))
+  } else  
     ci <- NA
+  if (!is.null(p.ratio)){
+    rr <- is.na(p.ratio) & !is.nan(p.ratio)
+    p.ratio <- ifelse(is.nan(p.ratio),".",format2(p.ratio,digits.p))
+    p.ratio[rr]<-"Ref."
+  }else 
+    p.ratio <- NA
   
   if (method[1]=="no-data"){
     nn<-x$descriptive
     nn<-ifelse(is.nan(nn),".",nn)
     rn<-rownames(nn)
     ci<-"."
-    ans<-c(nn,ci,pvals,N)
+    ans<-c(nn,ci,p.ratio,pvals,N)
     ans<-cbind(ans)
     rownames(ans)[1:length(rn)]<-rn
     rownames(ans)[length(rn)+1]<-"OR"
@@ -90,14 +97,16 @@ function(x, hide.i, digits, digits.ratio, type, varname, hide.i.no){
       ansp<-ansp[,-hide.i,drop=FALSE]
       if (length(ci)>1 || (length(ci)==1 && !is.na(ci)))
         ci <- ci[-hide.i]
+      if (length(p.ratio)>1 || (length(p.ratio)==1 && !is.na(p.ratio)))
+        p.ratio <- p.ratio[-hide.i]        
     }                                
     if (attr(x,"groups")){
       if (inherits(attr(x,"y"),"Surv"))
-        ans<-rbind(ans,HR=ci,ansp)
+        ans<-rbind(ans,HR=ci,p.ratio=p.ratio,ansp)
       else
-        ans<-rbind(ans,OR=ci,ansp)    
+        ans<-rbind(ans,OR=ci,p.ratio=p.ratio,ansp)    
     }else
-      ans<-rbind(ans,OR=ci,ansp)
+      ans<-rbind(ans,OR=ci,p.ratio=p.ratio,ansp)
     ans<-rbind(ans,rep(NA,ncol(ans)))
     ans[nrow(ans),1]<-N
     rownames(ans)[nrow(ans)]<-"N"
@@ -110,7 +119,7 @@ function(x, hide.i, digits, digits.ratio, type, varname, hide.i.no){
     nn<-ifelse(is.na(nn) | is.nan(nn),".",nn)
     ans<-nn
     rn<-rownames(nn)
-    ans<-cbind(c(paste(as.vector(ans),"%",sep=""),OR=ci,pvals,N))
+    ans<-cbind(c(paste(as.vector(ans),"%",sep=""),OR=ci,p.ratio=p.ratio,pvals,N))
     rownames(ans)[1:length(rn)]<-rn
     rownames(ans)[nrow(ans)]<-"N"
     colnames(ans)<-varname 
@@ -119,18 +128,38 @@ function(x, hide.i, digits, digits.ratio, type, varname, hide.i.no){
     nn<-x$descriptive
     nn<-format2(x$descriptive,digits)
     nn<-ifelse(is.na(nn),".",nn)
-    if (method[2]=="normal")
-      ans<-cbind(apply(nn,1,function(y) paste(y[1]," (",y[2],")",sep="")))
-    else
-      ans<-cbind(apply(nn,1,function(y) paste(y[1]," [",y[2],"; ",y[3],"]",sep="")))
+    if (method[2]=="normal"){
+      if (sd.type==1)
+        ans<-cbind(apply(nn,1,function(y) paste(y[1]," (",y[2],")",sep="")))
+      else
+        ans<-cbind(apply(nn,1,function(y) paste(y[1],integerToAscii(177),y[2],sep=" ")))        
+    } else {
+      if (q.type[1]==1){
+        if (q.type[2]==1)
+          ans<-cbind(apply(nn,1,function(y) paste(y[1]," [",y[2],"; ",y[3],"]",sep="")))
+        else 
+          if (q.type[2]==2)
+            ans<-cbind(apply(nn,1,function(y) paste(y[1]," [",y[2],", ",y[3],"]",sep="")))
+          else
+            ans<-cbind(apply(nn,1,function(y) paste(y[1]," [",y[2]," - ",y[3],"]",sep="")))      
+      } else {
+        if (q.type[2]==1)
+          ans<-cbind(apply(nn,1,function(y) paste(y[1]," (",y[2],"; ",y[3],")",sep="")))
+        else 
+          if (q.type[2]==2)
+            ans<-cbind(apply(nn,1,function(y) paste(y[1]," (",y[2],", ",y[3],")",sep="")))
+          else
+            ans<-cbind(apply(nn,1,function(y) paste(y[1]," (",y[2]," - ",y[3],")",sep="")))      
+      }      
+    }  
     rn<-rownames(nn)
     if (attr(x,"groups")){
       if (inherits(attr(x,"y"),"Surv"))
-        ans<-cbind(c(ans,HR=ci,pvals,N))
+        ans<-cbind(c(ans,HR=ci,p.ratio=p.ratio,pvals,N))
       else
-        ans<-cbind(c(ans,OR=ci,pvals,N))
+        ans<-cbind(c(ans,OR=ci,p.ratio=p.ratio,pvals,N))
     }else
-      ans<-cbind(c(ans,OR=ci,pvals,N))  
+      ans<-cbind(c(ans,OR=ci,p.ratio=p.ratio,pvals,N))  
     rownames(ans)[1:length(rn)]<-rn
     rownames(ans)[nrow(ans)]<-"N"
     colnames(ans)<-varname

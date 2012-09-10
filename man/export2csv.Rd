@@ -21,10 +21,17 @@ export2csv(x, file, which.table="descr", sep=",", nmax = TRUE, ...)
 
   \item{sep}{character. The variable separator. If 'sep' is set to ',' it uses \code{\link[utils]{write.csv}}, and when is set to';' it uses \code{\link[utils]{write.csv2}}. Default value is ','.}
   
-  \item{nmax}{logical, indicating whether to show the maximum number of responses ("n" of a complete, or least-missing, variable) available by group. Default value is TRUE.}
+  \item{nmax}{logical, indicating whether to show the number of subjects with at least one valid value across all row-variables. Default value is TRUE.}
              
   \item{\ldots}{other arguments passed to \code{\link[utils]{write.table}}.}
   
+}
+
+
+\note{
+
+The way to compute the 'N' shown in the bivariate table header, controlled by 'nmax' argument, has been changed from previous versions (<1.3). In the older versions 'N' was computed as the maximum across the cells withing each column (group) from the 'available data' table ('avail').
+
 }
 
 
