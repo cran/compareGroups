@@ -87,18 +87,19 @@ cGroupsGUI <- function(X){
             }
          return(mat)
       }
-      
-  #################################    
+      fam <- "comic"
+      size <- 10
+      fontype <- tkfont.create(family=fam,size=size)
       tt <- tktoplevel()
       tktitle(tt) <- paste("Compare Groups : ",datatemp.name,sep="")
       tkwm.resizable(tt,0,0)
       topframe <- tkframe(tt)
       tkgrid(topframe, column=0, row=0, sticky="nwes", ipadx=3,ipady=3,padx=12,pady=20)
       
-      frame1 <- tkwidget(topframe, "labelframe", text ="Variables", fg="blue",padx=10,pady=10)
+      frame1 <- tkwidget(topframe, "labelframe", text ="Variables", fg="blue",padx=10,pady=10, font=fontype)
       var.scr  <- tkscrollbar(frame1, repeatinterval=5,command=function(...)tkyview(tlist.var,...))
       tlist.var <- tklistbox(frame1,height=5,selectmode="extended", yscrollcommand=function(...)tkset(var.scr,...),
-                    background="white",exportselection=FALSE, height =21, width =10)
+                    background="white",exportselection=FALSE, height =22, width =10, font=fontype)
       for (i in 1:nrow(matrix.info)){
           tkinsert(tlist.var,"end",matrix.info[i,1])
       }
@@ -107,11 +108,7 @@ cGroupsGUI <- function(X){
       tkgrid.configure(var.scr,sticky="nsw")
       tkgrid(frame1, padx=5,pady=5, row=0, column=0,rowspan=16,columnspan=1,sticky="ns")
       tk2tip(tlist.var,"List of variables in data frame")
-      
-      
-    #### Enter frame 2
-    
-      frame2 <- tkwidget(topframe, "labelframe", text ="Factor to report", fg="blue")
+      frame2 <- tkwidget(topframe, "labelframe", text ="Factor to report", fg="blue", font=fontype)
       disable1 <- function(){
         tk2state.set(tlist.factor.selection, state='disabled')
         tk2state.set(tlist.timeto.selection, state='disabled')
@@ -149,8 +146,8 @@ cGroupsGUI <- function(X){
     tkconfigure(type.var1, variable = type.var.valuex, value = "none", command = disable1)
     tkconfigure(type.var2, variable = type.var.valuex, value = "factor", command = disable2)
     tkconfigure(type.var3, variable = type.var.valuex, value = "surv", command = disable3)
-    tkgrid(type.var1, tklabel(frame2,text="None"), sticky="w")
-    tkgrid(type.var2, tklabel(frame2,text="Factor"), sticky="w")
+    tkgrid(type.var1, tklabel(frame2,text="None", font=fontype), sticky="w")
+    tkgrid(type.var2, tklabel(frame2,text="Factor", font=fontype), sticky="w")
       select.factor <- function(){
            var.name <- as.numeric(tkcurselection(tlist.var))
            if(length(var.name)==0) return(tkmessageBox(message = "No factor selected", icon = "info", type="ok"))
@@ -170,16 +167,16 @@ cGroupsGUI <- function(X){
                  tkmessageBox(message = "Select only one categorical variable", icon = "info", type="ok")
            }
       }
-    tlist.factor.selection <- tklistbox(frame2, height=1, width=18, selectmode="single",background= "white", exportselection=FALSE,state='normal')
+    tlist.factor.selection <- tklistbox(frame2, height=1, width=18, selectmode="single",background= "white", exportselection=FALSE,state='normal', font=fontype)
     select.factor1 <- tkbutton(frame2,text="u",command = select.factor ,height=1, width=2, font="{Wingdings 3} {8}" )
     tkgrid(select.factor1,column=2, padx=5,pady=5,sticky="e")
     tkgrid(tlist.factor.selection,column=3,row=2,padx=5,pady=5,sticky="w")
     entry.factor <- ttkcombobox(frame2)
     tkconfigure(entry.factor,value=c(" "),state="readonly",text=" ")
     tkgrid(entry.factor,column=5,row=2,padx=5,pady=5,sticky="w", columnspan=4)
-    tkgrid(tklabel(frame2,text="Reference"),column=5,row=1)
-    tkgrid(tklabel(frame2,text="Variable"),column=3,row=1)
-    tkgrid(type.var3, tklabel(frame2,text="Survival"), sticky="w")
+    tkgrid(tklabel(frame2,text="Reference", font=fontype),column=5,row=1)
+    tkgrid(tklabel(frame2,text="Variable", font=fontype),column=3,row=1)
+    tkgrid(type.var3, tklabel(frame2,text="Survival", font=fontype), sticky="w")
     select.timeto <- function(){
            var.name <- as.numeric(tkcurselection(tlist.var))
            if(length(var.name)==0) return(tkmessageBox(message = "No 'time to' selected", icon = "info", type="ok"))
@@ -212,11 +209,11 @@ cGroupsGUI <- function(X){
                  tkmessageBox(message = "Select only one categorical variable", icon = "info", type="ok")
            }
     } 
-    tlist.timeto.selection <- tklistbox(frame2, height=1, width=18, selectmode="single",background= "white", exportselection=FALSE,state='normal')
+    tlist.timeto.selection <- tklistbox(frame2, height=1, width=18, selectmode="single",background= "white", exportselection=FALSE,state='normal', font=fontype)
     select.timeto1 <- tkbutton(frame2,text="u",command = select.timeto ,height=1, width=2, font="{Wingdings 3} {8}" )
     tkgrid(select.timeto1,column=2,padx=5,pady=5,sticky="e")
     tkgrid(tlist.timeto.selection,column=3,row=4,padx=5,pady=5,sticky="w")
-    tlist.status.selection <- tklistbox(frame2, height=1, width=18, selectmode="single",background= "white", exportselection=FALSE,state='normal')
+    tlist.status.selection <- tklistbox(frame2, height=1, width=18, selectmode="single",background= "white", exportselection=FALSE,state='normal', font=fontype)
     select.status1 <- tkbutton(frame2,text="u",command = select.status ,height=1, width=2, font="{Wingdings 3} {8}" )
     tkgrid(select.status1,column=4,row=4, padx=5,pady=5,sticky="e")
     tkgrid(tlist.status.selection,column=5,row=4,padx=5,pady=5,sticky="w")
@@ -224,9 +221,9 @@ cGroupsGUI <- function(X){
     entry4 <- ttkcombobox(frame2)
     tkconfigure(entry4,value=c(" "),state="readonly",text=" ")
     tkgrid(entry4,column=7,row=4,padx=5,pady=5,sticky="w")
-    tkgrid(tklabel(frame2,text="Time to event"),column=3,row=3)
-    tkgrid(tklabel(frame2,text="Status"),column=5,row=3)
-    tkgrid(tklabel(frame2,text="Event"),column=7,row=3)
+    tkgrid(tklabel(frame2,text="Time to event", font=fontype),column=3,row=3)
+    tkgrid(tklabel(frame2,text="Status", font=fontype),column=5,row=3)
+    tkgrid(tklabel(frame2,text="Event", font=fontype),column=7,row=3)
     plots.factor <- function(){
           var.name <- as.character(tkget(tlist.factor.selection,0,"end"))
           if( length(var.name)==0) return(tkmessageBox(message = "No factor selected", icon = "info", type="ok"))
@@ -254,13 +251,9 @@ cGroupsGUI <- function(X){
       if (tclvalue(type.var.valuex)=='factor')  plots.factor()
       if (tclvalue(type.var.valuex)=='surv')  plots.factor.uni()
     } 
-    factor.plot <- tkbutton(frame2,text="Plot",command = plot.uni.surv ,height=1, width=10)
+    factor.plot <- tkbutton(frame2,text="Plot",command = plot.uni.surv ,height=1, width=10, font=fontype)
     tkgrid(factor.plot,row=2,column=8,padx=5,pady=5)
     tkgrid(frame2,column=3,columnspan=5, rowspan=6, row=0,padx=5,pady=5,sticky="nw")
-    
-    
-    
-    #### Enter frame 3
     tk2state.set(tlist.factor.selection, state='disabled')
     tk2state.set(tlist.timeto.selection, state='disabled')
     tk2state.set(tlist.status.selection, state='disabled')
@@ -271,28 +264,23 @@ cGroupsGUI <- function(X){
     tk2state.set(select.factor1, state='disabled')
     matrix.report <- matrix.info
       matrix.ini <- ""
-      frame3 <- tkwidget(topframe, "labelframe", text ="Variable to report", fg="blue",padx=5,pady=5)
+      frame3 <- tkwidget(topframe, "labelframe", text ="Variable to report", fg="blue",padx=5,pady=5, font=fontype)
       var.scry  <- tkscrollbar(frame3, repeatinterval=5,command=function(...)tkyview(report.list ,...))
       var.scrx  <- tkscrollbar(frame3, orient="horizontal",command=function(...)tkxview(report.list ,...))
-      report.list <- tk2mclistbox(frame3, width = 90, height=10,resizablecolumns = TRUE,selectmode="extended",
+      report.list <- tk2mclistbox(frame3, width = 85, height=10,resizablecolumns = TRUE,selectmode="extended",labelfont=paste("{",fam,"} {",size,"}",sep=""),
                                   yscrollcommand=function(...)tkset(var.scry,...),
                                   xscrollcommand=function(...)tkset(var.scrx,...))
-      tk2column(report.list , "add", "var", label = "Name", width = 25)
-      tk2column(report.list , "add", "type",label = "Type", width = 13)
-      tk2column(report.list , "add", "dig", label = "Digits", width = 13)
-      tk2column(report.list , "add", "hid", label = "Hide (Ref.)", width = 13)
-      tk2column(report.list , "add", "sub", label = "Subset", width = 20)
-      tk2column(report.list , "add", "lab", label = "Label", width = 100)
+      tk2column(report.list , "add", "var", label = "Name", width = 25, font=fontype)
+      tk2column(report.list , "add", "type",label = "Type", width = 13, font=fontype)
+      tk2column(report.list , "add", "dig", label = "Digits", width = 13, font=fontype)
+      tk2column(report.list , "add", "hid", label = "Hide (Ref.)", width = 13, font=fontype)
+      tk2column(report.list , "add", "sub", label = "Subset", width = 20, font=fontype)
+      tk2column(report.list , "add", "lab", label = "Label", width = 100, font=fontype)
       tkgrid(report.list,var.scry)
       tkgrid(report.list,var.scrx)
       tkgrid.configure(var.scry,sticky="nse")
       tkgrid.configure(var.scrx,sticky="sew")
       tkgrid(frame3,column=3,columnspan=8, rowspan=9, row=7,padx=5,pady=5,sticky="new")
-
-
-      
- #### Enter frame 4     
-      
     insert.var <- function(){
           var.name <- as.numeric(tkcurselection(tlist.var))
           if(length(var.name)==0) tkmessageBox(message = "No variable selected", icon = "info", type="ok")
@@ -327,10 +315,10 @@ cGroupsGUI <- function(X){
       exclude.report.var <- tkbutton(topframe,text="t",command =exclude.var,height=1, width=2, font="{Wingdings 3} {8}" )
       tkbind(report.list , select.report.var)
       tkgrid(exclude.report.var,column=2,row=12,padx=5,padx=10,sticky="n")
-      frame4 <- tkwidget(topframe, "labelframe", text ="Global subset", fg="blue",padx=5,pady=5)
+      frame4 <- tkwidget(topframe, "labelframe", text ="Global subset", fg="blue",padx=5,pady=5, font=fontype)
       subset.glob <- tclVar("")
       subset.glob.sel <- tclvalue(subset.glob)
-      text.subset.glob <- tkentry(frame4, width= 30, textvariable = subset.glob)
+      text.subset.glob <- tkentry(frame4, width= 30, textvariable = subset.glob, font=fontype)
       tkbind(text.subset.glob)
       assign(".global.subset.selection","", envir = .GlobalEnv)
       send.subset.glob <- function(){
@@ -347,19 +335,15 @@ cGroupsGUI <- function(X){
       }
       tkgrid.configure(text.subset.glob)
       tkbind(send.subset.glob)
-      subset.but.glob <-tkbutton(frame4,text="Apply subset",command=send.subset.glob, width=15)
+      subset.but.glob <-tkbutton(frame4,text="Apply subset",command=send.subset.glob, width=15, font=fontype)
       tkbind(subset.but.glob, "<Return>",send.subset.glob)
       tkgrid(frame4,column=3,columnspan=4, rowspan=2, row=17,padx=5,pady=5,sticky="w")
       tkgrid(subset.but.glob, column=9,columnspan=3, row=0,rowspan=2,sticky="e")
       tk2tip(frame4, "Subset for dataframe")
-
-
- #### Enter frame 5        
- 
-      frame5 <- tkwidget(topframe, "labelframe", text ="'Variable' subset", fg="blue",padx=5,pady=5)
+      frame5 <- tkwidget(topframe, "labelframe", text ="'Variable' subset", fg="blue",padx=5,pady=5, font=fontype)
       subset.part <- tclVar("")
       subset.part.sel <- tclvalue(subset.part)
-      text.subset.part <- tkentry(frame5, width= 30,textvariable = subset.part)
+      text.subset.part <- tkentry(frame5, width= 30,textvariable = subset.part, font=fontype)
       tkbind(text.subset.part)
       send.subset.part <- function(){
           var.name <- (as.numeric(tkcurselection(report.list)))+1
@@ -383,16 +367,12 @@ cGroupsGUI <- function(X){
       }
       tkgrid.configure(text.subset.part)
       tkbind(send.subset.part)
-      subset.but.part <-tkbutton(frame5,text="Apply subset",command=send.subset.part, width=15)
+      subset.but.part <-tkbutton(frame5,text="Apply subset",command=send.subset.part, width=15, font=fontype)
       tkbind(subset.but.part, "<Return>",send.subset.part)
       tkgrid(frame5,column=5,columnspan=3, rowspan=2, row=17,padx=5,pady=5,sticky="e")
       tkgrid(subset.but.part,column=5,columnspan=3,row=0,rowspan=2)
       tk2tip(frame5, "Subset for a selected report variable")
-      
-      
- #### Enter frame 6
-      
-      frame6 <- tkwidget(topframe, "labelframe", text ="Method", fg="blue",padx=5,pady=5)
+      frame6 <- tkwidget(topframe, "labelframe", text ="Method", fg="blue",padx=5,pady=5, font=fontype)
       type.var.function <- function(){
           var.name <- (as.numeric(tkcurselection(report.list)))+1
           if( length(var.name)==0) return(tkmessageBox(message = "No variable selected", icon = "info", type="ok"))
@@ -443,10 +423,10 @@ cGroupsGUI <- function(X){
       tkconfigure(type.var2, variable = type.var.value, value = "non.param", command = type.var.function)
       tkconfigure(type.var3, variable = type.var.value, value = "yes.param", command = type.var.function)
       tkconfigure(type.var4, variable = type.var.value, value = "test.param", command = type.var.function)
-      tkgrid(tklabel(frame6,text="Categorical"),type.var1)
-      tkgrid(tklabel(frame6,text="Non Normal"),type.var2)
-      tkgrid(tklabel(frame6,text="Normal"),type.var3)
-      tkgrid(tklabel(frame6,text="Test (S-W)"),type.var4)
+      tkgrid(tklabel(frame6,text="Categorical", font=fontype),type.var1)
+      tkgrid(tklabel(frame6,text="Non Normal", font=fontype),type.var2)
+      tkgrid(tklabel(frame6,text="Normal", font=fontype),type.var3)
+      tkgrid(tklabel(frame6,text="Test (S-W)", font=fontype),type.var4)
       swtest <- tclVar("0.05")
       tspin <- tk2spinbox(frame6, from = 0, to = 1, increment = 0.01,state="readonly", width=4,readonlybackground="white",textvariable=swtest,font="-size 8")
       tkgrid(tspin,row=4,column=0,sticky="w")
@@ -456,12 +436,7 @@ cGroupsGUI <- function(X){
       tk2tip(tspin, "Significance level for Shapiro-Wilks test")
       tk2tip(frame6, "Select method for analyze each variable")
       tkgrid(frame6,column=12, rowspan=6, row=0,padx=5,pady=5,sticky="n")
-      
-      
-      
-### Enter frame 8      
-      
-      frame8 <- tkwidget(topframe, "labelframe", text ="Plots", fg="blue",padx=5,pady=5)
+      frame8 <- tkwidget(topframe, "labelframe", text ="Plots", fg="blue",padx=5,pady=5,font=fontype)
       plots.uni <- function(){
           var.name <- (as.numeric(tkcurselection(report.list)))+1
          	if( length(var.name)==0) return(tkmessageBox(message = "No variable selected", icon = "info", type="ok"))
@@ -537,19 +512,15 @@ cGroupsGUI <- function(X){
             }
          }
       }
-      uni.plot <- tkbutton(frame8,text="Univariate",command = plots.uni,height=1, width=10)
-      bi.plot <- tkbutton(frame8,text="Bivariate",command = plots.bi, height=1, width=10)
+      uni.plot <- tkbutton(frame8,text="Univariate",command = plots.uni,height=1, width=10, font=fontype)
+      bi.plot <- tkbutton(frame8,text="Bivariate",command = plots.bi, height=1, width=10, font=fontype)
       tkbind(uni.plot, plots.uni)
       tkbind(bi.plot, plots.bi)
       tkgrid(uni.plot)
       tkgrid(bi.plot)
       tkgrid(frame8,column=12, row=7, rowspan=3, padx=5,pady=5,sticky="n")
       tk2tip(frame8, "Plot the selected variable/s") 
-      
-      
-      
-### Enter frame 7
-      frame7 <- tkwidget(topframe, "labelframe", text ="Decimals digits", fg="blue",padx=5,pady=5)
+      frame7 <- tkwidget(topframe, "labelframe", text ="Decimals digits", fg="blue",padx=5,pady=5, font=fontype)
       decimals.function <- function(){
           var.name <- (as.numeric(tkcurselection(report.list)))+1
          	if( length(var.name)==0) return(tkmessageBox(message = "No variable selected", icon = "info", type="ok"))
@@ -574,18 +545,13 @@ cGroupsGUI <- function(X){
       tkconfigure(dec2, variable = dec.value, value = "2dec", command = decimals.function)
       tkconfigure(dec3, variable = dec.value, value = "3dec", command = decimals.function)
       tkconfigure(dec4, variable = dec.value, value = "defdec", command = decimals.function)
-      tkgrid(tklabel(frame7,text="1 dec"),dec1)
-      tkgrid(tklabel(frame7,text="2 dec"),dec2)
-      tkgrid(tklabel(frame7,text="3 dec"),dec3)
-      tkgrid(tklabel(frame7,text="Default dec"),dec4)
+      tkgrid(tklabel(frame7,text="1 dec", font=fontype),dec1)
+      tkgrid(tklabel(frame7,text="2 dec", font=fontype),dec2)
+      tkgrid(tklabel(frame7,text="3 dec", font=fontype),dec3)
+      tkgrid(tklabel(frame7,text="Default dec", font=fontype),dec4)
       tk2tip(frame7, "Number of decimals in report")
       tkgrid(frame7,column=12,row=10,padx=5,pady=5,sticky="n",rowspan=5)
-      
-      
-      
-      
-### Enter frame 9
-      frame9 <- tkwidget(topframe, "labelframe", text ="Hide (Ref.) category", fg="blue",padx=5,pady=5)
+      frame9 <- tkwidget(topframe, "labelframe", text ="Hide (Ref.) category", fg="blue",padx=5,pady=5, font=fontype)
       hide.function <- function(){
               var.name <- (as.numeric(tkcurselection(report.list)))+1
              	if( length(var.name)==0) return(tkmessageBox(message = "No variable selected", icon = "info", type="ok"))
@@ -611,15 +577,11 @@ cGroupsGUI <- function(X){
       tkconfigure(hide1, variable = hide.value, value = "1cat", command = hide.function)
       tkconfigure(hide2, variable = hide.value, value = "2cat", command = hide.function)
       tkconfigure(hide3, variable = hide.value, value = "nocat", command = hide.function)
-      tkgrid(tklabel(frame9,text="First"),hide1)
-      tkgrid(tklabel(frame9,text="Last"),hide2)
-      tkgrid(tklabel(frame9,text="No category"),hide3)
+      tkgrid(tklabel(frame9,text="First", font=fontype),hide1)
+      tkgrid(tklabel(frame9,text="Last", font=fontype),hide2)
+      tkgrid(tklabel(frame9,text="No category", font=fontype),hide3)
       tk2tip(frame9, "Hide a category in categorical variable")
       tkgrid(frame9,column=12,row=15,padx=5,pady=5,rowspan=4)  
-      
-      
-      
-#### Enter menu      
       spssLoad <- function(){
               name <- tclvalue(tkgetOpenFile(parent = tt, title = "SPSS Data",filetypes = "{{SPSS Files} {.sav}}"))
               if (name=="") return(" ")
@@ -653,17 +615,17 @@ cGroupsGUI <- function(X){
         tktitle(special) <- "Dataframes in Workspace"
         pos <- as.character(tkwm.geometry(tt))
         pos <- paste("+",paste(strsplit(pos,"+", fixed=TRUE)[[1]][2:3],collapse="+"),sep="")
-        pos <- paste("259x177", pos, sep="")
+        pos <- paste("238x195", pos, sep="")
         tkwm.resizable(special,0,0)
         tkwm.geometry(special,pos)
         tkgrab(special)
         topspecial <- tkframe(special)
         tkfocus(special)
-        tkgrid(topspecial, column=0, row=0, sticky="nwes", ipadx=3,ipady=3,padx=40,pady=15)
+        tkgrid(topspecial, column=0, row=0, sticky="nwes", ipadx=3,ipady=3,padx=20,pady=15)
         frame0 <- tkwidget(topspecial, "labelframe", text ="", fg="blue",padx=10,pady=10)
         var.scr0  <- tkscrollbar(frame0, repeatinterval=5,command=function(...)tkyview(tlist.var0,...))
         tlist.var0 <- tklistbox(frame0,height=5,selectmode="single", yscrollcommand=function(...)tkset(var.scr0,...),
-                    background="white",exportselection=FALSE, height =6, width =20)
+                    background="white",exportselection=FALSE, height =6, width =20, font=fontype)
         for (i in 1:length(num)){
              tkinsert(tlist.var0,"end",names.data[i])
         }
@@ -683,9 +645,9 @@ cGroupsGUI <- function(X){
       cancel.rdata <- function(){
           tkdestroy(special)
       }
-      selection <- tkbutton(frame0,text="Load",command = select.rdata, height=1, width=8,fg='blue' )
+      selection <- tkbutton(frame0,text="Load",command = select.rdata, height=1, width=8,fg='blue', font=fontype)
       tkgrid(selection,sticky="se",row=2)
-      cancel <- tkbutton(frame0,text="Cancel",command = cancel.rdata, height=1, width=8,fg='red' )
+      cancel <- tkbutton(frame0,text="Cancel",command = cancel.rdata, height=1, width=8,fg='red', font=fontype)
       tkgrid(cancel,sticky="sw",row=2)
       }
       RData <- function(){
@@ -769,8 +731,8 @@ cGroupsGUI <- function(X){
              if (exists(".type.cat.value", envir = .GlobalEnv))  assign( ".type.cat.value"  , .type.cat.value, envir = .GlobalEnv)
              pos <- as.character(tkwm.geometry(tt))
              pos1 <- paste("+",paste(strsplit(pos,"+", fixed=TRUE)[[1]][2:3],collapse="+"),sep="")
-             size1 <- round(as.numeric(strsplit(pos,"x", fixed=TRUE)[[1]][1])/4.3)
-             size2 <- round(as.numeric(strsplit( strsplit(pos,"x", fixed=TRUE)[[1]][2],"+",fixed=TRUE)[[1]][1])/1.3)
+             size1 <- round(as.numeric(strsplit(pos,"x", fixed=TRUE)[[1]][1])/4.5)
+             size2 <- round(as.numeric(strsplit( strsplit(pos,"x", fixed=TRUE)[[1]][2],"+",fixed=TRUE)[[1]][1])/1.4)
              pos <- paste(size1,"x",size2,pos1,sep="")
              report <- tktoplevel(parent=topframe)
              tktitle(report) <- "Options for report"
@@ -790,26 +752,26 @@ cGroupsGUI <- function(X){
              tkconfigure(results.show,variable=results.value, state= stat.mult)
              tkconfigure(results.show2,variable=results.value2, state= stat.mult)
              tkconfigure(results.show3,variable=results.value3, state=stat)
-             tkgrid(tklabel(topreportframe,text="P-values in report",fg="blue"))
-             tkgrid(tklabel(topreportframe,text="P overall"),results.show3)
-             tkgrid(tklabel(topreportframe,text="P trend"),results.show)
-             tkgrid(tklabel(topreportframe,text="Multiple comparisons"),results.show2)
+             tkgrid(tklabel(topreportframe,text="P-values in report",fg="blue", font=fontype))
+             tkgrid(tklabel(topreportframe,text="P overall", font=fontype),results.show3)
+             tkgrid(tklabel(topreportframe,text="P trend", font=fontype),results.show)
+             tkgrid(tklabel(topreportframe,text="Multiple comparisons", font=fontype),results.show2)
              results.n <- tkcheckbutton(topreportframe)
              results.n.value <- tclVar(.show.n)
              tkconfigure(results.n,variable=results.n.value)
-             tkgrid(tklabel(topreportframe,text="Show N in each variable",fg="blue"),results.n, sticky="nw")
+             tkgrid(tklabel(topreportframe,text="Show N in each variable",fg="blue", font=fontype),results.n, sticky="nw")
              results.all <- tkcheckbutton(topreportframe)
              results.value.all <- tclVar(.show.all)
              tkconfigure(results.all ,variable=results.value.all)
-             tkgrid(tklabel(topreportframe,text="Show 'ALL' column",fg="blue"),results.all, sticky="nw")
+             tkgrid(tklabel(topreportframe,text="Show 'ALL' column",fg="blue", font=fontype),results.all, sticky="nw")
              results.desc <- tkcheckbutton(topreportframe)
              results.value.desc <- tclVar(.show.desc)
              tkconfigure(results.desc ,variable=results.value.desc)
-             tkgrid(tklabel(topreportframe,text="Show descriptives",fg="blue"),results.desc, sticky="nw")
+             tkgrid(tklabel(topreportframe,text="Show descriptives",fg="blue", font=fontype),results.desc, sticky="nw")
              results.haz <- tkcheckbutton(topreportframe)
              results.value.haz <- tclVar(.show.haz)
              tkconfigure(results.haz ,variable=results.value.haz)
-             tkgrid(tklabel(topreportframe,text="Show odds/hazard ratio",fg="blue"),results.haz, sticky="nw")
+             tkgrid(tklabel(topreportframe,text="Show odds/hazard ratio",fg="blue", font=fontype),results.haz, sticky="nw")
              type.cat1 <- tkradiobutton(topreportframe)
              type.cat2 <- tkradiobutton(topreportframe)
              type.cat3 <- tkradiobutton(topreportframe)
@@ -817,11 +779,11 @@ cGroupsGUI <- function(X){
              tkconfigure(type.cat1, variable = type.cat.valuex, value = "nperc", command = I)
              tkconfigure(type.cat2, variable = type.cat.valuex, value = "perc", command = I)
              tkconfigure(type.cat3, variable = type.cat.valuex, value = "nsample", command = I)
-             tkgrid(tklabel(topreportframe,text="Type for categorical",fg="blue"), sticky="nw")
-             tkgrid(tklabel(topreportframe,text="n (%)"),type.cat1)
-             tkgrid(tklabel(topreportframe,text="(%)"),type.cat2)
-             tkgrid(tklabel(topreportframe,text="n"),type.cat3)
-             tkgrid(tklabel(topreportframe,text="",fg="blue"),results.all, sticky="nw")
+             tkgrid(tklabel(topreportframe,text="Type for categorical",fg="blue", font=fontype), sticky="nw")
+             tkgrid(tklabel(topreportframe,text="n (%)", font=fontype),type.cat1)
+             tkgrid(tklabel(topreportframe,text="(%)", font=fontype),type.cat2)
+             tkgrid(tklabel(topreportframe,text="n", font=fontype),type.cat3)
+             tkgrid(tklabel(topreportframe,text="",fg="blue", font=fontype),results.all, sticky="nw")
                  accept.fun <- function(){
                   assign(".p.overall" ,tclvalue(results.value3) , envir = .GlobalEnv)
                   assign(".p.trend" ,tclvalue(results.value) , envir = .GlobalEnv)
@@ -836,8 +798,8 @@ cGroupsGUI <- function(X){
             cancel.fun <- function(){
                 tkdestroy(report)
             }
-            accept <- tkbutton(topreportframe,text="Accept",command = accept.fun, height=1, width=8,fg='blue')
-            cancel <- tkbutton(topreportframe,text="Cancel",command = cancel.fun , height=1, width=8,fg='red')
+            accept <- tkbutton(topreportframe,text="Accept",command = accept.fun, height=1, width=8,fg='blue', font=fontype)
+            cancel <- tkbutton(topreportframe,text="Cancel",command = cancel.fun , height=1, width=8,fg='red', font=fontype)
             tkgrid(cancel,row=12,column=0,sticky="w")
             tkgrid(accept,row=12,column=0,sticky="e")
             tkgrid(topreportframe, padx=25,pady=25, columnspan=8)
@@ -1015,7 +977,7 @@ cGroupsGUI <- function(X){
      topMenu <- tkmenu(tt)
      tkconfigure(tt,menu=topMenu)
      fileMenu <- tkmenu(topMenu,tearoff=FALSE)
-     tkadd(topMenu,"cascade",label="Load File",menu=fileMenu)
+     tkadd(topMenu,"cascade",label="Load File",menu=fileMenu, font=fontype)
      tkadd(fileMenu,"command",label="SPSS",command=spssLoad)
      tkadd(fileMenu,"command",label="Rdata",command=RData)
      tkadd(fileMenu,"command",label="Workspace",command=RWspace)

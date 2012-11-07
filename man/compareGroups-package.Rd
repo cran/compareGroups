@@ -13,7 +13,7 @@ A package which quickly and efficiently generates descriptives by groups (bivari
 Package: \tab compareGroups\cr
 Type: \tab Package\cr
 Version: \tab 1.0\cr
-Date: \tab 2011-10-04\cr
+Date: \tab 2012-11-07\cr
 License: \tab GPL version 2 or newer\cr
 LazyLoad: \tab yes\cr
 }
