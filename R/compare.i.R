@@ -12,17 +12,22 @@ function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, 
     x <- as.factor(x)
   }    
 
+  xlong <- x  
+  ylong <- y
+
   if (!is.na(selec.i)){
     select.eval<-try(eval(parse(text=paste("with(Xext,",selec.i,")",sep=""))),silent=TRUE)
     if (inherits(select.eval,"try-error"))
       select.eval<-eval(parse(text=selec.i),envir=.GlobalEnv)  
     x <- x[select.eval]
-    if (!is.null(y))
+    xlong[!select.eval] <- NA
+    xlong[is.na(select.eval)] <- NA  
+    if (!is.null(y)){
       y <- y[select.eval]
+      ylong[!select.eval] <- NA
+      ylong[is.na(select.eval)] <- NA
+    }
   }
-
-  xlong <- x  
-  ylong <- y
   
   if (inherits(ylong,"Surv")) 
     ylong<-ylong[,2]

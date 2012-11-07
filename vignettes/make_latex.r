@@ -18,4 +18,6 @@ file.remove("compareGroups_vignette.aux")
 file.remove("compareGroups_vignette.blg")
 
 
+tool::compactPDF("C:/programs/Dropbox/CompareGroups/package/compareGroups_without_odfWeave/compareGroups/vignettes",gs_quality = "ebook")
+
 shell.exec("compareGroups_vignette.pdf")

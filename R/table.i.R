@@ -132,24 +132,24 @@ function(x, hide.i, digits, digits.ratio, type, varname, hide.i.no, digits.p, sd
       if (sd.type==1)
         ans<-cbind(apply(nn,1,function(y) paste(y[1]," (",y[2],")",sep="")))
       else
-        ans<-cbind(apply(nn,1,function(y) paste(y[1],integerToAscii(177),y[2],sep=" ")))        
+        ans<-cbind(apply(nn,1,function(y) paste(y[1],integerToAscii(177),y[2],sep="")))        
     } else {
       if (q.type[1]==1){
         if (q.type[2]==1)
-          ans<-cbind(apply(nn,1,function(y) paste(y[1]," [",y[2],"; ",y[3],"]",sep="")))
+          ans<-cbind(apply(nn,1,function(y) paste(y[1]," [",y[2],";",y[3],"]",sep="")))
         else 
           if (q.type[2]==2)
-            ans<-cbind(apply(nn,1,function(y) paste(y[1]," [",y[2],", ",y[3],"]",sep="")))
+            ans<-cbind(apply(nn,1,function(y) paste(y[1]," [",y[2],",",y[3],"]",sep="")))
           else
-            ans<-cbind(apply(nn,1,function(y) paste(y[1]," [",y[2]," - ",y[3],"]",sep="")))      
+            ans<-cbind(apply(nn,1,function(y) paste(y[1]," [",y[2],"-",y[3],"]",sep="")))      
       } else {
         if (q.type[2]==1)
-          ans<-cbind(apply(nn,1,function(y) paste(y[1]," (",y[2],"; ",y[3],")",sep="")))
+          ans<-cbind(apply(nn,1,function(y) paste(y[1]," (",y[2],";",y[3],")",sep="")))
         else 
           if (q.type[2]==2)
-            ans<-cbind(apply(nn,1,function(y) paste(y[1]," (",y[2],", ",y[3],")",sep="")))
+            ans<-cbind(apply(nn,1,function(y) paste(y[1]," (",y[2],",",y[3],")",sep="")))
           else
-            ans<-cbind(apply(nn,1,function(y) paste(y[1]," (",y[2]," - ",y[3],")",sep="")))      
+            ans<-cbind(apply(nn,1,function(y) paste(y[1]," (",y[2],"-",y[3],")",sep="")))      
       }      
     }  
     rn<-rownames(nn)

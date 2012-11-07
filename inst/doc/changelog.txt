@@ -1,3 +1,8 @@
+v1.4
+2012-11-06
+-. an internal bug fixed when specifying selec for a particular row-varible in building Xlong attribute for compareGroups object.
+-. cGroupsGUI: improved, more compact.
+
 v1.3
 2012-07-19
 -. createTable objects can be plotted and it is also possible to apply varinfo function on them.
