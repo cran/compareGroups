@@ -7,6 +7,12 @@ print.cbind.createTable <- function(x, which.table="descr", nmax=TRUE, ...)
   ww <- charmatch(which.table, c("descr","avail","both"))
   if (is.na(ww))
     stop(" argument 'which.table' must be either 'descr', 'avail' or 'both'")
+    
+  if (inherits(x,"missingTable"))
+    if (ww != 1){
+      warning(" only 'descr' table can be displayed for 'missingTable' object. Argument 'which.table' set to 'descr'")
+      ww <- 1
+    }        
   
   caption<-attr(x,"caption")
   
@@ -52,7 +58,10 @@ print.cbind.createTable <- function(x, which.table="descr", nmax=TRUE, ...)
   }
   
   if (ww %in% c(1,3)){
-    cat("\n--------Summary descriptives table ---------\n\n",sep="")  
+    if (inherits(x[[1]],"missingTable"))
+      cat("\n--------Missingness table ---------\n\n",sep="")  
+    else
+      cat("\n--------Summary descriptives table ---------\n\n",sep="")      
     desc<-aux.desc[,-ncol(aux.desc),drop=FALSE]
     ii<-ifelse(nmax,2,1)
     if (!is.null(attr(x[[1]],"caption")))

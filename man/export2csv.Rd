@@ -19,7 +19,7 @@ export2csv(x, file, which.table="descr", sep=",", nmax = TRUE, ...)
 
   \item{which.table}{character indicating  which table is printed. Possible values are 'descr', 'avail' or 'both' (partial matching allowed), exporting descriptives by groups table, available data table or both tables, respectively. Default value is 'descr'.}
 
-  \item{sep}{character. The variable separator. If 'sep' is set to ',' it uses \code{\link[utils]{write.csv}}, and when is set to';' it uses \code{\link[utils]{write.csv2}}. Default value is ','.}
+  \item{sep}{character. The variable separator, same as 'sep' argument from \code{\link[utils]{write.table}}. Default value is ','.}
   
   \item{nmax}{logical, indicating whether to show the number of subjects with at least one valid value across all row-variables. Default value is TRUE.}
              

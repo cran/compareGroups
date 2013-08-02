@@ -1,4 +1,4 @@
-norm.plot<-function(x, file, var.label.x, z, n.breaks)
+norm.plot<-function(x, file, var.label.x, z, n.breaks, ...)
 {
 
   x<-x[!is.na(x)]
@@ -6,11 +6,27 @@ norm.plot<-function(x, file, var.label.x, z, n.breaks)
     return(NULL)
     warning(paste("too few valid different values for variable",var.label.x))
   }
+  
+  dots.args <- eval(substitute(alist(...))) 
+  onefile <- FALSE
+  if (!is.null(dots.args$onefile))
+    onefile<- dots.args$onefile
 
   if (is.null(file))
-    X11()
-  else
-    pdf(file)    
+    dev.new()
+  else {
+    if (length(grep("bmp$",file)))
+      bmp(file,...) 
+    if (length(grep("png$",file)))
+      png(file,...)  
+    if (length(grep("tif$",file)))
+      tiff(file,...)  
+    if (length(grep("jpg$",file)))
+      jpeg(file,...)  
+    if (length(grep("pdf$",file)))
+      if (!onefile)
+        pdf(file,...)                             
+  }
 
   mean<-mean(x,na.rm=T)
   sd<-sd(x,na.rm=T)
@@ -24,7 +40,7 @@ norm.plot<-function(x, file, var.label.x, z, n.breaks)
   mtext(paste("mean=",format2(mean)," SD=",format2(sd)))
   box()
   qqnorm(x,datax=TRUE,pch=19,cex=0.09)
-  qqline(x,datax=TRUE)
+  qqline(unclass(x),datax=TRUE)
   boxplot(x,main="Boxplot",pch=19,cex=0.09,outline=T)
 	plot(qqnorm$y*sd+mean,dif,pch=19,cex=0.01,xlab="",ylab="desv.",main="Standard deviation\nfrom normality")
 	abline(h=c(-z,0,z),lty=c(2,4,2))
@@ -34,7 +50,7 @@ norm.plot<-function(x, file, var.label.x, z, n.breaks)
   else
     mtitle(paste("Normality plots of '",var.label.x,"'",sep=""),lr="",lc=paste("Shapiro-Wilks p-value: ",format2(p.sh,3),sep=""),cex.m=1.5, cex.l=1)
 
-  if (!is.null(file))
+  if (!is.null(file) && (length(grep("pdf$",file))==0 || !onefile))
     dev.off()
 
 }

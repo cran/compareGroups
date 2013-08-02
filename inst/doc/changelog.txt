@@ -1,3 +1,23 @@
+v2.0
+2013-08-02
+-. new argument 'type' in 'plot.compareGroups' method to save plots in different formats.
+-. new argument 'include.miss' in compareGroups function. This treats NA values as a new category for categorical row-variables.
+-. new function 'radiograph' that reports raw data in the data set.
+-. new function 'missTable' has been created, to report missingness tables.
+-. new function 'compareSNPs' has been created, with its own 'print' method.
+-. new functions 'report' and 'export2pdf' have been created to generate PDF files with tables and/or plots.
+-. new argumend 'landscape' has been incorporated to 'export2latex' function.
+-. new package dependencies required: SNPassoc and HardyWeinberg
+-. MINOR CHANGES:
+  -. when computing p-values to compare groups for a categorical row-variables, if only one row or one column has some non-zero count, p-value is '.'.
+  -. cGroupsGUI no longer saves objects in .GlobalEnv but uses .compareGroupsEnv environment.
+  -. cGroupsGUI input cannot be left missing.
+  -. bug fixed in cGroupsGUI function when exporting to html format.
+  -. internal function prepare has been modified in order to fit the bivariate table columns to their width.
+  -. internal function descripSurv has been modified to accomodate group codes containing regular expression symbols (such as +, -, etc.).
+  -. bug fixed in export2html function when exporting a table with one row.
+  -. bug fixed in 'ref.no' argument of compareGroups function.	
+
 v1.4
 2012-11-06
 -. an internal bug fixed when specifying selec for a particular row-varible in building Xlong attribute for compareGroups object.
@@ -11,7 +31,7 @@ v1.3
 -. createTable: new argument sd.type, to allow the user change the format in displaying SD; 1-inside brackets (default), 2- mean +/- SD.
 -. createTable: new argument digits.p added, to allow the user specify the number of decimals for all p-values displayed on the bivariate table.
 -. createTable: new argument p.ratio has been added. This computes de p-value corresponding to each OR/HR individually.
--. Nmax reported changed: now it represents the number of patients with at least un valid value across all analized variables.
+-. Nmax reported changed: now it represents the number of patients with at least one valid value across all analized variables.
 -. a bug fixed in compareGroup: when some row-variable could not be performed 'varnames.orig' attribute was bad built. This affected other functions such as createTable.
 -. a bug fixed in [.createTable: an error ocurred when a literal category specified to be hiden when subsetting a createTable object.
 -. MINOR CHANGE: 1.95 replaced by 1.96 in 'compareGroups.Rd' file.

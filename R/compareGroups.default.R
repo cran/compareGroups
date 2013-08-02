@@ -1,5 +1,5 @@
 compareGroups.default <-
-function(X, y = NULL, Xext = NULL, selec = NA, method = 1, timemax = NA, alpha = 0.05, min.dis = 5, max.ylev = 5, max.xlev = 10, include.label = TRUE, Q1 = 0.25, Q3 = 0.75, simplify = TRUE, ref = 1, ref.no = NA, fact.ratio = 1, ref.y = 1, p.corrected = TRUE, compute.ratio = TRUE, ...) {
+function(X, y = NULL, Xext = NULL, selec = NA, method = 1, timemax = NA, alpha = 0.05, min.dis = 5, max.ylev = 5, max.xlev = 10, include.label = TRUE, Q1 = 0.25, Q3 = 0.75, simplify = TRUE, ref = 1, ref.no = NA, fact.ratio = 1, ref.y = 1, p.corrected = TRUE, compute.ratio = TRUE, include.miss = FALSE,...) {
 
    if (!is.null(Xext)){
     if (!is.matrix(Xext) & !is.data.frame(Xext))
@@ -140,7 +140,7 @@ function(X, y = NULL, Xext = NULL, selec = NA, method = 1, timemax = NA, alpha =
        if (length(ll)>2)
          ref.no.i[i]<-NA
        else{
-         temp<-which(ll%in%ref.no)
+         temp<-which(ll%in%tolower(ref.no))
          if (length(temp)>1){
            ref.no.i[i]<-NA
            warning(paste("For variable",names(X)[i],"there are more than 2 levels matching with ref"))
@@ -210,7 +210,7 @@ function(X, y = NULL, Xext = NULL, selec = NA, method = 1, timemax = NA, alpha =
    if (NROW(X)!=NROW(y))
     stop("data doesn't mach")
 
-   ans <- lapply(1:nvars, function(i) try(compare.i(X[,i],y=y, selec.i=selec[i], method.i=method[i], timemax.i=timemax[i], alpha=alpha, min.dis=min.dis, max.xlev=max.xlev, varname=names(X)[i], Q1=Q1, Q3=Q3, groups=groups, simplify=simplify, Xext=Xext, ref=ref[i], fact.ratio=fact.ratio[i], ref.y=ref.y, p.corrected=p.corrected, compute.ratio=compute.ratio),silent=TRUE))
+   ans <- lapply(1:nvars, function(i) try(compare.i(X[,i],y=y, selec.i=selec[i], method.i=method[i], timemax.i=timemax[i], alpha=alpha, min.dis=min.dis, max.xlev=max.xlev, varname=names(X)[i], Q1=Q1, Q3=Q3, groups=groups, simplify=simplify, Xext=Xext, ref=ref[i], fact.ratio=fact.ratio[i], ref.y=ref.y, p.corrected=p.corrected, compute.ratio=compute.ratio, include.miss=include.miss),silent=TRUE))
    
    names(ans)<-names.X    
    

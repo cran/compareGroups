@@ -19,7 +19,11 @@ rbind.createTable <- function(..., caption)
       }
   } 
   
-  args<-list(...)  
+  args<-list(...)
+  
+  cl.miss<-sapply(args,function(args.i) inherits(args.i,"missingTable"))  
+  if (mean(cl.miss)>0 & mean(cl.miss)<1)
+    stop("All or none of the tables must be of class 'missingTable'")
 
   if (missing(caption))
     caption<-list.names(...)
@@ -75,7 +79,7 @@ rbind.createTable <- function(..., caption)
   }
   
   out$call<-cl
-  class(out)<-c("rbind.createTable","createTable")
+  class(out)<-c("rbind.createTable",class(args[[1]]))
   out
 
 }

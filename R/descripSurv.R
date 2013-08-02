@@ -25,7 +25,7 @@ function(x, y, timemax)
     Pmax.i[oo==0]<-0
     names(Pmax.i)<-levels(y)
     for (i in 1:length(gg)){
-      ww<-grep(gg[i],levels(y))
+      ww<-grep(gg[i],levels(y),fixed=TRUE)
       SS.temp<-SS[GG==gg[i]]
       TT.temp<-TT[GG==gg[i]]
       if (any(TT.temp>=timemax)){
