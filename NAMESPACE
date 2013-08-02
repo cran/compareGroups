@@ -1,9 +1,11 @@
 importFrom(xtable, xtable)
-importFrom(Hmisc, label, spss.get, rcorr.cens)
-importFrom(gdata, trim)
-importFrom(survival, Surv, coxph)
+importFrom(Hmisc, label, spss.get, rcorr.cens, mtitle, sys)
+importFrom(gdata, trim, remove.vars, rename.vars)
+importFrom(survival, Surv, survfit, survdiff, coxph)
 importFrom(oce,integerToAscii)
 importFrom(epitools, oddsratio)
+importFrom(tools, texi2pdf)
+importFrom(HardyWeinberg, HWChisqMat)
 
 
 export(
@@ -23,7 +25,14 @@ export2latex.createTable,
 export2latex.cbind.createTable,
 export2csv,
 export2html,
-cGroupsGUI
+export2pdf,
+cGroupsGUI,
+report,
+radiograph,
+compareSNPs,
+print.compareSNPs,
+missingTable,
+printTable
 )
 
 
@@ -32,6 +41,8 @@ S3method("[",createTable)
 S3method("[",rbind.compareGroups)
 S3method("[",rbind.createTable)
 S3method("[",cbind.createTable)
+S3method("[",snp) 
+S3method("[",setupSNP)
 S3method(compareGroups,default)      
 S3method(compareGroups,formula)      
 S3method(print,compareGroups) 
@@ -41,6 +52,7 @@ S3method(print,createTable)
 S3method(print,summary.compareGroups)
 S3method(print,summary.createTable)
 S3method(print,cbind.createTable)
+S3method(print,compareSNPs)
 S3method(rbind,compareGroups)
 S3method(rbind,createTable)
 S3method(cbind,createTable)  
@@ -50,7 +62,8 @@ S3method(update,compareGroups)
 S3method(varinfo,compareGroups)  
 S3method(varinfo,createTable)  
 S3method(export2latex,createTable) 
-S3method(export2latex,cbind.createTable) 
+S3method(export2latex,cbind.createTable)
+
 
 
 # not exported:
@@ -64,6 +77,5 @@ S3method(export2latex,cbind.createTable)
   # signifdec                  
   # summ.i                     
   # table.i 
-  # norm.plot	
+  # norm.plot
   # Others ...
-

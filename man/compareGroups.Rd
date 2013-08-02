@@ -22,9 +22,9 @@ compareGroups(X, ...)
 \method{compareGroups}{default}(X, y = NULL, Xext = NULL, selec = NA, method = 1, timemax = NA, 
 alpha = 0.05, min.dis = 5, max.ylev = 5, max.xlev = 10, include.label = TRUE, 
 Q1 = 0.25, Q3 = 0.75, simplify = TRUE, ref = 1, ref.no = NA, fact.ratio = 1, 
-ref.y = 1, p.corrected = TRUE, compute.ratio = TRUE, ...)
+ref.y = 1, p.corrected = TRUE, compute.ratio = TRUE, include.miss = FALSE, ...)
 \method{compareGroups}{formula}(X, data, subset, na.action=NULL, include.label=TRUE, ...)
-\method{plot}{compareGroups}(x, file, bivar = FALSE, z=1.5, n.breaks = "Sturges", ...)
+\method{plot}{compareGroups}(x, file, type = "pdf", bivar = FALSE, z=1.5, n.breaks = "Sturges", ...)
 }
 
 \arguments{
@@ -66,7 +66,7 @@ ref.y = 1, p.corrected = TRUE, compute.ratio = TRUE, ...)
   
   \item{ref}{an integer vector with as many components as row-variables. If its length is 1 it is recycled for all row-variables. It only applies for categorical row-variables. Or a named vector specifying which row-variables 'ref' is applied (a reserved name is '.else' which defines the reference category for the rest of the variables); if no '.else' variable is defined, default value is applied for the rest of the variables. Default value is 1.}
   
-  \item{ref.no}{character specifying the name of the level to be the reference for Odds Ratio or Hazard Ratio. This is especially useful for yes/no variables. Default value is NA which means that category specified in 'ref' is the one selected to be the reference.}
+  \item{ref.no}{character specifying the name of the level to be the reference for Odds Ratio or Hazard Ratio. It is not case-sensitive. This is especially useful for yes/no variables. Default value is NA which means that category specified in 'ref' is the one selected to be the reference.}
 
   \item{fact.ratio}{a double vector with as many components as row-variables  indicating  the units for the HR / OR (note that it does not affect the descriptives).  If its length is 1 it is recycled for all row-variables. Otherwise, a named vector specifying 'fact.ratio' row-variables is applied. '.else' is a reserved name that defines the reference category for the rest of the variables;  if no '.else' variable is defined, default value is applied. Default value is 1.}
   
@@ -75,10 +75,14 @@ ref.y = 1, p.corrected = TRUE, compute.ratio = TRUE, ...)
   \item{p.corrected}{logical, indicating whether p-values for pairwise comparisons must be corrected. It only applies when there is a grouping variable with more than 2 categories. Default value is TRUE.}  
   
   \item{compute.ratio}{logical, indicating whether Odds Ratio (for a binary response) or Hazard Ratio (for a time-to-event response) must be computed. Default value is TRUE.}  
+  
+  \item{include.miss}{logical, indicating whether to treat missing values as a new category for categorical variables. Default value is FALSE.}   
 
   \item{x}{an object of class 'compareGroups'.}  
 
-  \item{file}{a character string giving the name of the file. A pdf file is saved with an appendix added to 'file' corresponding to the row-variable name. If missing, multiple devices are opened, one for each row-variable of 'x' object.}  
+  \item{file}{a character string giving the name of the file. A bmp, jpg, png or tif file is saved with an appendix added to 'file' corresponding to the row-variable name. If 'onefile' argument is set to TRUE throught '...' argument of plot method function, a unique PDF file is saved named as [file].pdf. If it is missing, multiple devices are opened, one for each row-variable of 'x' object.}  
+
+  \item{type}{a character string indicating the file format where the plots are stored. Possibles foramts are 'bmp', 'jpg', 'png', 'tif' and 'pdf'.Default value is 'pdf'.}  
 
   \item{bivar}{logical. If bivar=TRUE, it plots a boxplot or a barplot (for a continuous or categorical row-variable, respectively) stratified by groups. If bivar=FALSE, it plots a normality plot (for continuous row-variables) or a barplot (for categorical row-variables). Default value is FALSE.}
 
@@ -86,7 +90,7 @@ ref.y = 1, p.corrected = TRUE, compute.ratio = TRUE, ...)
 
   \item{n.breaks}{same as argument 'breaks' of \code{\link[graphics]{hist}}.} 
   
-  \item{\dots}{further arguments passed to 'compareGroups.default' or other methods.}
+  \item{\dots}{further arguments passed to 'compareGroups.default' or other methods. For 'plot' method, '...' arguments are passed to \code{\link[grDevices]{pdf}}, \code{\link[grDevices]{bmp}}, \code{\link[grDevices]{jpeg}}, \code{\link[grDevices]{png}} or \code{\link[grDevices]{tiff}} if 'type' argument equals to 'pdf', 'bmp', 'jpg', 'png' or 'tif', respectively.}
 
 }
 
@@ -145,7 +149,7 @@ Finally, when the response is binary and the row variable is categorical, the p-
 
 Subjects selection criteria specified in 'selec' and 'subset' arguments are combined using '&' to be applied to every row-variable.\cr
 
-Currently, 'plot' method only saves in pdf format. \cr
+Through '...' argument of 'plot' method, some parameters such as figure size, multiple figures in a unique file (only for 'pdf' files), resolution, etc. are controlled. For more information about which arguments can be passed depending on the format type, see \code{\link[grDevices]{pdf}}, \code{\link[grDevices]{bmp}}, \code{\link[grDevices]{jpeg}}, \code{\link[grDevices]{png}} or \code{\link[grDevices]{tiff}}.
 
 }
 
@@ -155,7 +159,7 @@ Currently, 'plot' method only saves in pdf format. \cr
 
 \examples{
 
-require(compareGroups)   
+require(compareGroups)
 
 # load REGICOR data
 data(regicor)

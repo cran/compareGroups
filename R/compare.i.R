@@ -1,5 +1,5 @@
 compare.i <-
-function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, Q1, Q3, groups, simplify, Xext, ref, fact.ratio, ref.y, p.corrected, compute.ratio) {
+function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, Q1, Q3, groups, simplify, Xext, ref, fact.ratio, ref.y, p.corrected, compute.ratio, include.miss) {
 
   x.orig <- x
   y.orig <- y
@@ -11,6 +11,15 @@ function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, 
     warning(paste("variable '",varname,"' converted to factor since few different values contained",sep=""))
     x <- as.factor(x)
   }    
+  
+  if (is.factor(x) && include.miss){
+    if (any(is.na(x))){
+      ll<-levels(x)
+      x<-as.integer(x)
+      x<-ifelse(is.na(x),99999,x)
+      x<-factor(x,c(1:length(ll),99999),labels=c(ll,"<Missing>"))
+    }
+  }
 
   xlong <- x  
   ylong <- y
@@ -129,7 +138,7 @@ function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, 
         if (inherits(y,"Surv"))
           p.overall <- try(logrank.pval(x,y),silent=TRUE)
         else
-          p.overall <- chisq.test2(tt)
+          p.overall <- chisq.test2(t(tt))
         if (inherits(p.overall,"try-error"))
           p.overall<-NaN
       } else
@@ -154,7 +163,7 @@ function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, 
         for (i in 1:(ny-1))
           for (j in (i+1):ny) {
             np<-c(np,paste(levels(y)[i],levels(y)[j],sep=" vs "))
-            p.ij<-try(chisq.test2(tt[c(i,j),]),silent=TRUE)
+            p.ij<-try(chisq.test2(t(tt[c(i,j),])),silent=TRUE)
             if (inherits(p.ij,"try-error"))
               p.ij<-NaN
             pp<-c(pp,p.ij)

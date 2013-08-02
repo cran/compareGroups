@@ -14,7 +14,7 @@ cGroupsGUI(X)
 }
 
 \arguments{
-  \item{X}{a matrix or a data.frame. 'X' must exist in \code{.GlobalEnv}. If missing, \code{\link{regicor}} data is loaded}
+  \item{X}{a matrix or a data.frame. 'X' must exist in \code{.GlobalEnv}.}
 }
 
 \details{

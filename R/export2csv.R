@@ -6,9 +6,6 @@ export2csv<-function(x, file, which.table="descr", sep=",", nmax = TRUE, ...){
   if (inherits(x,"cbind.createTable"))
     stop("x cannot be of class 'cbind.createTable'")        
 
-  if (sep!="," & sep!=";")
-    stop("sep must be ',' or ';'")
-    
   ww <- charmatch(which.table, c("descr","avail","both"))
   if (is.na(ww))
     stop(" argument 'which.table' must be either 'descr', 'avail' or 'both'")    
@@ -30,7 +27,7 @@ export2csv<-function(x, file, which.table="descr", sep=",", nmax = TRUE, ...){
         aux<-rbind(aux,table1[i,])      
       }
     }
-    table1<-rbind(table1[1:ii,],aux)
+    table1<-rbind(table1[1:ii,,drop=FALSE],aux)
     write.table(table1,file=paste(file,".csv",sep=""),na="",sep=sep,row.names=FALSE,col.names=FALSE,...)
   }
 

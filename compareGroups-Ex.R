@@ -4,7 +4,7 @@ options(warn = 1)
 options(pager = "console")
 library('compareGroups')
 
-assign(".oldSearch", search(), pos = 'CheckExEnv')
+base::assign(".oldSearch", base::search(), pos = 'CheckExEnv')
 cleanEx()
 nameEx("cGroupsGUI")
 ### * cGroupsGUI
@@ -78,6 +78,42 @@ summary(res[1:4])
 update(res, tcv ~ . + sex - tdeath - tcv)
 
 
+
+
+
+
+cleanEx()
+nameEx("compareSNPs")
+### * compareSNPs
+
+flush(stderr()); flush(stdout())
+
+### Name: compareSNPs
+### Title: Summarise genetic data by groups.
+### Aliases: compareSNPs print.compareSNPs
+### Keywords: misc
+
+### ** Examples
+
+
+require(compareGroups)   
+
+# load example from SNPassoc package
+data(SNPs)
+
+# visualize first rows
+head(SNPs)
+
+# select casco and all SNPs
+myDat <- SNPs[,c(2,6:40)]
+
+# QC of three SNPs by groups of cases and controls
+res<-compareSNPs(casco ~ .-casco, myDat)
+res
+
+# QC of three SNPs of the whole data set
+res<-compareSNPs( ~ .-casco, myDat)
+res
 
 
 
@@ -229,6 +265,168 @@ flush(stderr()); flush(stdout())
 
 
 cleanEx()
+nameEx("export2pdf")
+### * export2pdf
+
+flush(stderr()); flush(stdout())
+
+### Name: export2pdf
+### Title: Exports tables to PDF files.
+### Aliases: export2pdf
+### Keywords: utilities
+
+### ** Examples
+
+
+## Not run: 
+##D 
+##D require(compareGroups)
+##D data(regicor)
+##D 
+##D  # example on an ordinary table
+##D res <- createTable(compareGroups(year ~ . -id, regicor), hide = c(sex=1), hide.no = 'no')
+##D export2pdf(res, "table", size="small")
+##D 
+## End(Not run)
+
+
+
+
+cleanEx()
+nameEx("missingTable")
+### * missingTable
+
+flush(stderr()); flush(stdout())
+
+### Name: missingTable
+### Title: Table of missingness counts by groups.
+### Aliases: missingTable
+### Keywords: utilities
+
+### ** Examples
+
+
+require(compareGroups)
+
+# load regicor data
+data(regicor)
+
+# table of descriptives by recruitment yeear
+res<-compareGroups(year~.-id-sex,regicor,subset=sex=='Male')
+restab1 <- createTable(res, hide.no = "no")  # table for men
+restab2 <- update(restab1, x = update(res, subset = sex == 'Female')) # table for women
+
+# missingness table for men and for women
+miss1<-missingTable(restab1,type=1)
+miss2<-missingTable(restab2,type=1)
+miss1
+miss2
+
+# sex stratified table of missingness.
+cbind("Men"=miss1,"Women"=miss2)
+
+# from a compareGroups object
+missingTable(res)
+
+## Not run: 
+##D 
+##D # some methods that works for createTable objects also works for objects 
+##D #   computed by missTable function.
+##D miss1[1:4]
+##D varinfo(miss1)
+##D plot(miss1)
+##D 
+##D #... but update methods cannot be applied (this returns an error).
+##D update(miss1,type=2)
+##D 
+## End(Not run)
+
+
+
+
+
+cleanEx()
+nameEx("predimed")
+### * predimed
+
+flush(stderr()); flush(stdout())
+
+### Name: predimed
+### Title: PREDIMED randomized trial
+### Aliases: predimed
+### Keywords: datasets
+
+### ** Examples
+
+require(compareGroups)
+data(predimed)
+summary(predimed)
+
+
+
+cleanEx()
+nameEx("printTable")
+### * printTable
+
+flush(stderr()); flush(stdout())
+
+### Name: printTable
+### Title: 'Nice' table format.
+### Aliases: printTable
+### Keywords: utilities
+
+### ** Examples
+
+
+require(compareGroups)
+
+data(regicor)
+
+# example of the coefficients table from a linear regression
+model <- lm(chol ~ age + sex + bmi, regicor)
+results <- coef(summary(model))
+results <- cbind(Var = rownames(results), round(results, 4))
+printTable(results)
+
+# or visualize the first rows of the iris data frame. 
+# In this example, the first column is not treated as a row.names column and it is right justified.
+printTable(head(iris), FALSE)
+
+# the same example with columns centered
+printTable(head(iris), FALSE, 'centre')
+
+
+
+
+
+cleanEx()
+nameEx("radiograph")
+### * radiograph
+
+flush(stderr()); flush(stdout())
+
+### Name: radiograph
+### Title: Lists the values in the data set.
+### Aliases: radiograph
+### Keywords: utilities
+
+### ** Examples
+
+
+## Not run: 
+##D 
+##D require(compareGroups)
+##D 
+##D # read example data of regicor in plain text format with variables separated by '\t'.
+##D datafile <- system.file("exdata/regicor.txt", package="compareGroups")
+##D radiograph(datafile)
+##D 
+## End(Not run)
+
+
+
+
+cleanEx()
 nameEx("regicor")
 ### * regicor
 
@@ -244,6 +442,46 @@ flush(stderr()); flush(stdout())
 require(compareGroups)
 data(regicor)
 summary(regicor)
+
+
+
+cleanEx()
+nameEx("report")
+### * report
+
+flush(stderr()); flush(stdout())
+
+### Name: report
+### Title: Report of descriptive tables and plots.
+### Aliases: report
+### Keywords: utilities
+
+### ** Examples
+
+
+## Not run: 
+##D 
+##D require(compareGroups)
+##D data(regicor)
+##D 
+##D  # example on an ordinary table
+##D res <- createTable(compareGroups(year ~ . -id, regicor), hide = c(sex=1), hide.no = 'no')
+##D report(res, "report" ,size="small", title="\Huge \textbf{REGICOR study}", 
+##D        author="Isaac Subirana \\ IMIM-Parc de Salut Mar")
+##D 
+##D  # example on an stratified table by sex
+##D res.men <- createTable(compareGroups(year ~ . -id-sex, regicor, subset=sex=='Male'), 
+##D                        hide.no = 'no')
+##D res.wom <- createTable(compareGroups(year ~ . -id-sex, regicor, subset=sex=='Female'), 
+##D                        hide.no = 'no')
+##D res <- cbind("Men"=res.men, "Wom"=res.wom)
+##D report(res[[1]], "reportmen", size="small", 
+##D         title="\Huge \textbf{REGICOR study \\ Men}", date="") # report for men / no date
+##D report(res[[2]], "reportwom", size="small", 
+##D         title="\Huge \textbf{REGICOR study \\ Women}", date="") # report for wom / no date
+##D 
+## End(Not run)
+
 
 
 
@@ -270,7 +508,8 @@ varinfo(res)
 
 ### * <FOOTER>
 ###
-cat("Time elapsed: ", proc.time() - get("ptime", pos = 'CheckExEnv'),"\n")
+options(digits = 7L)
+base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
 grDevices::dev.off()
 ###
 ### Local variables: ***

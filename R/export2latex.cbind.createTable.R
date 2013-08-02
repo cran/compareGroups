@@ -1,4 +1,5 @@
-export2latex.cbind.createTable<-function(x, file, which.table='descr', size='same', nmax = TRUE, caption = NULL, loc.caption = 'top', label = NULL, ...){   
+export2latex.cbind.createTable<-function(x, file, which.table='descr', size='same', nmax = TRUE, caption = NULL, loc.caption = 'top', label = NULL, landscape = NA, colmax = 10, ...){   
+
 
   if (!inherits(x,"cbind.createTable"))
     stop("'x' must be of class 'cbind.createTable")
@@ -6,11 +7,20 @@ export2latex.cbind.createTable<-function(x, file, which.table='descr', size='sam
   ww <- charmatch(which.table, c("descr","avail","both"))
   if (is.na(ww))
     stop(" argument 'which.table' must be either 'descr', 'avail' or 'both'")
-
+    
+  if (inherits(x,"missingTable"))
+    if (ww != 1){
+      warning(" only 'descr' table can be displayed for 'missingTable' object. Argument 'which.table' set to 'descr'")
+      ww <- 1
+    }      
 
   size.type <- charmatch(size, c("tiny","scriptsize","footnotesize","small","normalsize","large","Large","LARGE","huge","Huge","same"))
   if (is.na(size.type))
     stop(" argument 'which.table' must be either 'tiny', 'scriptsize', 'footnotesize', 'small', 'normalsize', 'large', 'Large', 'LARGE','huge', 'Huge' or 'same'") 
+    
+  if (is.na(landscape))  
+    landscape <- sum(sapply(x,function(x.i) ncol(x.i$desc))) > colmax    
+    
     
   size<-c("tiny","scriptsize","footnotesize","small","normalsize","large","Large","LARGE","huge","Huge","same")[size.type]
   
@@ -28,7 +38,10 @@ export2latex.cbind.createTable<-function(x, file, which.table='descr', size='sam
         caption = rep(caption,2)
   } else {
     if (ww==1)
-      caption<-paste("Summary descriptive tables")
+      if (inherits(x[[1]],"missingTable"))
+        caption<-paste("Missingness tables")
+      else
+        caption<-paste("Summary descriptive tables")      
     if (ww==2)
       caption<-paste("Available data")
     if (ww==3){
@@ -182,9 +195,10 @@ export2latex.cbind.createTable<-function(x, file, which.table='descr', size='sam
     body.tex<-paste(body,collapse="")
   
     tex<-paste(
+    if (landscape) paste("\\begin{landscape}",sep="") else "",
     if (size!='same') paste("\\begin{", size ,"}",sep="") else "","    
     \\begin{longtable}{",head.loc,"}",
-    ifelse(loc.caption=='top',paste("\\caption{",caption[1],"}\\\\",sep=""),""),"
+    if (caption[1]!='') ifelse(loc.caption=='top',paste("\\caption{",caption[1],"}\\\\",sep=""),"") else "","
     ",head.tex,"  
     \\endfirsthead 
     \\multicolumn{",nchar(head.loc),"}{l}{\\tablename\\ \\thetable{} \\textit{-- continued from previous page}}\\\\ 
@@ -197,9 +211,10 @@ export2latex.cbind.createTable<-function(x, file, which.table='descr', size='sam
     \\endlastfoot 
     ",body.tex," 
     \\hline",
-    ifelse(loc.caption=='bottom',paste("\\\\ \\caption{",caption[1],"}\\\\",sep=""),""),"
+    if (caption[1]!='') ifelse(loc.caption=='bottom',paste("\\\\ \\caption{",caption[1],"}\\\\",sep=""),"") else "","
     \\end{longtable}",
-    if (size!='same') paste("\\end{", size ,"}",sep="") else ""    
+    if (size!='same') paste("\\end{", size ,"}",sep="") else "",    
+    if (landscape) paste("\\end{landscape}",sep="") else ""    
     ,sep="")
     
     if (missing(file))
@@ -288,9 +303,10 @@ export2latex.cbind.createTable<-function(x, file, which.table='descr', size='sam
       caption<-c(NA,caption)
     
     tex<-paste(
+    if (landscape) paste("\\begin{landscape}",sep="") else "",
     if (size!='same') paste("\\begin{", size ,"}",sep="") else "","    
     \\begin{longtable}{",head.loc,"}",
-    ifelse(loc.caption=='top',paste("\\caption{",caption[2],"}\\\\",sep=""),""),"
+    if (caption[2]!='') ifelse(loc.caption=='top',paste("\\caption{",caption[2],"}\\\\",sep=""),""),"
     ",head.tex,"  
     \\endfirsthead 
     \\multicolumn{",nchar(head.loc),"}{l}{\\tablename\\ \\thetable{} \\textit{-- continued from previous page}}\\\\ 
@@ -303,9 +319,11 @@ export2latex.cbind.createTable<-function(x, file, which.table='descr', size='sam
     \\endlastfoot 
     ",body.tex," 
     \\hline","
-    ",ifelse(loc.caption=='bottom',paste("\\\\ \\caption{",caption[2],"}\\\\",sep=""),""),"
+    ",
+    if (caption[2]!='') ifelse(loc.caption=='bottom',paste("\\\\ \\caption{",caption[2],"}\\\\",sep=""),"") else "","
     \\end{longtable}",
-    if (size!='same') paste("\\end{", size ,"}",sep="") else ""    
+    if (size!='same') paste("\\end{", size ,"}",sep="") else "",    
+    if (landscape) paste("\\end{landscape}",sep="") else "" 
     ,sep="")
     
     if (missing(file))

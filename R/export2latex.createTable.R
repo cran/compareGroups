@@ -1,4 +1,4 @@
-export2latex.createTable<-function(x, file, which.table='descr', size='same', nmax = TRUE, caption = NULL, loc.caption = 'top', label = NULL, ...){  
+export2latex.createTable<-function(x, file, which.table='descr', size='same', nmax = TRUE, caption = NULL, loc.caption = 'top', label = NULL, landscape = NA, colmax = 10, ...){  
 
   if (!inherits(x,"createTable"))
     stop("x must be of class 'createTable'")
@@ -9,9 +9,18 @@ export2latex.createTable<-function(x, file, which.table='descr', size='same', nm
   if (is.na(ww))
     stop(" argument 'which.table' must be either 'descr', 'avail' or 'both'")
     
+  if (inherits(x,"missingTable"))
+    if (ww != 1){
+      warning(" only 'descr' table can be displayed for 'missingTable' object. Argument 'which.table' set to 'descr'")
+      ww <- 1
+    }        
+    
   size.type <- charmatch(size, c("tiny","scriptsize","footnotesize","small","normalsize","large","Large","LARGE","huge","Huge","same"))
   if (is.na(size.type))
     stop(" argument 'which.table' must be either 'tiny', 'scriptsize', 'footnotesize', 'small', 'normalsize', 'large', 'Large', 'LARGE','huge', 'Huge' or 'same'") 
+  
+  if (is.na(landscape))  
+    landscape <- ncol(x$desc) > colmax
     
   size<-c("tiny","scriptsize","footnotesize","small","normalsize","large","Large","LARGE","huge","Huge","same")[size.type]
   
@@ -43,9 +52,15 @@ export2latex.createTable<-function(x, file, which.table='descr', size='same', nm
   } else {
     if (ww==1){
       if (attr(x,"groups"))
-        caption<-paste("Summary descriptives table by groups of `",y.name.label,"'",sep="")
+        if (inherits(x,"missingTable"))
+          caption<-paste("Missingness table by groups of `",y.name.label,"'",sep="")
+        else
+          caption<-paste("Summary descriptives table by groups of `",y.name.label,"'",sep="")
       else
-        caption<-"Summary descriptives table"   
+        if (inherits(x,"missingTable"))  
+          caption<-"Missingess table"   
+        else
+          caption<-"Summary descriptives table"           
     }
     if (ww==2){
       if (attr(x,"groups"))
@@ -168,9 +183,10 @@ export2latex.createTable<-function(x, file, which.table='descr', size='same', nm
     head.loc<-paste(c("l",rep("c",nc)),collapse="")
   
     tex<-paste(
+    if (landscape) paste("\\begin{landscape}",sep="") else "",
     if (size!='same') paste("\\begin{", size ,"}",sep="") else "","    
     \\begin{longtable}{",head.loc,"}" 
-    ,ifelse(loc.caption=='top',paste("\\caption{",caption[1],"}\\\\",sep=""),""),"
+    ,if (caption[1]!='') ifelse(loc.caption=='top',paste("\\caption{",caption[1],"}\\\\",sep=""),"") else "","
     \\hline  
     ",head.tex,"  
     \\hline
@@ -189,9 +205,10 @@ export2latex.createTable<-function(x, file, which.table='descr', size='same', nm
     \\endlastfoot 
     ",body.tex," 
     \\hline",
-    ifelse(loc.caption=='bottom',paste("\\\\ \\caption{",caption[1],"}\\\\",sep=""),""),"
+    if (caption[1]!='') ifelse(loc.caption=='bottom',paste("\\\\ \\caption{",caption[1],"}\\\\",sep=""),"") else "","
     \\end{longtable}",
-    if (size!='same') paste("\\end{", size ,"}",sep="") else ""    
+    if (size!='same') paste("\\end{", size ,"}",sep="") else "", 
+    if (landscape) paste("\\end{landscape}",sep="") else ""   
     ,sep="")
     
     if (ww%in%c(1,3)){
@@ -256,9 +273,10 @@ export2latex.createTable<-function(x, file, which.table='descr', size='same', nm
       caption<-c(NA,caption)
       
     tex<-paste(
+    if (landscape) paste("\\begin{landscape}",sep="") else "",
     if (size!='same') paste("\\begin{", size ,"}",sep="") else "","    
     \\begin{longtable}{",head.loc,"}", 
-    ifelse(loc.caption=='top',paste("\\caption{",caption[2],"}\\\\",sep=""),""),"
+    if (caption[2]!='') ifelse(loc.caption=='top',paste("\\caption{",caption[2],"}\\\\",sep=""),"") else "","
     \\hline  
     ",head.tex," 
     \\hline 
@@ -277,9 +295,10 @@ export2latex.createTable<-function(x, file, which.table='descr', size='same', nm
     \\endlastfoot 
     ",body.tex,"
     \\hline",
-    ifelse(loc.caption=='bottom',paste("\\\\ \\caption{",caption[2],"}\\\\",sep=""),""),"
+    if (caption[2]!='') ifelse(loc.caption=='bottom',paste("\\\\ \\caption{",caption[2],"}\\\\",sep=""),"") else "","
     \\end{longtable}",
-    if (size!='same') paste("\\end{", size ,"}",sep="") else ""    
+    if (size!='same') paste("\\end{", size ,"}",sep="") else "",
+    if (landscape) paste("\\end{landscape}",sep="") else ""    
     ,sep="")    
     
     if (missing(file))

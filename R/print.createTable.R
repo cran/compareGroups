@@ -10,6 +10,12 @@ function(x, which.table="descr", nmax=TRUE, ...){
   ww <- charmatch(which.table, c("descr","avail","both"))
   if (is.na(ww))
     stop(" argument 'which.table' must be either 'descr', 'avail' or 'both'")
+    
+  if (inherits(x,"missingTable"))
+    if (ww != 1){
+      warning(" only 'descr' table can be displayed for 'missingTable' object. Argument 'which.table' set to 'descr'")
+      ww <- 1
+    }    
   
   yname<-attr(x,"yname")   
   
@@ -18,9 +24,16 @@ function(x, which.table="descr", nmax=TRUE, ...){
     table1<-prepare(x,nmax=nmax)[[1]]
     cc<-attr(pp,"cc")
     if (attr(x,"groups"))
-      cat("\n--------Summary descriptives table by '",yname,"'---------\n\n",sep="")
+      if (inherits(x,"missingTable"))
+        cat("\n--------Missingness table by '",yname,"'---------\n\n",sep="")
+      else
+        cat("\n--------Summary descriptives table by '",yname,"'---------\n\n",sep="")      
     else
-      cat("\n--------Summary descriptives table ---------\n\n",sep="")
+      if (inherits(x,"missingTable"))
+        cat("\n--------Missingness table ---------\n\n",sep="")
+      else
+        cat("\n--------Summary descriptives table ---------\n\n",sep="")      
+  
     ii<-ifelse(rownames(table1)[2]=='',2,1)
     if (!is.null(attr(x,"caption")))
       rownames(table1)<-paste("   ",rownames(table1))

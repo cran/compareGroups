@@ -1,0 +1,20 @@
+printTable <- function(obj, row.names = TRUE, justify = 'right')
+{
+  if (!inherits(obj,"data.frame") && !inherits(obj,"matrix"))
+    stop(" 'obj' must be of class 'data.frame' or 'matrix'")
+  obj <- as.matrix(obj)
+  obj <- rbind(colnames(obj), obj)
+  if (row.names)
+    obj[,1] <- apply(obj[, 1,drop = FALSE], 2, format, justify = "left")
+  else
+    obj[,1] <- apply(obj[, 1,drop = FALSE], 2, format, justify = justify)    
+  obj[,-1] <- apply(obj[, -1, drop=FALSE], 2, format, justify = justify)
+  obj <- as.matrix(obj)
+  obj <- apply(obj, 1, paste, collapse=" ")
+  nch <- max(nchar(obj))
+  cat(paste(rep("_", nch), collapse=""), "\n")
+  cat(obj[1], "\n")
+  cat(paste(rep("=", nch), collapse  =""), "\n")
+  for (i in 2:length(obj)) cat(obj[i], "\n")
+  cat(paste(rep(integerToAscii(0175L), nch), collapse = ""), "\n")
+}

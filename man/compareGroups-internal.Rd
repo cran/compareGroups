@@ -25,6 +25,13 @@
 \alias{bar.plot}
 \alias{norm.plot}
 \alias{prepare}
+\alias{setupSNP}
+\alias{summary.snp}
+\alias{snp}
+\alias{sortSNPs}
+\alias{is.snp}
+\alias{reorder.snp}
+\alias{SNPHWE}
 
 
 \title{Internal compareGroups functions}
@@ -32,7 +39,9 @@
 \usage{
 chisq.test2(obj)
 combn2(x)
-compare.i(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, Q1, Q3, groups, simplify, Xext, ref, fact.ratio, ref.y, p.corrected, compute.ratio)
+compare.i(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, Q1, Q3, 
+          groups, simplify, Xext, ref, fact.ratio, ref.y, p.corrected, compute.ratio, 
+          include.miss)
 descripSurv(x, y, timemax)
 descrip(x, y, method, Q1, Q3)
 flip(x)
@@ -42,17 +51,27 @@ logrank.pval(x,y)
 signifdec.i(x, digits)
 signifdec(x, digits)
 summ.i(x)
-table.i(x, hide.i, digits, digits.ratio, type, varname, hide.i.no, digits.p, sd.type, q.type)
+table.i(x, hide.i, digits, digits.ratio, type, varname, hide.i.no, digits.p, sd.type, 
+        q.type)
 update.formula2(old, new) 
 simplify.formula(form)
-KMg.plot(x, y, file, var.label.x, var.label.y)
-Cox.plot(x, y, file, var.label.x, var.label.y)
-bar2.plot(x, y, file, var.label.x, var.label.y)
-box.plot(x, y, file, var.label.x, var.label.y)
-KM.plot(x, file, var.label.x)
-bar.plot(x, file, var.label.x)
-norm.plot(x, file, var.label.x, z, n.breaks)
+KMg.plot(x, y, file, var.label.x, var.label.y, ...)
+Cox.plot(x, y, file, var.label.x, var.label.y, ...)
+bar2.plot(x, y, file, var.label.x, var.label.y, ...)
+box.plot(x, y, file, var.label.x, var.label.y, ...)
+KM.plot(x, file, var.label.x, ...)
+bar.plot(x, file, var.label.x, ...)
+norm.plot(x, file, var.label.x, z, n.breaks, ...)
 prepare(x, nmax)
+snpQC(X, sep, ...)
+setupSNP(data, colSNPs, sort=FALSE, info, sep="/", ...)
+summary.snp(object, ...) 
+snp(x, sep = "/", name.genotypes, reorder="common", remove.spaces = TRUE, 
+       allow.partial.missing = FALSE) 
+sortSNPs(data, colSNPs, info) 
+is.snp(x)
+reorder.snp(x, ref="common", ...)
+SNPHWE(x)       
 }
 
 \details{These are not to be called by the user}

@@ -20,6 +20,10 @@ cbind.createTable <- function(..., caption)
   }
   
   args<-list(...)  
+  
+  cl.miss<-sapply(args,function(args.i) inherits(args.i,"missingTable"))  
+  if (mean(cl.miss)>0 & mean(cl.miss)<1)
+    stop("All or none of the tables must be of class 'missingTable'")  
 
   if (missing(caption))
     caption<-list.names(...)
@@ -29,7 +33,7 @@ cbind.createTable <- function(..., caption)
         stop("length of caption must be the number of 'createTable' objects to be combined")
   }
 
-  cc<-unlist(lapply(args, function(x) !class(x)[1]%in%c("rbind.createTable","createTable")))
+  cc<-unlist(lapply(args, function(x) !class(x)[1]%in%c("rbind.createTable","createTable","missingTable")))
   if (any(cc))
     stop("arguments must be of class 'createTable' and cannot be of class 'cbind.createTable'")
     
@@ -40,7 +44,7 @@ cbind.createTable <- function(..., caption)
   
   attr(out,"caption")<-caption
 
-  class(out)<-c("cbind.createTable","createTable")
+  class(out)<-c("cbind.createTable",class(args[[1]]))
   
   out
 

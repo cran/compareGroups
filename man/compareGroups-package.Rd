@@ -2,29 +2,51 @@
 \alias{compareGroups-package}
 \alias{compareGroups-package}
 \docType{package}
+
+
 \title{
-Descriptives analysis by groups
+Descriptive analysis by groups
 }
+
+
 \description{
-A package which quickly and efficiently generates descriptives by groups (bivariate tables) in plain text, HTML or as LATEX code. Depending on the nature of the variable, different descriptive statistics can be calculated (mean, median, frequencies, incidences) and different tests are computed as appropriate (t-test, ANOVA, Kruskall-Wallis, Fisher, log-rank, ...). In order to facilitate construction of the bivariate table, we have implemented a graphical user interface (GUI).
+A package designed to read, interpret, summarise, display and
+analyse epidemiological data. Can be used to create data summaries for
+quality control, extensive reports for exploring data, including
+publication-ready univariate or bivariate tables in plain text HTML and
+LaTeX, and a figures to quickly visualise the distribution of your data.
+Depending on the nature of the variable, various statistics are
+calculated (mean, median, frequencies, incidences) and appropriate
+tests are performed (t-test, Analysis of variance, Kruskal-Wallis, Fisher,
+log-rank, ...). The latest version includes functionality for summarising
+genetic data, and for performing low-level quality control of your database
+(see radiograph()) to help identify data-entry errors. This version has
+also been implemented in a web-interface to make compareGroups accessible
+to non-R-users (see www.comparegroups.eu).
 }
+
+
 \details{
 \tabular{ll}{
 Package: \tab compareGroups\cr
 Type: \tab Package\cr
-Version: \tab 1.0\cr
-Date: \tab 2012-11-07\cr
+Version: \tab 2.0\cr
+Date: \tab 2013-08-01\cr
 License: \tab GPL version 2 or newer\cr
 LazyLoad: \tab yes\cr
 }
-Main functions: \code{\link{compareGroups}}, \code{\link{createTable}}, \code{\link{export2latex}}, \code{\link{export2html}}, \code{\link{export2csv}}    
+Main functions: \code{\link{compareGroups}}, \code{\link{compareSNPs}}, \code{\link{createTable}}, \code{\link{missingTable}}, \code{\link{export2latex}}, \code{\link{export2html}}, \code{\link{export2csv}}, \code{\link{export2pdf}}, \code{\link{report}}, \code{\link{radiograph}}    
 }
+
 
 \author{
-Héctor Sanz <hsanz@imim.es>, Isaac Subirana <isubirana@imim.es> and Joan Vila <jvila@imim.es>
+Main functions: Isaac Subirana <isubirana<at>imim.es>, Joan Vila <jvila<at>imim.es>, Héctor Sanz <hsrodenas<at>gmail.com>, Gavin Lucas <gavin.lucas<at>cleargenetics.com and David Giménez <dgimenez1<at>imim.es>\cr
 
-Maintainer: Isaac Subirana <isubirana@imim.es>
+Web User Interface: Judith Peñafiel <jpenafiel<at>imim.es> and David Giménez <dgimenez1<at>imim.es> \cr
+
+Maintainer: Isaac Subirana <isubirana<at>imim.es>
 }
 
-\keyword{ package }
+
+\keyword{package}
 
