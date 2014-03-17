@@ -16,5 +16,5 @@ printTable <- function(obj, row.names = TRUE, justify = 'right')
   cat(obj[1], "\n")
   cat(paste(rep("=", nch), collapse  =""), "\n")
   for (i in 2:length(obj)) cat(obj[i], "\n")
-  cat(paste(rep(integerToAscii(0175L), nch), collapse = ""), "\n")
+  cat(paste(rep(intToUtf8(0xAFL), nch), collapse = ""), "\n")
 }

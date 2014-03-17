@@ -25,14 +25,6 @@
 \alias{bar.plot}
 \alias{norm.plot}
 \alias{prepare}
-\alias{setupSNP}
-\alias{summary.snp}
-\alias{snp}
-\alias{sortSNPs}
-\alias{is.snp}
-\alias{reorder.snp}
-\alias{SNPHWE}
-
 
 \title{Internal compareGroups functions}
 \description{Internal compareGroups functions}
@@ -64,14 +56,6 @@ bar.plot(x, file, var.label.x, ...)
 norm.plot(x, file, var.label.x, z, n.breaks, ...)
 prepare(x, nmax)
 snpQC(X, sep, ...)
-setupSNP(data, colSNPs, sort=FALSE, info, sep="/", ...)
-summary.snp(object, ...) 
-snp(x, sep = "/", name.genotypes, reorder="common", remove.spaces = TRUE, 
-       allow.partial.missing = FALSE) 
-sortSNPs(data, colSNPs, info) 
-is.snp(x)
-reorder.snp(x, ref="common", ...)
-SNPHWE(x)       
 }
 
 \details{These are not to be called by the user}

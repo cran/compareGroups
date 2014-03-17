@@ -69,7 +69,7 @@ Additionaly, when analysis is stratified by groups, the last component consists 
 
 \note{
 
-  It uses some functions taken from \pkg{SNPassoc} created by Juan Ramón González et al. which is not currently available on CRAN repository. \cr
+  It uses some functions taken from \pkg{SNPassoc} created by Juan Ramón González et al. \cr
   
   Hardy-Weinberg equilibrium test is performed using the  \code{\link[HardyWeinberg]{HWChisqMat}}
 

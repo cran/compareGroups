@@ -40,41 +40,40 @@ snpQC <- function(X,sep,...)
 
     # Create an object to store results
     tm <- rep(NA,ncol(snp.sum)); names(tm) <- colnames(snp.sum); tm <- tm[-(c(1:6,ncol(snp.sum)))]
-    
-    # Summary stats function
-    ff <- function(snp.i){
-      if (all(is.na(X[,snp.i])))  # no data
-        return(tm)
-      sm<-summary.snp(X[!is.na(X[,snp.i]),snp.i])
-      if(length(sm$allele.names)>2){
-        snp.sum[snp.i,] <-NA
-      } else {
-        # Alleles
-        tm["Minor"] <- rownames(sm$allele.freq)[which.min(sm$allele.freq[,2])]
-        tm["MAF"]   <- round(min(sm$allele.freq[,2]),1)/100
-        alels<-sm$allele.names
-        if(length(alels)==2){
-          tm[c("A1","A2")]<-alels
-          tm[c("A1.ct","A2.ct")]<-sm$allele.freq[alels,"frequency"]
-          tm[c("A1.p","A2.p")]<-round(sm$allele.freq[alels,"percentage"],digits=1)/100
+
+    # loop over SNPs
+    snp.sum[,names(tm)] <- t(sapply(snps, function(snp.i){
+        if (all(is.na(X[,snp.i])))  # no data
+          return(tm)
+        sm<-summary(X[!is.na(X[,snp.i]),snp.i])
+        if(length(sm$allele.names)>2){
+          snp.sum[snp.i,] <-NA
+        } else {
+          # Alleles
+          tm["Minor"] <- rownames(sm$allele.freq)[which.min(sm$allele.freq[,2])]
+          tm["MAF"]   <- round(min(sm$allele.freq[,2]),1)/100
+          alels<-sm$allele.names
+          if(length(alels)==2){
+            tm[c("A1","A2")]<-alels
+            tm[c("A1.ct","A2.ct")]<-sm$allele.freq[alels,"frequency"]
+            tm[c("A1.p","A2.p")]<-round(sm$allele.freq[alels,"percentage"],digits=1)/100
+          }
+          if(length(alels)==1){
+            tm[c("A1")]<-alels
+            tm[c("A1.ct")]<-sm$allele.freq[alels,"frequency"]
+            tm[c("A1.p")]<-round(sm$allele.freq[alels,"percentage"],digits=1)/100
+          }
+          # Genotypes
+          gts <- attr(sm$genotype.freq,"dimnames")[[1]]; gts <- c(gts,rep(NA,3-length(gts)))
+          tm[c("Hom1","Het","Hom2")] <- gts
+          tm[c("Hom1.ct","Het.ct","Hom2.ct")][!is.na(gts)] <- sm$genotype.freq[,"frequency"]
+          tm[c("Hom1.p","Het.p","Hom2.p")][!is.na(gts)] <- round(sm$genotype.freq[,"percentage"],1)/100
         }
-        if(length(alels)==1){
-          tm[c("A1")]<-alels
-          tm[c("A1.ct")]<-sm$allele.freq[alels,"frequency"]
-          tm[c("A1.p")]<-round(sm$allele.freq[alels,"percentage"],digits=1)/100
-        }
-        # Genotypes
-        gts <- attr(sm$genotype.freq,"dimnames")[[1]]; gts <- c(gts,rep(NA,3-length(gts)))
-        tm[c("Hom1","Het","Hom2")] <- gts
-        tm[c("Hom1.ct","Het.ct","Hom2.ct")][!is.na(gts)] <- sm$genotype.freq[,"frequency"]
-        tm[c("Hom1.p","Het.p","Hom2.p")][!is.na(gts)] <- round(sm$genotype.freq[,"percentage"],1)/100
-      }
-      return(tm)
-    }
-    snp.sum[,names(tm)] <- t(sapply(snps, function(i) ff(i) ))
+        return(tm)    
+    }))
     
     # Hardy-Weinberg test
-    require(HardyWeinberg)
+    #require(HardyWeinberg)    
     hw <- as.matrix(snp.sum[,c("Hom1.ct","Het.ct","Hom2.ct")])
     hw[is.na(hw)] <- 0; hw <- matrix(as.numeric(hw),ncol=ncol(hw))
     snp.sum$HWE.p[rowSums(hw)>0]<-HWChisqMat(hw[rowSums(hw)>0,])$pvalvec

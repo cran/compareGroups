@@ -1,3 +1,9 @@
+v2.0.1
+2014-03-17
+-. check package: Sweave.sty removed from vignette folder.
+-. integerToAscii replaced by intToUtf8 function.
+-. internal functions 'snp.R', 'SNPHWE.R', 'sortSNPs.R', etc. removed since SNPassoc package has been incorporated in depends list.
+
 v2.0
 2013-08-02
 -. new argument 'type' in 'plot.compareGroups' method to save plots in different formats.

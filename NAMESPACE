@@ -2,10 +2,11 @@ importFrom(xtable, xtable)
 importFrom(Hmisc, label, spss.get, rcorr.cens, mtitle, sys)
 importFrom(gdata, trim, remove.vars, rename.vars)
 importFrom(survival, Surv, survfit, survdiff, coxph)
-importFrom(oce,integerToAscii)
 importFrom(epitools, oddsratio)
 importFrom(tools, texi2pdf)
 importFrom(HardyWeinberg, HWChisqMat)
+importFrom(SNPassoc)
+
 
 
 export(
@@ -41,8 +42,6 @@ S3method("[",createTable)
 S3method("[",rbind.compareGroups)
 S3method("[",rbind.createTable)
 S3method("[",cbind.createTable)
-S3method("[",snp) 
-S3method("[",setupSNP)
 S3method(compareGroups,default)      
 S3method(compareGroups,formula)      
 S3method(print,compareGroups) 

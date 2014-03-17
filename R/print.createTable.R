@@ -42,7 +42,7 @@ function(x, which.table="descr", nmax=TRUE, ...){
     table1<-ifelse(is.na(table1),"",table1)    
     table1[,1]<-format(table1[,1],justify="left")
     nn<-max(nchar(apply(table1,1,paste,collapse="")))+ncol(table1)-1
-    hline.over<-paste(rep(integerToAscii(0175L),nn),collapse="")
+    hline.over<-paste(rep(intToUtf8(0xAFL),nn),collapse="")
     hline.under<-paste(rep("_",nn),collapse="")
     cat(hline.under,"\n")
     for (i in 1:ii) 
@@ -70,7 +70,7 @@ function(x, which.table="descr", nmax=TRUE, ...){
     table2[,-1]<-apply(table2[,-1,drop=FALSE],2,format,justify="centre")
     table2[,1]<-format(table2[,1],justify="left")
     nn<-max(nchar(apply(table2,1,paste,collapse="")))+ncol(table2)-1
-    hline.over<-paste(rep(integerToAscii(0175L),nn),collapse="")
+    hline.over<-paste(rep(intToUtf8(0xAFL),nn),collapse="")
     hline.under<-paste(rep("_",nn),collapse="")
     cat(hline.under,"\n")
     cat(table2[1,],"\n")

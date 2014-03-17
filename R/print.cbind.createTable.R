@@ -74,7 +74,7 @@ print.cbind.createTable <- function(x, which.table="descr", nmax=TRUE, ...)
     cat(rep(" ",lrn),paste(sapply(1:length(ll.desc),function(vv) paste(rep("_",ll.desc[vv]),collapse="")),collapse="  "),"\n",sep="")
     for (i in 1:ii)
       cat(desc[i,],"\n")
-    cat(rep(integerToAscii(0175L),lrn+sum(ll.desc)+2*length(ll.desc)-2),"\n",sep="")
+    cat(rep(intToUtf8(0xAFL),lrn+sum(ll.desc)+2*length(ll.desc)-2),"\n",sep="")
     for (i in (ii+1):nrow(desc)){ 
       if (!is.null(attr(x[[1]],"caption")) && cc[i-ii]!=""){
         cat(cc[i-ii],":\n",sep="")
@@ -83,7 +83,7 @@ print.cbind.createTable <- function(x, which.table="descr", nmax=TRUE, ...)
         cat(desc[i,],"\n")                  
       }      
     }  
-    cat(rep(integerToAscii(0175L),lrn+sum(ll.desc)+2*length(ll.desc)-2),"\n",sep="")
+    cat(rep(intToUtf8(0xAFL),lrn+sum(ll.desc)+2*length(ll.desc)-2),"\n",sep="")
   }
   
   if (ww %in% c(2,3)){
@@ -98,7 +98,7 @@ print.cbind.createTable <- function(x, which.table="descr", nmax=TRUE, ...)
     cat(rep(" ",lrn),paste(lcap.avail,collapse="  "),"\n",sep="")
     cat(rep(" ",lrn),sapply(ll.avail,function(vv) paste(paste(rep("_",vv),collapse="")," ",collapse="")),"\n",sep="")
     cat(avail[1,],"\n")
-    cat(rep(integerToAscii(0175L),lrn+sum(ll.avail)+2*length(ll.avail)-2),"\n",sep="")
+    cat(rep(intToUtf8(0xAFL),lrn+sum(ll.avail)+2*length(ll.avail)-2),"\n",sep="")
     for (i in 2:nrow(avail)){
       if (!is.null(attr(x[[1]],"caption")) && attr(x[[1]],"caption")[[i-1]]!=""){
         cat(attr(x[[1]],"caption")[[i-1]],":\n",sep="")
@@ -107,7 +107,7 @@ print.cbind.createTable <- function(x, which.table="descr", nmax=TRUE, ...)
         cat(avail[i,],"\n")                  
       }
     }
-    cat(rep(integerToAscii(0175L),lrn+sum(ll.avail)+2*length(ll.avail)-2),"\n",sep="")
+    cat(rep(intToUtf8(0xAFL),lrn+sum(ll.avail)+2*length(ll.avail)-2),"\n",sep="")
   }
   
 }

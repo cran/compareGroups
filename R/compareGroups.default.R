@@ -227,7 +227,7 @@ function(X, y = NULL, Xext = NULL, selec = NA, method = 1, timemax = NA, alpha =
     stop("None variable can be computed")
     
    if (length(ww)>0){
-    warning(paste("Variables '",paste(names(X)[ww],collapse="', '"),"' have been removed since some errors ocurred",sep=""))
+    warning(paste("Variables '",paste(names(X)[ww],collapse="', '"),"' have been removed since some errors occurred",sep=""))
     varnames.orig<-varnames.orig[-ww]
    }
 
