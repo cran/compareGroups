@@ -1,3 +1,7 @@
+v2.0.2
+2014-03-26
+-. fixed: +/- symbol
+
 v2.0.1
 2014-03-17
 -. check package: Sweave.sty removed from vignette folder.

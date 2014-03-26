@@ -1,4 +1,4 @@
-728b9ce51c9980f5fb67cf5f13582c7e *DESCRIPTION
+b79f7e17100f9ef324383629e4e26970 *DESCRIPTION
 61bab3179335932a843e127f210d305f *NAMESPACE
 ce13bd39efd694739c6144597be107f2 *R/Cox.plot.R
 6f64f3a2db7f788c9f46db92cebc8eeb *R/KM.plot.R
@@ -52,7 +52,7 @@ e45ba77b13067e8dd563ac6b11213fcd *R/simplify.formula.R
 4926e34c24cb8aba00961ba089f5d9d3 *R/summ.i.R
 ffdb1ec97f4f60231e8b707936f7c17e *R/summary.compareGroups.R
 a918430be288d5aec9db5827235b41b4 *R/summary.createTable.R
-66e5b4484fc0957bd061541e31a57792 *R/table.i.R
+55bc1b21c6e2f2cfab19432deb71bb31 *R/table.i.R
 af7d5f8bdb4466e8a8c9186c71b34e4f *R/update.compareGroups.R
 2540a5b4fe4ca4af872b8f8a48da672d *R/update.formula2.R
 9d56a6109c93ed09a29525292406ee55 *R/varinfo.R
@@ -67,7 +67,7 @@ d03cba6157d8429678f6e6db90cea40a *build/vignette.rds
 141e16c41f1c2ec9c86d3dadbc3c8fe4 *data/SNPs.rda
 dace48f74274c661456324e13ba6857c *data/predimed.rda
 2522743e76ae259a047ab61dcf250a8e *data/regicor.rda
-dd858443e023279eb6bfffb3a7bde061 *inst/doc/changelog.txt
+3bbe455580acf64e22b722caf249a9b2 *inst/doc/changelog.txt
 e0c0d2e4f72ff786a08e34ec9c94ebc2 *inst/doc/compareGroups_vignette.R
 7e68a5865ac9ca2ad3f81fe21cbf4934 *inst/doc/compareGroups_vignette.pdf
 26c8336ded9b242ee3d6da671379b7fa *inst/doc/compareGroups_vignette.rnw
@@ -75,7 +75,7 @@ e0c0d2e4f72ff786a08e34ec9c94ebc2 *inst/doc/compareGroups_vignette.R
 692635baaed11d978308de245de76f33 *man/SNPs.Rd
 6f35b1e15c8a478d1ff6097136a52af5 *man/cGroupsGUI.Rd
 46dddc79707243d6c44753e4504e6fc2 *man/compareGroups-internal.Rd
-ac269573a162244155795daa232feced *man/compareGroups-package.Rd
+25e9713600e498caf720c810f6f2fa0e *man/compareGroups-package.Rd
 2e28168c901f04d216e574f7b29dccdf *man/compareGroups.Rd
 1f3e8447439888d3215ba430c25a19a2 *man/compareSNPs.Rd
 9aea2316e6300d62bce1c681e11e3327 *man/createTable.Rd
@@ -104,15 +104,15 @@ eeabff8dc1286d7b984e43d61701f282 *vignettes/figures/GUI/step8_export_table.png
 9abbf2660aa118f6e62cf18c5ad1ffa7 *vignettes/figures/GUI/toevent.png
 cff54a72e1705d344d5f770adcc0e3ab *vignettes/figures/GUI/xxxx.png
 e79f1225a5b78b2544b39cd2dbdb9a32 *vignettes/figures/Rlogo.pdf
-3badd9f60798ad64415cc6f8431f4055 *vignettes/figures/bivar/age.pdf
+1ac73e1be61342c8a2a2fb86bd394dea *vignettes/figures/bivar/age.pdf
 57aff4b0ff69cd4d413dfa3ce001918e *vignettes/figures/bivar/age.pdfage.pdf
-3d76fda06550bebee182ad3ef5dcd319 *vignettes/figures/bivar/sex.pdf
+445de97f541f69f60c0da65f04024dd1 *vignettes/figures/bivar/sex.pdf
 d2c78ecdfe4789b5a0308e5b31884e22 *vignettes/figures/bivar/sex.pdfsex.pdf
-79adab9cd09f4953c52a84db865accd0 *vignettes/figures/bivar/tmain.pdf
+c1c5d05798ff6cc5a099ddb70a1ccab8 *vignettes/figures/bivar/tmain.pdf
 ed9805cec4d57e9a7acdd1b2cf666af8 *vignettes/figures/bivar/tmain.pdftmain.pdf
 3070e4ac59312fd60b3bc4d6c9155d39 *vignettes/figures/classes.pdf
 0396e473858f782419de7a07baf1bd75 *vignettes/figures/classes.tex
-bb47df41954f0a91efcaf6ecbde81c3f *vignettes/figures/univar/age.pdf
-a68208594ffaf7f25f398984a51674a9 *vignettes/figures/univar/sex.pdf
-36a414ab6162404beda66bd71eea3ed8 *vignettes/figures/univar/tmain.pdf
+3168f26fa4ef7f7c776edede2dcec98c *vignettes/figures/univar/age.pdf
+3e8b2bdce4ffbe8f0a019686e016af45 *vignettes/figures/univar/sex.pdf
+b3fe8824b23cb0e1819ffacfc6c42be6 *vignettes/figures/univar/tmain.pdf
 e00c0b2ec41caddae72bc9149ff7aa9a *vignettes/figures/univar/tmain.pdftmain.pdf
