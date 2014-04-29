@@ -1,6 +1,13 @@
 table.i <-
 function(x, hide.i, digits, digits.ratio, type, varname, hide.i.no, digits.p, sd.type, q.type){
 
+  os<-sessionInfo()$platform
+  locale<-sessionInfo()$locale
+  locale<-strsplit(locale,";")[[1]] 
+  locale<-locale[grep("^LC_CTYPE",locale)]        
+  locale<-sub("LC_CTYPE=","",locale)
+  spchar<-if (length(grep("linux",os))==0 || length(grep("UTF-8",locale))>0) TRUE else FALSE
+
   method<-attr(x,"method")
 
   if (is.na(digits))
@@ -132,7 +139,10 @@ function(x, hide.i, digits, digits.ratio, type, varname, hide.i.no, digits.p, sd
       if (sd.type==1)
         ans<-cbind(apply(nn,1,function(y) paste(y[1]," (",y[2],")",sep="")))
       else
-        ans<-cbind(apply(nn,1,function(y) paste(y[1],intToUtf8(0xB1L),y[2],sep="")))        
+        if (spchar)
+          ans<-cbind(apply(nn,1,function(y) paste(y[1],intToUtf8(0xB1L),y[2],sep="")))
+        else
+          ans<-cbind(apply(nn,1,function(y) paste(y[1],"+/-",y[2],sep="")))        
     } else {
       if (q.type[1]==1){
         if (q.type[2]==1)

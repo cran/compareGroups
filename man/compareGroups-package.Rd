@@ -30,8 +30,8 @@ to non-R-users (see www.comparegroups.eu).
 \tabular{ll}{
 Package: \tab compareGroups\cr
 Type: \tab Package\cr
-Version: \tab 2.0.2\cr
-Date: \tab 2014-03-26\cr
+Version: \tab 2.0.3\cr
+Date: \tab 2014-04-29\cr
 License: \tab GPL version 2 or newer\cr
 LazyLoad: \tab yes\cr
 }

@@ -1,8 +1,8 @@
 Package: compareGroups
 Type: Package
 Title: Descriptive analysis by groups
-Version: 2.0.2
-Date: 2014-03-26
+Version: 2.0.3
+Date: 2014-04-29
 Depends: R (>= 2.13.1), Hmisc, xtable, gdata, SNPassoc
 Imports: survival, epitools, tools, HardyWeinberg
 Suggests: tcltk2, car
@@ -27,7 +27,7 @@ URL: http://www.comparegroups.eu
 LazyLoad: yes
 Encoding: latin1
 BuildVignettes: True
-Packaged: 2014-03-26 09:57:51 UTC; isubirana
+Packaged: 2014-04-29 17:05:52 UTC; isubirana
 NeedsCompilation: no
 Repository: CRAN
-Date/Publication: 2014-03-26 12:48:55
+Date/Publication: 2014-04-29 22:05:48

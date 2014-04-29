@@ -15,8 +15,15 @@ function(x, which.table="descr", nmax=TRUE, ...){
     if (ww != 1){
       warning(" only 'descr' table can be displayed for 'missingTable' object. Argument 'which.table' set to 'descr'")
       ww <- 1
-    }    
-  
+    }   
+    
+  os<-sessionInfo()$platform
+  locale<-sessionInfo()$locale
+  locale<-strsplit(locale,";")[[1]] 
+  locale<-locale[grep("^LC_CTYPE",locale)]        
+  locale<-sub("LC_CTYPE=","",locale)
+  spchar<-if (length(grep("linux",os))==0 || length(grep("UTF-8",locale))>0) TRUE else FALSE  
+ 
   yname<-attr(x,"yname")   
   
   if (ww%in%c(1,3)){
@@ -42,7 +49,10 @@ function(x, which.table="descr", nmax=TRUE, ...){
     table1<-ifelse(is.na(table1),"",table1)    
     table1[,1]<-format(table1[,1],justify="left")
     nn<-max(nchar(apply(table1,1,paste,collapse="")))+ncol(table1)-1
-    hline.over<-paste(rep(intToUtf8(0xAFL),nn),collapse="")
+    if (spchar)
+      hline.over<-paste(rep(intToUtf8(0xAFL),nn),collapse="")
+    else
+      hline.over<-paste(rep("-",nn),collapse="")    
     hline.under<-paste(rep("_",nn),collapse="")
     cat(hline.under,"\n")
     for (i in 1:ii) 
@@ -70,7 +80,10 @@ function(x, which.table="descr", nmax=TRUE, ...){
     table2[,-1]<-apply(table2[,-1,drop=FALSE],2,format,justify="centre")
     table2[,1]<-format(table2[,1],justify="left")
     nn<-max(nchar(apply(table2,1,paste,collapse="")))+ncol(table2)-1
-    hline.over<-paste(rep(intToUtf8(0xAFL),nn),collapse="")
+    if (spchar)
+      hline.over<-paste(rep(intToUtf8(0xAFL),nn),collapse="")
+    else
+      hline.over<-paste(rep("-",nn),collapse="")    
     hline.under<-paste(rep("_",nn),collapse="")
     cat(hline.under,"\n")
     cat(table2[1,],"\n")

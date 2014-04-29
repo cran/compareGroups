@@ -1,3 +1,7 @@
+v2.0.3
+2014-04-29
+-. high line and +/- symbol when printint table on R console replaced by standard C-locale if necessary.
+
 v2.0.2
 2014-03-26
 -. fixed: +/- symbol
