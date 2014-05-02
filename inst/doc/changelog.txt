@@ -1,3 +1,7 @@
+v2.0.4
+2014-05-02
+-. JSS paper citation included, in compareGroups.Rd and in createTable.Rd help files.
+
 v2.0.3
 2014-04-29
 -. high line and +/- symbol when printint table on R console replaced by standard C-locale if necessary.

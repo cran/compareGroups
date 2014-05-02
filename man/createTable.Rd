@@ -91,7 +91,6 @@ An object of class 'createTable', which contains a list of 2 matrix:
   
 }
 
-
 \note{
 
 The way to compute the 'N' shown in the bivariate table header, controlled by 'nmax' argument, has been changed from previous versions (<1.3). In the older versions 'N' was computed as the maximum across the cells withing each column (group) from the 'available data' table ('avail').
@@ -101,7 +100,9 @@ This discordance may also be present when computing the p-value corresponding to
 
 }
 
-
+\references{
+  Isaac Subirana, Hector Sanz, Joan Vila (2014). Building Bivariate Tables: The compareGroups Package for R. Journal of Statistical Software, 57(12), 1-16. URL \url{http://www.jstatsoft.org/v57/i12/}.
+}
 
 \seealso{
   \code{\link{compareGroups}}, \code{\link{export2latex}}, \code{\link{export2csv}}, \code{\link{export2html}}

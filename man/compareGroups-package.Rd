@@ -30,8 +30,8 @@ to non-R-users (see www.comparegroups.eu).
 \tabular{ll}{
 Package: \tab compareGroups\cr
 Type: \tab Package\cr
-Version: \tab 2.0.3\cr
-Date: \tab 2014-04-29\cr
+Version: \tab 2.0.4\cr
+Date: \tab 2014-05-02\cr
 License: \tab GPL version 2 or newer\cr
 LazyLoad: \tab yes\cr
 }
@@ -45,6 +45,10 @@ Main functions: Isaac Subirana <isubirana<at>imim.es>, Joan Vila <jvila<at>imim.
 Web User Interface: Judith Peñafiel <jpenafiel<at>imim.es> and David Giménez <dgimenez1<at>imim.es> \cr
 
 Maintainer: Isaac Subirana <isubirana<at>imim.es>
+}
+
+\references{
+  Isaac Subirana, Hector Sanz, Joan Vila (2014). Building Bivariate Tables: The compareGroups Package for R. Journal of Statistical Software, 57(12), 1-16. URL \url{http://www.jstatsoft.org/v57/i12/}.
 }
 
 
