@@ -5,8 +5,8 @@ importFrom(survival, Surv, survfit, survdiff, coxph)
 importFrom(epitools, oddsratio)
 importFrom(tools, texi2pdf)
 importFrom(HardyWeinberg, HWChisqMat)
-importFrom(SNPassoc)
 
+import(SNPassoc)
 
 
 export(

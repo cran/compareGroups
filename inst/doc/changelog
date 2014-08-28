@@ -1,3 +1,7 @@
+v2.0.5
+2014-8-28
+-. Bug fixed regarding number of decimals when applying subsetting '[' method to createTable, rbind.createTable and cbind.createTable class objects.
+
 v2.0.4
 2014-05-02
 -. JSS paper citation included, in compareGroups.Rd and in createTable.Rd help files.

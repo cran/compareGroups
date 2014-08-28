@@ -19,7 +19,7 @@ missingTable <- function(obj,...)
   temp <- lapply(temp, function(var){
     out <- as.integer(is.na(var))
     out <- factor(out,0:1,c('Avail','Non Avail'))
-    label(out) <- label(var)
+    Hmisc::label(out) <- Hmisc::label(var)
     out
   })
   temp <- as.data.frame(temp)

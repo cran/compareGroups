@@ -10,7 +10,7 @@ Descriptive analysis by groups
 
 
 \description{
-A package designed to read, interpret, summarise, display and
+This package is designed to read, interpret, summarise, display and
 analyse epidemiological data. Can be used to create data summaries for
 quality control, extensive reports for exploring data, including
 publication-ready univariate or bivariate tables in plain text HTML and
@@ -30,8 +30,8 @@ to non-R-users (see www.comparegroups.eu).
 \tabular{ll}{
 Package: \tab compareGroups\cr
 Type: \tab Package\cr
-Version: \tab 2.0.4\cr
-Date: \tab 2014-05-02\cr
+Version: \tab 2.0.5\cr
+Date: \tab 2014-08-28\cr
 License: \tab GPL version 2 or newer\cr
 LazyLoad: \tab yes\cr
 }
