@@ -1,4 +1,4 @@
-export2csv<-function(x, file, which.table="descr", sep=",", nmax = TRUE, ...){
+export2csv<-function(x, file, which.table="descr", sep=",", nmax = TRUE, header.labels=c(), ...){
 
   if (!inherits(x,"createTable"))
     stop("x must be of class 'createTable'")
@@ -11,8 +11,8 @@ export2csv<-function(x, file, which.table="descr", sep=",", nmax = TRUE, ...){
     stop(" argument 'which.table' must be either 'descr', 'avail' or 'both'")    
     
   if (ww%in%c(1,3)){
-    pp<-prepare(x,nmax=nmax)
-    table1<-prepare(x,nmax=nmax)[[1]]
+    pp<-prepare(x,nmax=nmax,header.labels)
+    table1<-prepare(x,nmax=nmax,header.labels)[[1]]
     cc<-unlist(attr(pp,"cc"))
     ii<-ifelse(rownames(table1)[2]=='',2,1)
     table1<-cbind(rownames(table1),table1)
@@ -28,11 +28,11 @@ export2csv<-function(x, file, which.table="descr", sep=",", nmax = TRUE, ...){
       }
     }
     table1<-rbind(table1[1:ii,,drop=FALSE],aux)
-    write.table(table1,file=paste(file,".csv",sep=""),na="",sep=sep,row.names=FALSE,col.names=FALSE,...)
+    write.table(table1,file=file,na="",sep=sep,row.names=FALSE,col.names=FALSE,...)
   }
 
   if (ww%in%c(2,3)){  
-    table2<-prepare(x,nmax=nmax)[[2]]
+    table2<-prepare(x,nmax=nmax,c())[[2]]
     table2<-cbind(rownames(table2),table2)
     if (!is.null(attr(x,"caption"))){
       cc<-unlist(attr(x,"caption"))
@@ -40,7 +40,7 @@ export2csv<-function(x, file, which.table="descr", sep=",", nmax = TRUE, ...){
     }
     aux<-NULL
     for (i in 2:nrow(table2)){
-      if (!is.null(cc) && cc[i-1]!=""){
+      if (!is.null(attr(x,"caption")) && !is.null(cc) && cc[i-1]!=""){
         aux<-rbind(aux,c(cc[i-1],rep("",ncol(table2)-1)))
         aux<-rbind(aux,table2[i,])
       }else {
@@ -48,7 +48,8 @@ export2csv<-function(x, file, which.table="descr", sep=",", nmax = TRUE, ...){
       }
     }
     table2<-rbind(table2[1,],aux)
-    write.table(table2,file=paste(file,"_appendix.csv",sep=""),na="",sep=sep,row.names=FALSE,col.names=FALSE,...)
+    file.save<-paste(sub("\\.csv$","",file),"_appendix.csv",sep="")
+    write.table(table2,file=file.save,na="",sep=sep,row.names=FALSE,col.names=FALSE,...)
   }
 
 }

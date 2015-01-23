@@ -17,7 +17,7 @@ function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, 
       ll<-levels(x)
       x<-as.integer(x)
       x<-ifelse(is.na(x),99999,x)
-      x<-factor(x,c(1:length(ll),99999),labels=c(ll,"<Missing>"))
+      x<-factor(x,c(1:length(ll),99999),labels=c(ll,"'Missing'"))
     }
   }
 

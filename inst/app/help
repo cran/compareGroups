@@ -1,0 +1,139 @@
+HELPCG
+<cghelptext>
+<hr />
+		<p>
+			<span style="color: rgb(0, 128, 0); font-family: arial, helvetica, sans-serif; font-size: 26px;"><strong><em><span style="font-family: 'courier new', courier, monospace;">R</span></em></strong></span><span style="color: rgb(0, 128, 0); font-family: arial, helvetica, sans-serif; font-size: 22px;">-package&nbsp;</span><strong><span style="color:#0099ff;"><font size="2px"><span style="font-size:22px;"><span style="font-family:courier new,courier,monospace;">compare</span></span></font></span><span style="color:#0000cc;"><font size="2px"><span style="font-size:22px;"><span style="font-family:courier new,courier,monospace;">Groups</span></span></font></span></strong></p>
+		<p>
+		<br>
+			<span style="color:#008000;"><span style="font-size:14px;"><span style="font-family: arial, helvetica, sans-serif;"></span><span style="font-size:16px;"><span style="font-family:courier new,courier,monospace;"><strong>compareGroups</strong></span></span><span style="font-family: arial, helvetica, sans-serif;">&nbsp;is an R-package designed to read, interpret, summarise, display and analyse epidemiological data. <br><br>It can be used to create data summaries for quality control, extensive reports for exploring data, as well as publication-ready univariate or bivariate tables in <strong>plain text</strong>, <strong>HTML </strong>, <strong>LaTeX</strong> or <strong>PDF</strong>, and figures to quickly visualise the distribution of your data. <br><br>Depending on the nature of the variable, various statistics can be calculated (<strong>mean, median, frequencies, incidences</strong>) and appropriate tests can be performed (<strong>t-test, Analysis of variance, Kruskal-Wallis, Fisher, log-rank</strong>, ...). <br><br>The latest version includes functionality for summarising <strong>genetic data</strong>, and for performing detailed, low-level <strong>quality control</strong> of your database (see radiograph()) to help identify data-entry errors.</span></span></span></p>
+		<p>
+			<i style="font-size: small; color: green; font-family: arial, helvetica, sans-serif;">See <a href="http://cran.rstudio.com/web/packages/compareGroups/vignettes/compareGroups_vignette.pdf">this document</a> for details.</i></p>
+</cghelptext>
+
+HELPWUI
+<cghelptext>
+<hr />
+  <p>
+  <br>
+   <strong><span style="color:#0099ff;"><font size="2px"><span style="font-size:22px;"><span style="font-family:courier new,courier,monospace;">compare</span></span></font></span><span style="color:#0000cc;"><font size="2px"><span style="font-size:22px;"><span style="font-family:courier new,courier,monospace;">Groups</span></span></font></span></strong><font color="green" size="2px"><span style="font-size:22px;"> <span style="font-family:arial,helvetica,sans-serif;">Web User Interface</span></span></font></p>
+  <p>
+   <span style="color:#008000;"><span style="font-size:14px;"><span style="font-family: arial, helvetica, sans-serif;">This WUI is designed to allow clinicians and scientists to take advantage of the functionality of </span><span style="font-size:16px;"><span style="font-family:courier new,courier,monospace;"><strong>compareGroups</strong></span></span><span style="font-family: arial, helvetica, sans-serif;">&nbsp;to analyse their epidemiological data, but without the need to install or learn how to use <span style="font-size:20px;"><span style="font-family:courier new,courier,monospace;">R</span></span></span></span><span style="font-family: arial, helvetica, sans-serif; font-size: 14px;">.</span></span></p>
+  <p>
+   <span style="color:#008000;"><span style="font-family: arial, helvetica, sans-serif; font-size: 14px;">This system has all of the functionality of the current command line version of compareGroups, but has the advantage of allowing you to load and analyse your data on any device with an internet connection.</span></span></p>
+  <p>
+   <span style="font-family:arial,helvetica,sans-serif;"><font color="green" size="2px"><font size="2px"><i>See <a href="http://www.comparegroups.eu/compareGroupsWUI_vignette.pdf?attredirects=0&d=1">this document</a> for details.</i></font></font></span></p>
+</cghelptext>
+
+DATASECURITY
+<cghelptext>
+<hr />
+		<p>
+		<br>
+			<span style="color: rgb(0, 128, 0); font-family: arial, helvetica, sans-serif; font-size: 22px;">Data Security when using the </span><strong><span style="color:#0099ff;"><font size="2px"><span style="font-size:22px;"><span style="font-family:courier new,courier,monospace;">compare</span></span></font></span><span style="color:#0000cc;"><font size="2px"><span style="font-size:22px;"><span style="font-family:courier new,courier,monospace;">Groups</span></span></font></span></strong><span style="color: rgb(0, 128, 0); font-family: arial, helvetica, sans-serif; font-size: 22px;">&nbsp;WUI</span></p>
+		<p>
+			<span style="font-size:14px;"><font color="#008000" face="arial, helvetica, sans-serif">compareGroups is developed by experienced researchers who are actively involved in epidemiological research on human subjects. We understand very well how important it is to guarantee data confidentiality and security, and we have designed the compareGroups WUI so that your data will remain as secure as at your own institute.</font></span></p>
+		<p>
+			<span style="font-size:14px;"><strong><span style="font-family:arial,helvetica,sans-serif;"><font color="green">Will my data be safe if I load them into the compareGroups WUI?</font></span></strong><br />
+			<font color="#008000" face="arial, helvetica, sans-serif">The compareGroups WUI is hosted on&nbsp;a <a href="https://www.digitalocean.com/security/" target="_blank">secure cloud server platform</a>, which guarantees the physical and electronic security of the WUI, and therefore of any data that are loaded into it. Data loaded into the WUI are transmitted over a secure connection via HTTPS.</font></span></p>
+		<p>
+			<span style="font-size:14px;"><strong><span style="font-family: arial, helvetica, sans-serif;"><font color="green">What happens to my data when I load them into the compareGroups WUI?</font></span></strong><br />
+			<span style="color: green; font-family: arial, helvetica, sans-serif;">If you&#39;re familiar with R, you&#39;ll know that it loads all data and performs all calculations within the&nbsp;</span><span style="color: rgb(0, 128, 0); font-family: arial, helvetica, sans-serif;">RAM&nbsp;</span><span style="color: green; font-family: arial, helvetica, sans-serif;">allocated for that R session. This means that it never writes data to the disk, and when the R session ends, all data it has been working on are eliminated.</span></span></p>
+		<p>
+			<span style="font-size:14px;"><span style="color: rgb(0, 128, 0); font-family: arial, helvetica, sans-serif;">Accessing the compareGroups WUI page starts a dedicated session of R to read and manipulate your data, and compute your results. However, this R session never saves data to the hard disk of the server it&#39;s running on, and only sends results to the WUI, either in the form of displayed tables or plots, or as files to be downloaded by the the user via the SAVE tab. </span></span></p>
+		<p>
+			<span style="font-size:14px;"><span style="color: rgb(0, 128, 0); font-family: arial, helvetica, sans-serif;">When you close your browser window, the R session is terminated, and all data are lost. To can verify this for yourself by simply re-loading the WUI page, after which you will see that no data are loaded.&nbsp;</span><font color="#008000" face="arial, helvetica, sans-serif">compareGroups developers&nbsp;</font><span style="color: rgb(0, 128, 0); font-family: arial, helvetica, sans-serif;">only&nbsp;have access to the underlying R code that generates that WUI and performes the calculations, and can never gain access to data that have been loaded into a remote session.</span></span></p>
+		<p>
+			&nbsp;</p>
+		<p>
+			<span style="font-size:14px;"><span style="color: rgb(0, 128, 0); font-family: arial, helvetica, sans-serif;">If you have any further concerns or questions about the security of your data when using the compareGroups WUI, please get in touch with us via the <a href="http://www.comparegroups.eu/contact">contact form</a>.</span></span></p>
+</cghelptext>
+
+LOAD
+<cghelptext>
+<font size=2px color='blue'> <h4>START</h4> <br> Use this tab to load your data in SPSS, Excel, R or plain text format. <br><br> If you select <b>R-format</b>, the uploaded file should contain a single object of class 'data.frame'. <br><br> If you select <b>TEXT format</b>, make sure to set the right TEXT Options so that your data can be read correctly. <br><br> Also you can select example data already present in the <a href="http://cran.r-project.org/web/packages/compareGroups/compareGroups.pdf"><span style="font-family:courier new,courier,monospace;"><strong>compareGroups</strong></span></a> package (REGICOR and PREDIMEND) and SNPs from <a href="http://cran.r-project.org/web/packages/SNPassoc/SNPassoc.pdf"><span style="font-family:courier new,courier,monospace;"><strong>SNPassoc</strong></span></a> package. <br> <br> Once your data are loaded, you can hide the Load Panel, and start selecting the variables you want to analyse. <br> <br> <br> <strong> Notes: </strong> <br><br> (1) 'Data loaded / Reset' check button is enabled automatically when the data are loaded satisfactory. It is not recommended to be modified by the user. <br><br> (2) It may be necessary to refresh the web page when loading a new data set. </font>
+</cghelptext>
+
+Type
+<cghelptext>
+<font size=2px color='blue'> <h4>SETTINGS &#10137; Type</h4> <br> Use this tab to set the type of your variables to be analysed as: <br><br> a) <strong>normal</strong> (mean as standard deviation), <br><br> b) <strong>non-normal</strong> (median and quantiles) or as <br><br> c) <strong>categorical</strong> (frequencies and proportions). <br> <br><br> Appropiate statistical tests to compare among groups (if specified) are computed depending on the type (normal, non-normal or categorical). <br> <br><br> To know more about the tests performed and the functions used in each case see the <a href="http://www.jstatsoft.org/v57/i12/paper">published paper in JSS</a>.</font>
+</cghelptext>
+
+Response
+<cghelptext>
+<font size=2px color='blue'> <h4>SETTINGS &#10137; Response</h4> <br> Use this tab to select which variable indicates the group.  <br><br> Three choices are possible: <br><br> 1) <strong>None:</strong> <br>&nbsp;&nbsp;&nbsp;&nbsp;Descriptives are performed for the entire data set with no groups. <br><br> 2) <strong>Group:</strong> <br>&nbsp;&nbsp;&nbsp;&nbsp;A variable must be selected. <br>&nbsp;&nbsp;&nbsp;&nbsp;By default, only factors variables with five or less categories can be selected. <br>&nbsp;&nbsp;&nbsp;&nbsp;The descriptives will be performed by the groups defined by this variable. <br><br> 3) <strong>Survival:</strong> <br>&nbsp;&nbsp;&nbsp;&nbsp;Use this options to perform survival analysis where the response is a right censored variable, i.e., with time variable and a variable indicating the censoring status (i.e., whether or not the individual suffered the disease). <br>&nbsp;&nbsp;&nbsp;&nbsp;Also, the disease or case status (category) must be indicated. </font>
+</cghelptext>
+
+Hide
+<cghelptext>
+<font size=2px color='blue'> <h4>SETTINGS &#10137; Hide</h4> <br>Use this tab to choose the category you want to be hidden for categorical variables. <br><br>  Additionally, in the 'hide no' input text window you can type the category which represents 'no' in the sense that the category named as indicated for all binary variables are hidden. </font>
+</cghelptext>
+
+Subset
+<cghelptext>
+<font size=2px color='blue'> <h4>SETTINGS &#10137; Subset</h4> <br> Use this tab to type a selecting criteria to choose which individuals are included. <br><br> Also, you can select a subgroup of individuals for each variable. In any case, a logical expression in R language must be typed ('==' to compare, '&' to indicate 'and', '|' to indicate 'or' and '!' to indicate 'not'). <br><br> To indicate the category, you must type the number that appears in the 'VALUES' table on right side of the application instead of its name. For xample, for gender, type 1 instead of 'male' and 2 instead of 'female', if 'male' is the first category and 'female' is the second. </font>
+</cghelptext>
+
+OR/HR
+<cghelptext>
+<font size=2px color='blue'> <h4>SETTINGS &#10137; OR/HR</h4> <br> Use this tab to set Odds Ratio (OR) when response is binary or Hazard Ratios (HR) for right censored response. <br><br> You can specify the reference category when computing the OR or HR for the categorical variables. <br><br> For continuous variables, the scale can be changed. This may be very useful for variables with a wide range such as total cholesterol, where it makes more sense to display the OR/HR for each 10 units of change rather than a single unit. </font>
+</cghelptext>
+
+Show
+<cghelptext>
+<font size=2px color='blue'> <h4>DISPLAY &#10137; Show</h4> <br> Use this tab to choose what to be displayed in the bivariate table: <br> <br> * <strong>ALL:</strong> Descriptives for the entire data set. <br> <br> <strong>* p-overall:</strong> p-value comparing the means, medians, proportions or incidence among groups. <br> <br> <strong>* Descriptives:</strong> Descriptives (means, medians, proportions, etc.) by groups. <br> <br> <strong>* p-trend:</strong> p-value for trend. It is supposed that the groups are ordered. <br> <br> <strong>* OR/HR:</strong> Odds Ratio or Hazard Ratio for binary or time-to-event response (grouping variable), respectively. <br> <br> <strong>* Avalaible:</strong> Number of individuals with valid data for each variable and each groups. <br> <br> <strong>* NA category:</strong> For categorical variables, the non-available data is considered as a new category. <br> <br> <strong>* Pairwise p-value:</strong> When more than two groups are considered, p-values corresponding to 2 by 2 comparisons are performed taking into account multiple testing. <br> <br> <strong> *Simplify:</strong> Empty categories (with no available data) are removed from the analyses. </font>
+</cghelptext>
+
+Format
+<cghelptext>
+<font size=2px color='blue'> <h4>DISPLAY &#10137; Format</h4> <br> Use this tab to specify how to display the mean and standard deviation, the quantiles and frequencies. </font>
+</cghelptext>
+
+Decimals
+<cghelptext>
+<font size=2px color='blue'> <h4>DISPLAY &#10137; Decimals</h4> <br> Use this tab to set the number of decimals to be displayed in the bivariate table, for descriptives, p-values and for OR / HR. </font>
+</cghelptext>
+
+Label
+<cghelptext>
+<font size=2px color='blue'> <h4>DISPLAY &#10137; Label</h4> <br> Use this tab to change the 'key' headers of the descriptive table such as 'ALL', 'p-value', etc. </font>
+</cghelptext>
+
+Help
+<cghelptext>
+<font size=2px color='blue'> <h4>Help</h4> <br> Use this tab to know what each tab does. </font>
+</cghelptext>
+
+SAVE
+<cghelptext>
+<font size=2px color='blue'> <h4>SAVE</h4> <br>  Use this tab to save both the bivariate table or the plots in different formats: PDF, CSV, TXT, HTML or TXT for tables, and PDF, BMP, JPG, PNG or TIF for plots. <br><br> Depending on the active results tab (right side), i.e., tables or plots, different options are displayed. </font>
+</cghelptext>
+
+Summary
+<cghelptext>
+<font size=2px color='blue'> <h4>VALUES &#10137; Summary</h4>  <br> In this tab you can visualize the name, the label and a basic summary of all the variables contained in the data set. </font>
+</cghelptext>
+
+Extended
+<cghelptext>
+<font size=2px color='blue'> <h4>VALUES &#10137; Extended</h4>  <br> In this tab the first rows of the data set is displayed. <br><br> It is possible to specify how many rows are visible and navigate through the data set. </font>
+</cghelptext>
+
+INFO
+<cghelptext>
+<font size=2px color='blue'> <h4>INFO</h4>  <br> In this tab a table showing the available data for each variable and possibly each group, as well as some other information such as the selection criteria, etc. is displayed. </font>
+</cghelptext>
+
+TABLE
+<cghelptext>
+<font size=2px color='blue'> <h4>TABLE</h4>  <br> In this tab the bivariate table is shown. It can be displayed in three different formats: HTML, PDF or as it is printed in the R console. <br><br> Note that, although this is the less nice format, it is the fastest option to be displayed and, in consequence, may be the most useful way to see how the bivariate table looks like when some options are modified (e.g. grouping variable) 'on line'. </font>
+</cghelptext>
+
+PLOT
+<cghelptext>
+<font size=2px color='blue'> <h4>PLOT</h4> <br> In this tab univariate or bivariate (taking into account the groups if proceeds) plots of selected variable are displayed.</font>
+</cghelptext>
+
+SNPs
+<cghelptext>
+<font size=2px color='blue'> <h4>SNPs</h4>  <br> In this tab descriptives of SNPs (Single Nucleotide Polymorphims) with appropriate statistics and tests for these genetic variants are displayed. <br><br> To perform this analysis, only SNPs variables can be selected. <br><br> Note that a factor response to display genotype frequencies by groups is permitted but not a time-to-event response variable. </font>
+</cghelptext>

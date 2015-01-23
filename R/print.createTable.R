@@ -1,5 +1,5 @@
 print.createTable <-
-function(x, which.table="descr", nmax=TRUE, ...){
+function(x, which.table="descr", nmax=TRUE, header.labels=c(), ...){
 
   if (!inherits(x,"createTable"))
     stop("x must be of class 'createTable'")
@@ -15,20 +15,20 @@ function(x, which.table="descr", nmax=TRUE, ...){
     if (ww != 1){
       warning(" only 'descr' table can be displayed for 'missingTable' object. Argument 'which.table' set to 'descr'")
       ww <- 1
-    }   
-    
+    } 
+
   os<-sessionInfo()$platform
   locale<-sessionInfo()$locale
   locale<-strsplit(locale,";")[[1]] 
   locale<-locale[grep("^LC_CTYPE",locale)]        
   locale<-sub("LC_CTYPE=","",locale)
-  spchar<-if (length(grep("linux",os))==0 || length(grep("UTF-8",locale))>0) TRUE else FALSE  
- 
+  spchar<-if (length(grep("linux",os))==0 || length(grep("UTF-8",locale))>0) TRUE else FALSE         
+  
   yname<-attr(x,"yname")   
   
   if (ww%in%c(1,3)){
-    pp<-prepare(x,nmax=nmax)
-    table1<-prepare(x,nmax=nmax)[[1]]
+    pp<-prepare(x,nmax=nmax,c())
+    table1<-prepare(x,nmax=nmax,header.labels)[[1]]
     cc<-attr(pp,"cc")
     if (attr(x,"groups"))
       if (inherits(x,"missingTable"))
@@ -70,7 +70,7 @@ function(x, which.table="descr", nmax=TRUE, ...){
   }
   
   if (ww%in%c(2,3)){
-    table2<-prepare(x,nmax=nmax)[[2]]  
+    table2<-prepare(x,nmax=nmax,header.labels=c())[[2]]  
     if (!is.null(attr(x,"caption")))
       rownames(table2)<-paste("   ",rownames(table2))
     cat("\n\n\n---Available data----\n\n")

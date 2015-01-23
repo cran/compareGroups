@@ -16,7 +16,7 @@ createTable(x, hide = NA, digits = NA, type = NA, show.p.overall = TRUE,
            show.all, show.p.trend, show.p.mul = FALSE, show.n, show.ratio =
            FALSE, show.descr = TRUE, hide.no = NA, digits.ratio = NA,
            show.p.ratio = show.ratio, digits.p = 3, sd.type = 1, q.type = c(1, 1))
-\method{print}{createTable}(x, which.table = "descr", nmax = TRUE, ...)
+\method{print}{createTable}(x, which.table = "descr", nmax = TRUE, header.labels = c(), ...)
 \method{plot}{createTable}(x, ...)
 }
 
@@ -60,6 +60,8 @@ createTable(x, hide = NA, digits = NA, type = NA, show.p.overall = TRUE,
   
   \item{nmax}{logical, indicating whether to show the number of subjects with at least one valid value across all row-variables. Default value is TRUE.}
 
+  \item{header.labels}{a character named vector with 'all', 'p.overall', 'p.trend' and 'p.ratio' components indicating the label for '[ALL]', 'p.overall', 'p.trend' and 'p.ratio', respectively. Default is a zero length vector which makes no changes, i.e. '[ALL]', 'p.overall', 'p.trend' and 'p.ratio' labels appear for descriptives of entire cohort, global p-value, p-value for trend, and p-value of each HR/OR, respectively.}  
+
   \item{...}{other arguments passed to \code{\link[base]{print.default}}.}
   
 }
@@ -90,6 +92,7 @@ An object of class 'createTable', which contains a list of 2 matrix:
   See the vignette for more details.
   
 }
+
 
 \note{
 
@@ -136,6 +139,11 @@ restab
 # prints available info table
 summary(restab)
 
+
+# more...
+
+\dontrun{
+
 # Adds the 'available data' column
 update(restab, show.n=TRUE)
 
@@ -163,6 +171,7 @@ restab2<-update(restab1, x = update(res1, subset = sex == 'Male'))
 restab3<-update(restab1, x = update(res1, subset = sex == 'Female'))
 cbind("ALL" = restab1, "MALES" = restab2, "FEMALES" = restab3)
 
+}
 
 }
 

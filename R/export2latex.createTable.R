@@ -1,4 +1,4 @@
-export2latex.createTable<-function(x, file, which.table='descr', size='same', nmax = TRUE, caption = NULL, loc.caption = 'top', label = NULL, landscape = NA, colmax = 10, ...){  
+export2latex.createTable<-function(x, file, which.table='descr', size='same', nmax = TRUE, header.labels = c(), caption = NULL, loc.caption = 'top', label = NULL, landscape = NA, colmax = 10, ...){  
 
   if (!inherits(x,"createTable"))
     stop("x must be of class 'createTable'")
@@ -40,7 +40,7 @@ export2latex.createTable<-function(x, file, which.table='descr', size='same', nm
     y.name.label<-gsub("<=","$\\\\leq$",y.name.label)  
     y.name.label<-gsub(">","$>$",y.name.label)
     y.name.label<-gsub("<","$<$",y.name.label)
-    y.name.label<-gsub("\261","$\\\\pm$",y.name.label)
+    y.name.label<-gsub(intToUtf8(0xB1L),"$\\\\pm$",y.name.label)
   }  
   
   if (!is.null(caption)){
@@ -105,15 +105,15 @@ export2latex.createTable<-function(x, file, which.table='descr', size='same', nm
     cap<-gsub("<=","$\\\\leq$",cap)  
     cap<-gsub(">","$>$",cap)
     cap<-gsub("<","$<$",cap)
-    cap<-gsub("\261","$\\\\pm$",cap)      
+    cap<-gsub(intToUtf8(0xB1L),"$\\\\pm$",cap)      
   }
   
   out <- list()
   
   if (ww %in% c(1,3)){
 
-    pp<-prepare(x,nmax=nmax)
-    table1<-prepare(x,nmax=nmax)[[1]]
+    pp<-prepare(x,nmax=nmax,header.labels)
+    table1<-prepare(x,nmax=nmax,header.labels)[[1]]
     cc<-unlist(attr(pp,"cc"))
     if (!is.null(cc)){
       cc<-gsub("\\$","\\\\$",cc)
@@ -124,7 +124,7 @@ export2latex.createTable<-function(x, file, which.table='descr', size='same', nm
       cc<-gsub("<=","$\\\\leq$",cc)  
       cc<-gsub(">","$>$",cc)
       cc<-gsub("<","$<$",cc) 
-      cc<-gsub("\261","$\\\\pm$",cc) 
+      cc<-gsub(intToUtf8(0xB1L),"$\\\\pm$",cc) 
     }
     nmax<-rownames(table1)[2]==''
     if (nmax)
@@ -139,7 +139,7 @@ export2latex.createTable<-function(x, file, which.table='descr', size='same', nm
     rownames(table1)<-gsub(">","$>$",rownames(table1))
     rownames(table1)<-gsub("<","$<$",rownames(table1))
     rownames(table1)<-sub("^    ","$\\\\qquad$",rownames(table1))
-    rownames(table1)<-gsub("\261","$\\\\pm$",rownames(table1))     
+    rownames(table1)<-gsub(intToUtf8(0xB1L),"$\\\\pm$",rownames(table1))     
       
     if (!is.null(cc))
       rownames(table1)<-paste("$\\qquad$",rownames(table1))
@@ -149,7 +149,7 @@ export2latex.createTable<-function(x, file, which.table='descr', size='same', nm
       table1<-sub("%","\\\\%",table1)
       table1<-gsub("<","$<$",table1)
       table1<-gsub(">","$>$",table1)
-      table1<-gsub("\261","$\\\\pm$",table1)           
+      table1<-gsub(intToUtf8(0xB1L),"$\\\\pm$",table1)           
       if (nmax)
         table1[1,!nmax.pos]<-paste("\\multirow{2}{*}{",table1[1,!nmax.pos],"}",sep="")
     }
@@ -215,7 +215,7 @@ export2latex.createTable<-function(x, file, which.table='descr', size='same', nm
       if (missing(file))
         cat(tex,"\n\n")    
       else 
-        write(tex,file=paste(file,".tex",sep=""))
+        write(tex,file=file)
     }
     
     out$desc<-tex
@@ -223,7 +223,7 @@ export2latex.createTable<-function(x, file, which.table='descr', size='same', nm
   
   if (ww%in%c(2,3)){
 
-    table2<-prepare(x,nmax=nmax)[[2]]
+    table2<-prepare(x,nmax=nmax,c())[[2]]
     rownames(table2)<-gsub("\\$","\\\\$",rownames(table2))
     rownames(table2)<-sub("%","\\\\%",rownames(table2))  
     rownames(table2)<-sub("&","\\\\&",rownames(table2))  
@@ -240,7 +240,7 @@ export2latex.createTable<-function(x, file, which.table='descr', size='same', nm
     colnames(table2)<-gsub("<=","$\\\\leq$",colnames(table2))
     colnames(table2)<-gsub(">","$>$",colnames(table2))
     colnames(table2)<-gsub("<","$<$",colnames(table2))   
-    colnames(table2)<-gsub("\261","$\\\\pm$",colnames(table2))              
+    colnames(table2)<-gsub(intToUtf8(0xB1L),"$\\\\pm$",colnames(table2))              
     head.loc<-paste(c("l",rep("c",ncol(table2))),collapse="")
     
     if (!is.null(attr(x,"caption")))
@@ -304,7 +304,7 @@ export2latex.createTable<-function(x, file, which.table='descr', size='same', nm
     if (missing(file))
       cat(tex,"\n")
     else
-      write(tex,file=paste(file,"appendix.tex",sep=""))
+      write(tex,file=paste(sub("\\.tex$","",file),"appendix.tex",sep=""))
 
     out$avail<-tex
   

@@ -26,6 +26,7 @@
 \alias{norm.plot}
 \alias{prepare}
 
+
 \title{Internal compareGroups functions}
 \description{Internal compareGroups functions}
 \usage{
@@ -54,7 +55,7 @@ box.plot(x, y, file, var.label.x, var.label.y, ...)
 KM.plot(x, file, var.label.x, ...)
 bar.plot(x, file, var.label.x, ...)
 norm.plot(x, file, var.label.x, z, n.breaks, ...)
-prepare(x, nmax)
+prepare(x, nmax, header.labels)
 snpQC(X, sep, ...)
 }
 

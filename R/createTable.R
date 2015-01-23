@@ -50,7 +50,7 @@ createTable <- function(x, hide = NA, digits = NA, type = NA, show.p.overall = T
    temp<-rep(NA,length(x))
    names(temp)<-attr(x,"varnames.orig")
    if (!all(names(hide)%in%names(temp)))
-     stop(paste("variables",paste(names(hide)[!names(hide)%in%names(temp)],collapse=", "),"specified in 'hide' not found"))
+     warning(paste("variables",paste(names(hide)[!names(hide)%in%names(temp)],collapse=", "),"specified in 'hide' not found"))
    kkk<-names(hide)[names(hide)%in%attr(x,"varnames.orig")]
    temp[kkk]<-hide[kkk]
    hide<-temp

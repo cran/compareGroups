@@ -5,7 +5,6 @@ importFrom(survival, Surv, survfit, survdiff, coxph)
 importFrom(epitools, oddsratio)
 importFrom(tools, texi2pdf)
 importFrom(HardyWeinberg, HWChisqMat)
-
 import(SNPassoc)
 
 
@@ -28,12 +27,14 @@ export2csv,
 export2html,
 export2pdf,
 cGroupsGUI,
+cGroupsWUI,
 report,
 radiograph,
 compareSNPs,
 print.compareSNPs,
 missingTable,
-printTable
+printTable,
+getResults
 )
 
 

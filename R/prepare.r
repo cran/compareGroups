@@ -1,5 +1,5 @@
 prepare<-
-function (x, nmax) 
+function (x, nmax, header.labels) 
 {
     varnames <- attr(x, "varnames")
     nr <- attr(x, "nr")
@@ -51,6 +51,44 @@ function (x, nmax)
     if (ncol(table1) == 0) table1 <- table1[-1, ]
     if (nmax) table1 <- rbind(colnames(table1), c(paste("N=", Nmax, sep = ""), rep("", ncol(table1) - length(Nmax))), table1) else table1 <- rbind(colnames(table1), table1)
     table1 <- ifelse(is.na(table1), "", table1)
+    if (length(header.labels)==5 && is.null(names(header.labels))){
+      names(header.labels)<-c("all","p.overall","p.trend","p.ratio","N")
+    }
+    if ("all"%in%names(header.labels)){
+      ww.all<-grep("^\\[ALL\\]",trim(table1[1,]))
+      if (length(ww.all)>0){
+        ww.all<-ww.all[1]
+        table1[1,ww.all]<-header.labels["all"]
+      }
+    }    
+    if ("p.overall"%in%names(header.labels)){
+      ww.p.overall<-which(table1[1,]=="p.overall")
+      if (length(ww.p.overall)>0){
+        ww.p.overall<-rev(ww.p.overall)[1]
+        table1[1,ww.p.overall]<-header.labels["p.overall"]
+      }
+    }
+    if ("p.trend"%in%names(header.labels)){
+      ww.p.trend<-which(table1[1,]=="p.trend")
+      if (length(ww.p.trend)>0){
+        ww.p.trend<-rev(ww.p.trend)[1]
+        table1[1,ww.p.trend]<-header.labels["p.trend"]
+      }
+    } 
+    if ("p.ratio"%in%names(header.labels)){
+      ww.p.ratio<-which(table1[1,]=="p.ratio")
+      if (length(ww.p.ratio)>0){
+        ww.p.ratio<-rev(ww.p.ratio)[1]
+        table1[1,ww.p.ratio]<-header.labels["p.ratio"]
+      }
+    } 
+    if ("N"%in%names(header.labels)){
+      ww.N<-which(table1[1,]=="N")
+      if (length(ww.N)>0){
+        ww.N<-rev(ww.N)[1]
+        table1[1,ww.N]<-header.labels["N"]
+      }
+    }          
     table1 <- apply(table1, 2, format, justify = "centre")
     colnames(table1) <- rep("", ncol(table1))
     table2 <- x[[2]]

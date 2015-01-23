@@ -1,5 +1,19 @@
+v3.0
+2015-01-14
+-. new argument header.labels incorporated to functions to print and export the bivariate table. This offers the possibility to change some 'key' labels such as p.overall or p.trend.
+-. new function getResults to retrieve results from compareGroups or createTable object as vectors and matrices.
+-. new argument 'margin' implemented in 'export2pdf' function.
+MAJOR CHANGES:
+-. new function cGroupsWUI has been implemented which opens a web browser with a Web User Interface using Shiny functions.
+-. new vignette compareGroupsWUI_vignette.pdf created to illustrate how WUI works.
+MINOR CHANGES:
+-. 'file' argument from export2csv, export2latex, export2html, export2pdf and report functions must specify the extension. This has been changed from previous versions where no extension (.pdf, .tex, .html or .pdf) was required.
+-. fixed: 'hide' argument from createTable does not produce an error but a warning when a non-existing variable is specified.
+-. fixed: indentation when exporting a rbind.createTable object to HTML
+-. SNPs data removed.
+
 v2.0.5
-2014-8-28
+2014-8-25
 -. Bug fixed regarding number of decimals when applying subsetting '[' method to createTable, rbind.createTable and cbind.createTable class objects.
 
 v2.0.4
@@ -28,7 +42,7 @@ v2.0
 -. new function 'missTable' has been created, to report missingness tables.
 -. new function 'compareSNPs' has been created, with its own 'print' method.
 -. new functions 'report' and 'export2pdf' have been created to generate PDF files with tables and/or plots.
--. new argumend 'landscape' has been incorporated to 'export2latex' function.
+-. new argumen 'landscape' has been incorporated to 'export2latex' function.
 -. new package dependencies required: SNPassoc and HardyWeinberg
 -. MINOR CHANGES:
   -. when computing p-values to compare groups for a categorical row-variables, if only one row or one column has some non-zero count, p-value is '.'.

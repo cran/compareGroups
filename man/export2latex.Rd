@@ -14,24 +14,26 @@ This function takes the result of \code{createTable} and exports the tables to L
 \usage{
 export2latex(x, ...)
 \method{export2latex}{createTable}(x, file, which.table = 'descr', size = 'same', 
-    nmax = TRUE, caption = NULL, loc.caption = 'top', label = NULL, landscape = NA, 
-    colmax = 10, ...)
+    nmax = TRUE, header.labels = c(), caption = NULL, loc.caption = 'top', label = NULL, 
+    landscape = NA, colmax = 10, ...)
 \method{export2latex}{cbind.createTable}(x, file, which.table = 'descr', size = 'same', 
-    nmax = TRUE, caption = NULL, loc.caption = 'top', label = NULL, landscape = NA, 
-    colmax = 10, ...)
+    nmax = TRUE, header.labels = c(), caption = NULL, loc.caption = 'top', label = NULL, 
+    landscape = NA, colmax = 10, ...)
 }
 
 \arguments{
 
   \item{x}{an object of class 'createTable'.}
 
-  \item{file}{Name of file where the resulting code should be saved. If file is missing, output is displayed on screen. Note that the folder and the basename of the file must be written but not the extension (.tex). Also, another file with the extension '_appendix' is written with the available data table.}
+  \item{file}{Name of file where the resulting code should be saved. If file is missing, output is displayed on screen. Also, another file with the extension '_appendix' is written with the available data table.}
 
   \item{which.table}{character indicating which table is exported. Possible values are 'descr', 'avail' or 'both' (partial matching allowed), exporting descriptives by groups table, availability data table or both tables, respectively. Default value is 'descr'.}
   
   \item{size}{character indicating the size of the table elements. Possible values are: 'tiny', 'scriptsize', 'footnotesize', 'small', 'normalsize', 'large', 'Large', 'LARGE','huge', 'Huge' or 'same' (partial matching allowed). Default value is 'same' which means that font size of the table is the same as specified in the main LaTeX document.}  
 
   \item{nmax}{logical, indicating whether to show the number of subjects with at least one valid value across all row-variables. Default value is TRUE.}
+  
+  \item{header.labels}{see the 'header.labels' argument from \code{\link{createTable}}.}   
 
   \item{caption}{character specifying the table caption for descriptives and available data table. If which.table='both' the first element of 'caption' will be assigned to descriptives table and the second to available data table. If it is set to "", no caption is inserted. Default value is NULL, which writes 'Summary descriptives table by groups of 'y'' for descriptives table and 'Available data by groups of 'y'' for the available data table. }
 
@@ -77,7 +79,7 @@ export2latex(x, ...)
 require(compareGroups)
 data(regicor)
 res <- compareGroups(sex ~. -id-todeath-death-tocv-cv, regicor)
-export2latex(createTable(res, hide.no = 'n'), file="table1")
+export2latex(createTable(res, hide.no = 'n'), file="table1.tex")
 }
 
 }

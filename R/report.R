@@ -9,7 +9,7 @@ report <- function(x, file, fig.folder, compile=TRUE, openfile=TRUE, title="Repo
   bivar<-attr(x,"groups")
 
   if (missing(fig.folder))
-    fig.folder <- paste(file,"figures",sep="_")
+    fig.folder <- paste(sub("\\.pdf$","",file),"figures",sep="_")
   
   if (!fig.folder %in% list.files(dirname(file)))
     dir.create(fig.folder)
@@ -68,7 +68,7 @@ report <- function(x, file, fig.folder, compile=TRUE, openfile=TRUE, title="Repo
   \\usepackage{lscape}
   \\usepackage[top=2cm,bottom=2cm,left=1cm,right=1cm]{geometry}
   \\usepackage{float}
-  \\usepackage[latin1]{inputenc}
+  \\usepackage[utf8]{inputenc}
   \\usepackage[pdftex]{epsfig}  
   \\DeclareGraphicsRule{.pdftex}{pdf}{.pdftex}{}  
   \\title{",title,"}
@@ -104,10 +104,9 @@ report <- function(x, file, fig.folder, compile=TRUE, openfile=TRUE, title="Repo
   "
   ,sep="")
   
-  file.tex <- paste(file,"tex",sep=".")
+  file.tex <- sub("pdf$","tex",file)
   write(text,file=file.tex)
   
-  file<-paste(file,"pdf",sep=".")
   if (compile){
     wd <- getwd()
     setwd(dirname(file))  

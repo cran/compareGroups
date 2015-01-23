@@ -1,4 +1,4 @@
-export2latex.cbind.createTable<-function(x, file, which.table='descr', size='same', nmax = TRUE, caption = NULL, loc.caption = 'top', label = NULL, landscape = NA, colmax = 10, ...){   
+export2latex.cbind.createTable<-function(x, file, which.table='descr', size='same', nmax = TRUE, header.labels = c(), caption = NULL, loc.caption = 'top', label = NULL, landscape = NA, colmax = 10, ...){   
 
 
   if (!inherits(x,"cbind.createTable"))
@@ -76,10 +76,10 @@ export2latex.cbind.createTable<-function(x, file, which.table='descr', size='sam
   cap<-gsub("<=","$\\\\leq$",cap)
   cap<-gsub(">","$>$",cap)
   cap<-gsub("<","$<$",cap) 
-  cap<-gsub("\261","$\\\\pm$",cap)   
+  cap<-gsub(intToUtf8(0xB1L),"$\\\\pm$",cap)   
   
-  desc<-lapply(x,function(vv) prepare(vv,nmax=nmax)[[1]])
-  avail<-lapply(x,function(vv) prepare(vv,nmax=nmax)[[2]])
+  desc<-lapply(x,function(vv) prepare(vv,nmax=nmax,header.labels)[[1]])
+  avail<-lapply(x,function(vv) prepare(vv,nmax=nmax,c())[[2]])
   nc.desc<-lapply(desc,ncol)
   nc.avail<-lapply(avail,ncol)
   if (all(nc.desc==0))
@@ -115,7 +115,7 @@ export2latex.cbind.createTable<-function(x, file, which.table='descr', size='sam
 
   if (ww %in% c(1,3)){
 
-    cc<-attr(prepare(x[[1]],nmax=nmax),"cc")  
+    cc<-attr(prepare(x[[1]],nmax=nmax,header.labels),"cc")  
     if (!is.null(cc)){
       cc<-gsub("\\$","\\\\$",cc)
       cc<-sub("%","\\\\%",cc)  
@@ -125,7 +125,7 @@ export2latex.cbind.createTable<-function(x, file, which.table='descr', size='sam
       cc<-gsub("<=","$\\\\leq$",cc)
       cc<-gsub(">","$>$",cc)
       cc<-gsub("<","$<$",cc)
-      cc<-gsub("\261","$\\\\pm$",cc)      
+      cc<-gsub(intToUtf8(0xB1L),"$\\\\pm$",cc)      
     }
   
     desc<-aux.desc[,-ncol(aux.desc),drop=FALSE]
@@ -147,7 +147,7 @@ export2latex.cbind.createTable<-function(x, file, which.table='descr', size='sam
     rownames(desc)<-gsub(">","$>$",rownames(desc))
     rownames(desc)<-gsub("<","$<$",rownames(desc))
     rownames(desc)<-sub("^    ","$\\\\qquad$",rownames(desc))
-    rownames(desc)<-gsub("\261","$\\\\pm$",rownames(desc))          
+    rownames(desc)<-gsub(intToUtf8(0xB1L),"$\\\\pm$",rownames(desc))          
     desc<-gsub("\\$","\\\\$",desc)
     desc<-sub("%","\\\\%",desc)  
     desc<-sub("&","\\\\&",desc)  
@@ -156,7 +156,7 @@ export2latex.cbind.createTable<-function(x, file, which.table='descr', size='sam
     desc<-gsub("<=","$\\\\leq$",desc)
     desc<-gsub(">","$>$",desc)
     desc<-gsub("<","$<$",desc)
-    desc<-gsub("\261","$\\\\pm$",desc)            
+    desc<-gsub(intToUtf8(0xB1L),"$\\\\pm$",desc)            
   
     nc<-ncol(desc)
 
@@ -220,7 +220,7 @@ export2latex.cbind.createTable<-function(x, file, which.table='descr', size='sam
     if (missing(file))
       cat(tex,"\n\n")    
     else 
-      write(tex,file=paste(file,".tex",sep=""))
+      write(tex,file=file)
    
     out$desc<-tex
 
@@ -240,7 +240,7 @@ export2latex.cbind.createTable<-function(x, file, which.table='descr', size='sam
       cc<-gsub("<=","$\\\\leq$",cc)
       cc<-gsub(">","$>$",cc)
       cc<-gsub("<","$<$",cc)
-      cc<-gsub("\261","$\\\\pm$",cc)              
+      cc<-gsub(intToUtf8(0xB1L),"$\\\\pm$",cc)              
     }
 
     avail<-aux.avail[,-ncol(aux.avail),drop=FALSE]  
@@ -253,7 +253,7 @@ export2latex.cbind.createTable<-function(x, file, which.table='descr', size='sam
     rownames(avail)<-gsub(">","$>$",rownames(avail))
     rownames(avail)<-gsub("<","$<$",rownames(avail))
     rownames(avail)<-sub("^    ","$\\\\qquad$",rownames(avail))
-    rownames(avail)<-gsub("\261","$\\\\pm$",rownames(avail))   
+    rownames(avail)<-gsub(intToUtf8(0xB1L),"$\\\\pm$",rownames(avail))   
     avail<-gsub("\\$","\\\\$",avail)
     avail<-sub("%","\\\\%",avail)  
     avail<-sub("&","\\\\&",avail)  
@@ -262,7 +262,7 @@ export2latex.cbind.createTable<-function(x, file, which.table='descr', size='sam
     avail<-gsub("<=","$\\\\leq$",avail)
     avail<-gsub(">","$>$",avail)
     avail<-gsub("<","$<$",avail)
-    avail<-gsub("\261","$\\\\pm$",avail)    
+    avail<-gsub(intToUtf8(0xB1L),"$\\\\pm$",avail)    
     nc<-ncol(avail)
 
     head.loc<-paste(c("l",rep("c",nc)),collapse="")
@@ -329,7 +329,7 @@ export2latex.cbind.createTable<-function(x, file, which.table='descr', size='sam
     if (missing(file))
       cat(tex,"\n\n")    
     else 
-      write(tex,file=paste(file,"appendix.tex",sep=""))
+      write(tex,file=paste(sub("\\.tex$","",file),"appendix.tex",sep=""))
    
     out$avail<-tex
 

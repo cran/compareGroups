@@ -8,18 +8,20 @@ Exporting descriptives table to HTML format
 This function takes the result of \code{createTable} and exports the tables to HTML format.
 }
 \usage{
-export2html(x, file, which.table="descr", nmax = TRUE, ...)
+export2html(x, file, which.table="descr", nmax = TRUE, header.labels = c(), ...)
 }
 
 \arguments{
 
   \item{x}{an object of class 'createTable'.}
 
-  \item{file}{file where table in HTML format will be written. Note that the the folder and the basename of the file must be written but not the extension (.html). Also, another file with the extension '_appendix' is written with the available data table.}
+  \item{file}{file where table in HTML format will be written. Also, another file with the extension '_appendix' is written with the available data table.}
 
   \item{which.table}{character indicating which table is printed. Possible values are 'descr', 'avail' or 'both' (partial matching allowed), exporting descriptives by groups table, availability data table or both tables, respectively. Default value is 'descr'.}
 
   \item{nmax}{logical, indicating whether to show the number of subjects with at least one valid value across all row-variables. Default value is TRUE.}
+  
+  \item{header.labels}{see the 'header.labels' argument from \code{\link{createTable}}.}   
              
   \item{\ldots}{currently ignored.}
   
@@ -42,7 +44,7 @@ The way to compute the 'N' shown in the bivariate table header, controlled by 'n
 require(compareGroups)
 data(regicor)
 res <- compareGroups(sex ~. -id-todeath-death-tocv-cv, regicor)
-export2html(createTable(res, hide.no = 'n'), file="table1")
+export2html(createTable(res, hide.no = 'n'), file="table1.html")
 }
 
 }

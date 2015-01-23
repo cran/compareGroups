@@ -30,7 +30,7 @@ If a data.frame or a matrix is passed through 'X' argument or is loaded by the '
 
 
 \seealso{
-\code{\link{compareGroups}}, \code{\link{createTable}}
+  \code{\link{cGroupsWUI}}, \code{\link{compareGroups}}, \code{\link{createTable}}
 }
 
 \examples{

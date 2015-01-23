@@ -18,7 +18,7 @@ report(x, file, fig.folder, compile = TRUE, openfile = TRUE, title = "Report",
 
   \item{x}{an object of class 'createTable'.}
 
-  \item{file}{character specifying the PDF file (without the extension) resulting after compiling the LaTeX code of report. LaTeX code is also stored in the same folder with the same name but .tex extension. When 'compile' argument is FALSE, only .tex file is saved.}
+  \item{file}{character specifying the PDF file resulting after compiling the LaTeX code of report. LaTeX code is also stored in the same folder with the same name but .tex extension. When 'compile' argument is FALSE, only .tex file is saved.}
 
   \item{fig.folder}{character specifying the folder where the plots corresponding to all row-variables of the table are placed. If it is left missing, a folder with the name file_figures is created in the same folder of 'file'.}
 
@@ -69,7 +69,7 @@ data(regicor)
 
  # example on an ordinary table
 res <- createTable(compareGroups(year ~ . -id, regicor), hide = c(sex=1), hide.no = 'no')
-report(res, "report" ,size="small", title="\\Huge \\textbf{REGICOR study}", 
+report(res, "report.pdf" ,size="small", title="\\Huge \\textbf{REGICOR study}", 
        author="Isaac Subirana \\\\ IMIM-Parc de Salut Mar")
 
  # example on an stratified table by sex
@@ -78,9 +78,9 @@ res.men <- createTable(compareGroups(year ~ . -id-sex, regicor, subset=sex=='Mal
 res.wom <- createTable(compareGroups(year ~ . -id-sex, regicor, subset=sex=='Female'), 
                        hide.no = 'no')
 res <- cbind("Men"=res.men, "Wom"=res.wom)
-report(res[[1]], "reportmen", size="small", 
+report(res[[1]], "reportmen.pdf", size="small", 
         title="\\Huge \\textbf{REGICOR study \\\\ Men}", date="") # report for men / no date
-report(res[[2]], "reportwom", size="small", 
+report(res[[2]], "reportwom.pdf", size="small", 
         title="\\Huge \\textbf{REGICOR study \\\\ Women}", date="") # report for wom / no date
 
 }

@@ -1,11 +1,11 @@
 Package: compareGroups
 Type: Package
 Title: Descriptive analysis by groups
-Version: 2.0.5
-Date: 2014-08-28
-Depends: R (>= 2.13.1), Hmisc, xtable, gdata, SNPassoc
+Version: 3.0
+Date: 2015-01-14
+Depends: R (>= 2.13.1), Hmisc, gdata, xtable, SNPassoc
 Imports: survival, epitools, tools, HardyWeinberg
-Suggests: tcltk2, car
+Suggests: tcltk2, car, XLConnect, shiny
 Author: Isaac Subirana, Joan Vila, Héctor Sanz, Gavin Lucas, Judith Peñafiel
     and David Giménez
 Maintainer: Isaac Subirana <isubirana@imim.es>
@@ -21,13 +21,13 @@ Description: This package is designed to read, interpret, summarise, display and
     genetic data, and for performing low-level quality control of your database
     (see radiograph()) to help identify data-entry errors. This version has
     also been implemented in a web-interface to make this package accessible
-    to non-R-users (see www.comparegroups.eu).
+    to non-R-users.
 License: GPL (>= 2)
 URL: http://www.comparegroups.eu
 LazyLoad: yes
 Encoding: latin1
 BuildVignettes: True
-Packaged: 2014-08-28 16:10:51 UTC; isubirana
+Packaged: 2015-01-23 08:33:41 UTC; isubirana
 NeedsCompilation: no
 Repository: CRAN
-Date/Publication: 2014-08-28 19:56:24
+Date/Publication: 2015-01-23 12:38:06

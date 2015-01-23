@@ -1,4 +1,4 @@
-print.cbind.createTable <- function(x, which.table="descr", nmax=TRUE, ...)
+print.cbind.createTable <- function(x, which.table="descr", nmax=TRUE, header.labels=c(), ...)
 {
 
   if (!inherits(x,"cbind.createTable"))
@@ -13,19 +13,19 @@ print.cbind.createTable <- function(x, which.table="descr", nmax=TRUE, ...)
       warning(" only 'descr' table can be displayed for 'missingTable' object. Argument 'which.table' set to 'descr'")
       ww <- 1
     } 
-  
+    
   os<-sessionInfo()$platform
   locale<-sessionInfo()$locale
   locale<-strsplit(locale,";")[[1]] 
   locale<-locale[grep("^LC_CTYPE",locale)]        
   locale<-sub("LC_CTYPE=","",locale)
-  spchar<-if (length(grep("linux",os))==0 || length(grep("UTF-8",locale))>0) TRUE else FALSE
+  spchar<-if (length(grep("linux",os))==0 || length(grep("UTF-8",locale))>0) TRUE else FALSE           
   
   caption<-attr(x,"caption")
   
-  desc<-lapply(x,function(vv) prepare(vv,nmax=nmax)[[1]])
-  nmax <- any(unlist(lapply(x,function(vv) attr(prepare(vv,nmax=nmax),"nmax"))))
-  avail<-lapply(x,function(vv) prepare(vv,nmax=nmax)[[2]])  
+  desc<-lapply(x,function(vv) prepare(vv,nmax=nmax,header.labels)[[1]])
+  nmax <- any(unlist(lapply(x,function(vv) attr(prepare(vv,nmax=nmax,header.labels),"nmax"))))
+  avail<-lapply(x,function(vv) prepare(vv,nmax=nmax,c())[[2]])  
   nc.desc<-lapply(desc,ncol)
   if (all(nc.desc==0))
     stop("Stratified table cannot be printed since no columns are displayed")
@@ -36,7 +36,7 @@ print.cbind.createTable <- function(x, which.table="descr", nmax=TRUE, ...)
     caption<-caption[-which(nc.desc==0)]
   }
 
-  cc<-attr(prepare(x[[1]],nmax=nmax),"cc")
+  cc<-attr(prepare(x[[1]],nmax=nmax,header.labels),"cc")
 
   nmax.i<-unlist(lapply(desc,function(vv) rownames(vv)[2]==''))
   if (diff(range(nmax.i))!=0){
@@ -81,12 +81,10 @@ print.cbind.createTable <- function(x, which.table="descr", nmax=TRUE, ...)
     cat(rep(" ",lrn),paste(sapply(1:length(ll.desc),function(vv) paste(rep("_",ll.desc[vv]),collapse="")),collapse="  "),"\n",sep="")
     for (i in 1:ii)
       cat(desc[i,],"\n")
-      
     if (spchar)
       cat(rep(intToUtf8(0xAFL),lrn+sum(ll.desc)+2*length(ll.desc)-2),"\n",sep="")
     else
-      cat(rep("-",lrn+sum(ll.desc)+2*length(ll.desc)-2),"\n",sep="")  
-        
+      cat(rep("-",lrn+sum(ll.desc)+2*length(ll.desc)-2),"\n",sep="")          
     for (i in (ii+1):nrow(desc)){ 
       if (!is.null(attr(x[[1]],"caption")) && cc[i-ii]!=""){
         cat(cc[i-ii],":\n",sep="")
@@ -94,11 +92,11 @@ print.cbind.createTable <- function(x, which.table="descr", nmax=TRUE, ...)
       }else{
         cat(desc[i,],"\n")                  
       }      
-    }  
-    if (spchar)
+    }
+    if (spchar)  
       cat(rep(intToUtf8(0xAFL),lrn+sum(ll.desc)+2*length(ll.desc)-2),"\n",sep="")
     else
-      cat(rep("-",lrn+sum(ll.desc)+2*length(ll.desc)-2),"\n",sep="")
+      cat(rep("-",lrn+sum(ll.desc)+2*length(ll.desc)-2),"\n",sep="")    
   }
   
   if (ww %in% c(2,3)){
@@ -116,7 +114,7 @@ print.cbind.createTable <- function(x, which.table="descr", nmax=TRUE, ...)
     if (spchar)
       cat(rep(intToUtf8(0xAFL),lrn+sum(ll.avail)+2*length(ll.avail)-2),"\n",sep="")
     else
-      cat(rep("-",lrn+sum(ll.avail)+2*length(ll.avail)-2),"\n",sep="")    
+      cat(rep("-",lrn+sum(ll.avail)+2*length(ll.avail)-2),"\n",sep="")
     for (i in 2:nrow(avail)){
       if (!is.null(attr(x[[1]],"caption")) && attr(x[[1]],"caption")[[i-1]]!=""){
         cat(attr(x[[1]],"caption")[[i-1]],":\n",sep="")
@@ -128,8 +126,7 @@ print.cbind.createTable <- function(x, which.table="descr", nmax=TRUE, ...)
     if (spchar)
       cat(rep(intToUtf8(0xAFL),lrn+sum(ll.avail)+2*length(ll.avail)-2),"\n",sep="")
     else
-      cat(rep("-",lrn+sum(ll.avail)+2*length(ll.avail)-2),"\n",sep="")
-    
+      cat(rep("-",lrn+sum(ll.avail)+2*length(ll.avail)-2),"\n",sep="")    
   }
   
 }

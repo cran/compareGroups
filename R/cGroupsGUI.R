@@ -1,10 +1,10 @@
-.compareGroupsEnv <- new.env(parent=emptyenv())
+.cGroupsGUIEnv <- new.env(parent=emptyenv())
 
 cGroupsGUI <- function(X){
 
-      library(tcltk2, quietly=TRUE)
+      requireNamespace("tcltk2", quietly=TRUE)
 
-      #assignInMyNamespace(".compareGroupsEnv", NULL)    
+      #assignInMyNamespace(".cGroupsGUIEnv", NULL)    
         
       call <- match.call()
       if (!missing(X)){
@@ -15,12 +15,12 @@ cGroupsGUI <- function(X){
       } else {
          stop("Some data must be provided: for example 'regicor' data after being loaded using data(regicor).")
       }
-      assign(".p.mult","0", envir = .compareGroupsEnv)                 
-      assign(".p.trend","0", envir = .compareGroupsEnv)              
-      assign(".show.all","1", envir = .compareGroupsEnv) 
-      assign(".show.n","1", envir = .compareGroupsEnv)              
-      assign(".type.cat.value","nperc", envir = .compareGroupsEnv) 
-      assign(datatemp.name, x, envir = .compareGroupsEnv)
+      assign(".p.mult","0", envir = .cGroupsGUIEnv)                 
+      assign(".p.trend","0", envir = .cGroupsGUIEnv)              
+      assign(".show.all","1", envir = .cGroupsGUIEnv) 
+      assign(".show.n","1", envir = .cGroupsGUIEnv)              
+      assign(".type.cat.value","nperc", envir = .cGroupsGUIEnv) 
+      assign(datatemp.name, x, envir = .cGroupsGUIEnv)
       matrix.info <- data.frame(c(NA,NA))
       matrix.info[,1:7] <- NA
       names(matrix.info) <- c("name","type","digits","hide","subset.all","subset.part","label")
@@ -160,8 +160,8 @@ cGroupsGUI <- function(X){
                 if(matrix.info[var.name+1,]$type=="Categorical"){
                      tcltk::tkdelete(tlist.factor.selection,0,"end")
                      tcltk::tkinsert(tlist.factor.selection,"active",matrix.info[var.name+1,]$name)
-                     if (get(".global.subset.selection",envir=.compareGroupsEnv,inherits = FALSE)!="")
-                       tmp.data <- x[eval(parse(text=paste("with(x,",get(".global.subset.selection",envir=.compareGroupsEnv,inherits = FALSE),")",sep=""))),,drop=FALSE]
+                     if (get(".global.subset.selection",envir=.cGroupsGUIEnv,inherits = FALSE)!="")
+                       tmp.data <- x[eval(parse(text=paste("with(x,",get(".global.subset.selection",envir=.cGroupsGUIEnv,inherits = FALSE),")",sep=""))),,drop=FALSE]
                      else
                        tmp.data <- x
                      tmp.data <- factor(tmp.data[,var.name+1])
@@ -207,8 +207,8 @@ cGroupsGUI <- function(X){
                 if(matrix.info[var.name+1,]$type=="Categorical"){
                      tcltk::tkdelete(tlist.status.selection,0,"end")
                      tcltk::tkinsert(tlist.status.selection,"active",matrix.info[var.name+1,]$name)
-                     if (get(".global.subset.selection",envir=.compareGroupsEnv,inherits = FALSE)!="")
-                       tmp.data <- x[eval(parse(text=paste("with(x,",get(".global.subset.selection",envir=.compareGroupsEnv,inherits = FALSE),")",sep=""))),,drop=FALSE]                    
+                     if (get(".global.subset.selection",envir=.cGroupsGUIEnv,inherits = FALSE)!="")
+                       tmp.data <- x[eval(parse(text=paste("with(x,",get(".global.subset.selection",envir=.cGroupsGUIEnv,inherits = FALSE),")",sep=""))),,drop=FALSE]                    
                      else
                        tmp.data <- x
                      tmp.data <- factor(tmp.data[,var.name+1])
@@ -237,8 +237,8 @@ cGroupsGUI <- function(X){
     plots.factor <- function(){
           var.name <- as.character(tcltk::tkget(tlist.factor.selection,0,"end"))
           if( length(var.name)==0) return(tcltk::tkmessageBox(message = "No factor selected", icon = "info", type="ok"))
-          if (get(".global.subset.selection",envir=.compareGroupsEnv,inherits = FALSE)!="")
-            tmp.data <- x[eval(parse(text=paste("with(x,",get(".global.subset.selection",envir=.compareGroupsEnv,inherits = FALSE),")",sep=""))),,drop=FALSE]  
+          if (get(".global.subset.selection",envir=.cGroupsGUIEnv,inherits = FALSE)!="")
+            tmp.data <- x[eval(parse(text=paste("with(x,",get(".global.subset.selection",envir=.cGroupsGUIEnv,inherits = FALSE),")",sep=""))),,drop=FALSE]  
           else
             tmp.data <- x
           tmp.data <- factor(tmp.data[,var.name])
@@ -253,14 +253,14 @@ cGroupsGUI <- function(X){
           if( length(var.name2)==0) return(tcltk::tkmessageBox(message = "No 'status' selected", icon = "info", type="ok"))
           event <- as.character(tcltk::tkget(entry4))
           if( length(event)==0) return(tcltk::tkmessageBox(message = "No 'event' selected", icon = "info", type="ok"))
-          if (get(".global.subset.selection",envir=.compareGroupsEnv,inherits = FALSE)!="")
-            tmp.data <- x[eval(parse(text=paste("with(x,",get(".global.subset.selection",envir=.compareGroupsEnv,inherits = FALSE),")",sep=""))),,drop=FALSE]  
+          if (get(".global.subset.selection",envir=.cGroupsGUIEnv,inherits = FALSE)!="")
+            tmp.data <- x[eval(parse(text=paste("with(x,",get(".global.subset.selection",envir=.cGroupsGUIEnv,inherits = FALSE),")",sep=""))),,drop=FALSE]  
           else
             tmp.data <- x       
           timeto <- tmp.data[,var.name]
           eventto <- as.integer(tmp.data[, var.name2]==event)
           variableF <- Surv(timeto, eventto)
-          KM.plot(x = variableF, file = NULL, var.label.x = label(x[, var.name2]))
+          KM.plot(x = variableF, file = NULL, var.label.x = Hmisc::label(x[, var.name2]))
     }  
     plot.uni.surv <- function(){
       if (tcltk::tclvalue(type.var.valuex)=='none') return()
@@ -336,7 +336,7 @@ cGroupsGUI <- function(X){
       subset.glob.sel <- tcltk::tclvalue(subset.glob)
       text.subset.glob <- tcltk::tkentry(frame4, width= 30, textvariable = subset.glob, font=fontype)
       tcltk::tkbind(text.subset.glob)
-      assign(".global.subset.selection","", envir = .compareGroupsEnv)
+      assign(".global.subset.selection","", envir = .cGroupsGUIEnv)
       send.subset.glob <- function(){
           subset.select <- tcltk::tclvalue(subset.glob)
           print(subset.select)
@@ -349,7 +349,7 @@ cGroupsGUI <- function(X){
           if(nrow(subset.dataframe)==0)
                   return(tcltk::tkmessageBox(message = paste("0 people will be analyzed. No applying subset"), icon = "info", type = "ok"))
           if(nrow(subset.dataframe)>0){
-                   assign(".global.subset.selection", subset.select, envir = .compareGroupsEnv)
+                   assign(".global.subset.selection", subset.select, envir = .cGroupsGUIEnv)
                    return(tcltk::tkmessageBox(message = paste("Correct syntax. Subset applied to dataframe"), icon = "info", type = "ok"))
           }
       }
@@ -417,8 +417,8 @@ cGroupsGUI <- function(X){
                           if(type.var.val=="yes.param") new.mat[var.name[i],2] <- "Normal"
                           if(type.var.val=="test.param"){
                              tmp <- ifelse(is.na(new.mat[var.name[i],5]),"",new.mat[var.name[i],5])
-                             if (get(".global.subset.selection",envir=.compareGroupsEnv,inherits = FALSE)!="")
-                               tmp.data <- x[eval(parse(text=paste("with(x,",get(".global.subset.selection",envir=.compareGroupsEnv,inherits = FALSE),")",sep=""))),,drop=FALSE]  
+                             if (get(".global.subset.selection",envir=.cGroupsGUIEnv,inherits = FALSE)!="")
+                               tmp.data <- x[eval(parse(text=paste("with(x,",get(".global.subset.selection",envir=.cGroupsGUIEnv,inherits = FALSE),")",sep=""))),,drop=FALSE]  
                              else
                                tmp.data <- x
                              if (tmp!="")
@@ -472,8 +472,8 @@ cGroupsGUI <- function(X){
           mat <- read.list()
           variable <- mat[var.name,]
           tmp <- ifelse(is.na(variable[5]),"",variable[5])[[1]]
-          if (get(".global.subset.selection",envir=.compareGroupsEnv,inherits = FALSE)!="")
-            tmp.data <- x[eval(parse(text=paste("with(x,",get(".global.subset.selection",envir=.compareGroupsEnv,inherits = FALSE),")",sep=""))),,drop=FALSE]  
+          if (get(".global.subset.selection",envir=.cGroupsGUIEnv,inherits = FALSE)!="")
+            tmp.data <- x[eval(parse(text=paste("with(x,",get(".global.subset.selection",envir=.cGroupsGUIEnv,inherits = FALSE),")",sep=""))),,drop=FALSE]  
           else
             tmp.data <- x
           if (tmp!="")  
@@ -503,8 +503,8 @@ cGroupsGUI <- function(X){
             mat <- read.list()
             variable <- mat[var.name,]
             tmp <- ifelse(is.na(variable[5]),"",variable[5])[[1]]
-            if (get(".global.subset.selection",envir=.compareGroupsEnv,inherits = FALSE)!="")
-              tmp.data <- x[eval(parse(text=paste("with(x,",get(".global.subset.selection",envir=.compareGroupsEnv,inherits = FALSE),")",sep=""))),,drop=FALSE]  
+            if (get(".global.subset.selection",envir=.cGroupsGUIEnv,inherits = FALSE)!="")
+              tmp.data <- x[eval(parse(text=paste("with(x,",get(".global.subset.selection",envir=.cGroupsGUIEnv,inherits = FALSE),")",sep=""))),,drop=FALSE]  
             else
               tmp.data <- x
             if (tmp!="")
@@ -534,8 +534,8 @@ cGroupsGUI <- function(X){
             mat <- read.list()
             variable <- mat[var.report,]
             tmp <- ifelse(is.na(variable[5]),"",variable[5])[[1]]
-            if (get(".global.subset.selection",envir=.compareGroupsEnv,inherits = FALSE)!="")
-              tmp.data <- x[eval(parse(text=paste("with(x,",get(".global.subset.selection",envir=.compareGroupsEnv,inherits = FALSE),")",sep=""))),,drop=FALSE]  
+            if (get(".global.subset.selection",envir=.cGroupsGUIEnv,inherits = FALSE)!="")
+              tmp.data <- x[eval(parse(text=paste("with(x,",get(".global.subset.selection",envir=.cGroupsGUIEnv,inherits = FALSE),")",sep=""))),,drop=FALSE]  
             else
               tmp.data <- x
             if (tmp!="")
@@ -544,10 +544,10 @@ cGroupsGUI <- function(X){
             eventto <- as.integer(tmp.data[, var.name2]==event)
             variableF <- Surv(timeto, eventto)
             if(variable[,2]=='Categorical'){ 
-              KMg.plot(x = tmp.data[,as.character(variable[1])], y= variableF, file=NULL, var.label.x=label(x[,as.character(variable[1])]), var.label.y = label(x[,var.name2]))
+              KMg.plot(x = tmp.data[,as.character(variable[1])], y= variableF, file=NULL, var.label.x=Hmisc::label(x[,as.character(variable[1])]), var.label.y = Hmisc::label(x[,var.name2]))
             }
             if(variable[,2]%in%c('Normal','Non-Normal')){
-                Cox.plot(x = tmp.data[,as.character(variable[1])], y= variableF, file=NULL, var.label.x=label(x[,as.character(variable[1])]), var.label.y = label(x[,var.name2]))
+                Cox.plot(x = tmp.data[,as.character(variable[1])], y= variableF, file=NULL, var.label.x=Hmisc::label(x[,as.character(variable[1])]), var.label.y = Hmisc::label(x[,var.name2]))
             
             }
          }
@@ -685,18 +685,17 @@ cGroupsGUI <- function(X){
         tcltk::tkgrid(selection,sticky="se",row=2)
         cancel <- tcltk::tkbutton(frame0,text="Cancel",command = cancel.rdata, height=1, width=8,fg='red', font=fontype)
         tcltk::tkgrid(cancel,sticky="sw",row=2)
-        print("Ei")
       }
       RData <- function(){
               name <- tcltk::tclvalue(tcltk::tkgetOpenFile(parent = tt, title = "R Data",
                         filetypes = "{{Rdata Files} {.rdata .rda .Rdata .RData}}"))
               if (name=="") return(" ")
               if (length(name)>1)  stop(paste("More than one object in",name))
-              load.data <- try(load(file = name,envir=.compareGroupsEnv))
+              load.data <- try(load(file = name,envir=.cGroupsGUIEnv))
               if (inherits(load.data,"try-error")){
                   return("Problems loading .Rdata")
               } else{
-                   cGroupsGUI(get("load.data",envir=.compareGroupsEnv))
+                   cGroupsGUI(get("load.data",envir=.cGroupsGUIEnv))
                    tcltk::tkdestroy(tt)
               }
       }
@@ -726,8 +725,8 @@ cGroupsGUI <- function(X){
       }
       report.options <- function(){
              var.plot <- as.character(tcltk::tkget(tlist.factor.selection,0,"end"))
-             if (get(".global.subset.selection",envir=.compareGroupsEnv,inherits = FALSE)!="")
-                tmp.data <- x[eval(parse(text=paste("with(x,",get(".global.subset.selection",envir=.compareGroupsEnv,inherits = FALSE),")",sep=""))),,drop=FALSE]
+             if (get(".global.subset.selection",envir=.cGroupsGUIEnv,inherits = FALSE)!="")
+                tmp.data <- x[eval(parse(text=paste("with(x,",get(".global.subset.selection",envir=.cGroupsGUIEnv,inherits = FALSE),")",sep=""))),,drop=FALSE]
              else
                 tmp.data <- x
              aux <- as.integer(length(var.plot)==1)
@@ -735,17 +734,17 @@ cGroupsGUI <- function(X){
              if (aux==0) nx <- 0
              stat <- "disabled"
              stat.mult <- "disabled"
-             if (!exists(".p.overall", envir = .compareGroupsEnv))  assign(".p.overall","0", envir = .compareGroupsEnv)
-             if (!exists(".p.trend", envir = .compareGroupsEnv))  assign(".p.trend","0", envir = .compareGroupsEnv)
-             if (!exists(".p.mult", envir = .compareGroupsEnv))   assign(".p.mult","0", envir = .compareGroupsEnv)
-             if (exists(".p.overall", envir = .compareGroupsEnv) & aux==0)  assign(".p.overall","0", envir = .compareGroupsEnv)
-             if (exists(".p.trend", envir = .compareGroupsEnv) & aux==0)  assign(".p.trend","0", envir = .compareGroupsEnv)
-             if (exists(".p.mult", envir = .compareGroupsEnv) & aux==0)  assign(".p.mult","0", envir = .compareGroupsEnv)
-             if (!exists(".show.all", envir = .compareGroupsEnv))  assign(".show.all","1", envir = .compareGroupsEnv)
-             if (!exists(".show.desc", envir = .compareGroupsEnv))  assign(".show.desc","1", envir = .compareGroupsEnv)
-             if (!exists(".show.haz", envir = .compareGroupsEnv))  assign(".show.haz","0", envir = .compareGroupsEnv)
-             if (!exists(".show.n", envir = .compareGroupsEnv))   assign(".show.n","1", envir = .compareGroupsEnv)
-             if (!exists(".type.cat.value", envir = .compareGroupsEnv))  assign(".type.cat.value","nperc", envir = .compareGroupsEnv)
+             if (!exists(".p.overall", envir = .cGroupsGUIEnv))  assign(".p.overall","0", envir = .cGroupsGUIEnv)
+             if (!exists(".p.trend", envir = .cGroupsGUIEnv))  assign(".p.trend","0", envir = .cGroupsGUIEnv)
+             if (!exists(".p.mult", envir = .cGroupsGUIEnv))   assign(".p.mult","0", envir = .cGroupsGUIEnv)
+             if (exists(".p.overall", envir = .cGroupsGUIEnv) & aux==0)  assign(".p.overall","0", envir = .cGroupsGUIEnv)
+             if (exists(".p.trend", envir = .cGroupsGUIEnv) & aux==0)  assign(".p.trend","0", envir = .cGroupsGUIEnv)
+             if (exists(".p.mult", envir = .cGroupsGUIEnv) & aux==0)  assign(".p.mult","0", envir = .cGroupsGUIEnv)
+             if (!exists(".show.all", envir = .cGroupsGUIEnv))  assign(".show.all","1", envir = .cGroupsGUIEnv)
+             if (!exists(".show.desc", envir = .cGroupsGUIEnv))  assign(".show.desc","1", envir = .cGroupsGUIEnv)
+             if (!exists(".show.haz", envir = .cGroupsGUIEnv))  assign(".show.haz","0", envir = .cGroupsGUIEnv)
+             if (!exists(".show.n", envir = .cGroupsGUIEnv))   assign(".show.n","1", envir = .cGroupsGUIEnv)
+             if (!exists(".type.cat.value", envir = .cGroupsGUIEnv))  assign(".type.cat.value","nperc", envir = .cGroupsGUIEnv)
              if (aux==1 & nx>=3){
                   stat.mult <- "normal"
                   stat <- "normal"
@@ -771,9 +770,9 @@ cGroupsGUI <- function(X){
              results.show <- tcltk::tkcheckbutton(topreportframe)
              results.show2 <- tcltk::tkcheckbutton(topreportframe)
              results.show3 <- tcltk::tkcheckbutton(topreportframe)
-             results.value <- tcltk::tclVar(get(".p.trend",envir=.compareGroupsEnv,mode="any", inherits = FALSE))
-             results.value2 <- tcltk::tclVar(get(".p.mult",envir=.compareGroupsEnv,mode="any", inherits = FALSE))
-             results.value3 <- tcltk::tclVar(get(".p.overall",envir=.compareGroupsEnv,mode="any", inherits = FALSE))
+             results.value <- tcltk::tclVar(get(".p.trend",envir=.cGroupsGUIEnv,mode="any", inherits = FALSE))
+             results.value2 <- tcltk::tclVar(get(".p.mult",envir=.cGroupsGUIEnv,mode="any", inherits = FALSE))
+             results.value3 <- tcltk::tclVar(get(".p.overall",envir=.cGroupsGUIEnv,mode="any", inherits = FALSE))
              tcltk::tkconfigure(results.show,variable=results.value, state= stat.mult)
              tcltk::tkconfigure(results.show2,variable=results.value2, state= stat.mult)
              tcltk::tkconfigure(results.show3,variable=results.value3, state=stat)
@@ -782,25 +781,25 @@ cGroupsGUI <- function(X){
              tcltk::tkgrid(tcltk::tklabel(topreportframe,text="P trend", font=fontype),results.show)
              tcltk::tkgrid(tcltk::tklabel(topreportframe,text="Multiple comparisons", font=fontype),results.show2)
              results.n <- tcltk::tkcheckbutton(topreportframe)
-             results.n.value <- tcltk::tclVar(get(".show.n",envir=.compareGroupsEnv,mode="any", inherits = FALSE))
+             results.n.value <- tcltk::tclVar(get(".show.n",envir=.cGroupsGUIEnv,mode="any", inherits = FALSE))
              tcltk::tkconfigure(results.n,variable=results.n.value)
              tcltk::tkgrid(tcltk::tklabel(topreportframe,text="Show N in each variable",fg="blue", font=fontype),results.n, sticky="nw")
              results.all <- tcltk::tkcheckbutton(topreportframe)
-             results.value.all <- tcltk::tclVar(get(".show.all",envir=.compareGroupsEnv,mode="any", inherits = FALSE))
+             results.value.all <- tcltk::tclVar(get(".show.all",envir=.cGroupsGUIEnv,mode="any", inherits = FALSE))
              tcltk::tkconfigure(results.all ,variable=results.value.all)
              tcltk::tkgrid(tcltk::tklabel(topreportframe,text="Show 'ALL' column",fg="blue", font=fontype),results.all, sticky="nw")
              results.desc <- tcltk::tkcheckbutton(topreportframe)
-             results.value.desc <- tcltk::tclVar(get(".show.desc",envir=.compareGroupsEnv,mode="any", inherits = FALSE))
+             results.value.desc <- tcltk::tclVar(get(".show.desc",envir=.cGroupsGUIEnv,mode="any", inherits = FALSE))
              tcltk::tkconfigure(results.desc ,variable=results.value.desc)
              tcltk::tkgrid(tcltk::tklabel(topreportframe,text="Show descriptives",fg="blue", font=fontype),results.desc, sticky="nw")
              results.haz <- tcltk::tkcheckbutton(topreportframe)
-             results.value.haz <- tcltk::tclVar(get(".show.haz",envir=.compareGroupsEnv,mode="any", inherits = FALSE))
+             results.value.haz <- tcltk::tclVar(get(".show.haz",envir=.cGroupsGUIEnv,mode="any", inherits = FALSE))
              tcltk::tkconfigure(results.haz ,variable=results.value.haz)
              tcltk::tkgrid(tcltk::tklabel(topreportframe,text="Show odds/hazard ratio",fg="blue", font=fontype),results.haz, sticky="nw")
              type.cat1 <- tcltk::tkradiobutton(topreportframe)
              type.cat2 <- tcltk::tkradiobutton(topreportframe)
              type.cat3 <- tcltk::tkradiobutton(topreportframe)
-             type.cat.valuex <-  tcltk::tclVar(get(".type.cat.value",envir=.compareGroupsEnv,mode="any", inherits = FALSE))
+             type.cat.valuex <-  tcltk::tclVar(get(".type.cat.value",envir=.cGroupsGUIEnv,mode="any", inherits = FALSE))
              tcltk::tkconfigure(type.cat1, variable = type.cat.valuex, value = "nperc", command = I)
              tcltk::tkconfigure(type.cat2, variable = type.cat.valuex, value = "perc", command = I)
              tcltk::tkconfigure(type.cat3, variable = type.cat.valuex, value = "nsample", command = I)
@@ -810,14 +809,14 @@ cGroupsGUI <- function(X){
              tcltk::tkgrid(tcltk::tklabel(topreportframe,text="n", font=fontype),type.cat3)
              tcltk::tkgrid(tcltk::tklabel(topreportframe,text="",fg="blue", font=fontype),results.all, sticky="nw")
                  accept.fun <- function(){
-                  assign(".p.overall" ,tcltk::tclvalue(results.value3) , envir = .compareGroupsEnv)
-                  assign(".p.trend" ,tcltk::tclvalue(results.value) , envir = .compareGroupsEnv)
-                  assign(".p.mult" ,tcltk::tclvalue(results.value2) , envir = .compareGroupsEnv)
-                  assign(".show.all" ,tcltk::tclvalue(results.value.all) , envir = .compareGroupsEnv)
-                  assign(".show.desc" ,tcltk::tclvalue(results.value.desc) , envir = .compareGroupsEnv)
-                  assign(".show.haz" ,tcltk::tclvalue(results.value.haz) , envir = .compareGroupsEnv)
-                  assign(".show.n"  ,tcltk::tclvalue(results.n.value) , envir = .compareGroupsEnv)
-                  assign(".type.cat.value"  ,tcltk::tclvalue(type.cat.valuex) , envir = .compareGroupsEnv)
+                  assign(".p.overall" ,tcltk::tclvalue(results.value3) , envir = .cGroupsGUIEnv)
+                  assign(".p.trend" ,tcltk::tclvalue(results.value) , envir = .cGroupsGUIEnv)
+                  assign(".p.mult" ,tcltk::tclvalue(results.value2) , envir = .cGroupsGUIEnv)
+                  assign(".show.all" ,tcltk::tclvalue(results.value.all) , envir = .cGroupsGUIEnv)
+                  assign(".show.desc" ,tcltk::tclvalue(results.value.desc) , envir = .cGroupsGUIEnv)
+                  assign(".show.haz" ,tcltk::tclvalue(results.value.haz) , envir = .cGroupsGUIEnv)
+                  assign(".show.n"  ,tcltk::tclvalue(results.n.value) , envir = .cGroupsGUIEnv)
+                  assign(".type.cat.value"  ,tcltk::tclvalue(type.cat.valuex) , envir = .cGroupsGUIEnv)
                  tcltk::tkdestroy(report)
             }
             cancel.fun <- function(){
@@ -835,8 +834,8 @@ cGroupsGUI <- function(X){
               var.plot <- as.character(tcltk::tkget(tlist.factor.selection,0,"end"))
               label.aux <- Hmisc::label(tmp.data[,var.plot])
               variableF <- factor(tmp.data[,var.plot])
-              if (label.aux=="")  Hmisc::label(variableF) <- var.plot
-              if (label.aux!="")  Hmisc::label(variableF) <- label.aux
+              if (label.aux=="")   Hmisc::label(variableF) <- var.plot
+              if (label.aux!="")   Hmisc::label(variableF) <- label.aux
           }
           if(tcltk::tclvalue(type.var.valuex)=='none'){  
               variableF <- NULL
@@ -872,13 +871,13 @@ cGroupsGUI <- function(X){
                 if(hide[i]=="Last") hide[i] <- Inf
                 if(hide[i]=="No") hide[i] <- NA
                 if(decimals[i]=="Default") decimals[i] <- NA
-                if(get(".global.subset.selection",envir=.compareGroupsEnv,inherits=FALSE)==""){
+                if(get(".global.subset.selection",envir=.cGroupsGUIEnv,inherits=FALSE)==""){
                       if(is.na(subs[i]))  subs.aux[i] <- ""
                       if(!is.na(subs[i])) subs.aux[i] <- paste(mat$names[i],"=",subs[i],sep="")
                }
-               if(get(".global.subset.selection",envir=.compareGroupsEnv,inherits=FALSE)!=""){
-                     if(is.na(subs[i]))  subs.aux[i] <- paste(mat$names[i],"=",get(".global.subset.selection",envir=.compareGroupsEnv,inherits=FALSE),sep="")
-                     if(!is.na(subs[i])) subs.aux[i] <- paste(mat$names[i],"=",get(".global.subset.selection",envir=.compareGroupsEnv,inherits=FALSE)," & ",subs[i],sep="")
+               if(get(".global.subset.selection",envir=.cGroupsGUIEnv,inherits=FALSE)!=""){
+                     if(is.na(subs[i]))  subs.aux[i] <- paste(mat$names[i],"=",get(".global.subset.selection",envir=.cGroupsGUIEnv,inherits=FALSE),sep="")
+                     if(!is.na(subs[i])) subs.aux[i] <- paste(mat$names[i],"=",get(".global.subset.selection",envir=.cGroupsGUIEnv,inherits=FALSE)," & ",subs[i],sep="")
                 }
             }
               subs.aux[subs.aux==""] <- NA
@@ -891,20 +890,20 @@ cGroupsGUI <- function(X){
             method <- as.numeric(method)
             hide <- as.numeric(hide)
             decimals <- as.numeric(decimals)
-            if (!exists(".p.trend", envir = .compareGroupsEnv)) assign(".p.trend",0,envir=.compareGroupsEnv)
-            if (!exists(".p.mult", envir = .compareGroupsEnv)) assign(".p.mult",0,envir=.compareGroupsEnv)
-            if (!exists(".show.all", envir = .compareGroupsEnv)) assign(".show.all",1,envir=.compareGroupsEnv)
-            if (!exists(".show.n", envir = .compareGroupsEnv)) assign(".show.n",1,envir=.compareGroupsEnv)
-            if (!exists(".p.overall", envir = .compareGroupsEnv)) assign(".p.overall",1,envir=.compareGroupsEnv)
-            if (!exists(".show.haz", envir = .compareGroupsEnv)) assign(".show.haz",0,envir=.compareGroupsEnv)
-            if (!exists(".show.desc", envir = .compareGroupsEnv)) assign(".show.desc",1,envir=.compareGroupsEnv)
+            if (!exists(".p.trend", envir = .cGroupsGUIEnv)) assign(".p.trend",0,envir=.cGroupsGUIEnv)
+            if (!exists(".p.mult", envir = .cGroupsGUIEnv)) assign(".p.mult",0,envir=.cGroupsGUIEnv)
+            if (!exists(".show.all", envir = .cGroupsGUIEnv)) assign(".show.all",1,envir=.cGroupsGUIEnv)
+            if (!exists(".show.n", envir = .cGroupsGUIEnv)) assign(".show.n",1,envir=.cGroupsGUIEnv)
+            if (!exists(".p.overall", envir = .cGroupsGUIEnv)) assign(".p.overall",1,envir=.cGroupsGUIEnv)
+            if (!exists(".show.haz", envir = .cGroupsGUIEnv)) assign(".show.haz",0,envir=.cGroupsGUIEnv)
+            if (!exists(".show.desc", envir = .cGroupsGUIEnv)) assign(".show.desc",1,envir=.cGroupsGUIEnv)
             if(tcltk::tclvalue(type.var.valuex)=='factor'){
               ref.y <- as.character(tcltk::tkget(entry.factor))
               if(length(ref.y)==0) ref.y <- 1
               if(ref.y=='--') ref.y <- 1
               if(ref.y!=1){
-                     if (get(".global.subset.selection",envir=.compareGroupsEnv,inherits = FALSE)!="")
-                        tmp.data <- x[eval(parse(text=paste("with(x,",get(".global.subset.selection",envir=.compareGroupsEnv,inherits = FALSE),")",sep=""))),,drop=FALSE]
+                     if (get(".global.subset.selection",envir=.cGroupsGUIEnv,inherits = FALSE)!="")
+                        tmp.data <- x[eval(parse(text=paste("with(x,",get(".global.subset.selection",envir=.cGroupsGUIEnv,inherits = FALSE),")",sep=""))),,drop=FALSE]
                      else
                         tmp.data <- x
                      pos <- levels(factor(tmp.data[,var.plot]))==ref.y
@@ -916,19 +915,19 @@ cGroupsGUI <- function(X){
            ref <- hide
            ref[is.na(ref)] <- 1
            ref[is.infinite(ref)] <- nlev[is.infinite(ref)] 
-           p.trend <- as.numeric(get(".p.trend",envir=.compareGroupsEnv,inherits=FALSE))
-            p.mult <- as.numeric(get(".p.mult",envir=.compareGroupsEnv,inherits=FALSE))
-            show.all <- as.numeric(get(".show.all",envir=.compareGroupsEnv,inherits=FALSE))
-            show.n <- as.numeric(get(".show.n",envir=.compareGroupsEnv,inherits=FALSE))
-            if(get(".p.overall",envir=.compareGroupsEnv,inherits=FALSE)=='1') show.p.overall <- TRUE
-            if(get(".p.overall",envir=.compareGroupsEnv,inherits=FALSE)=='0') show.p.overall <- FALSE
-            if(get(".show.haz",envir=.compareGroupsEnv,inherits=FALSE)=='1') show.ratio <- TRUE
-            if(get(".show.haz",envir=.compareGroupsEnv,inherits=FALSE)=='0') show.ratio <- FALSE
-            if(get(".show.desc",envir=.compareGroupsEnv,inherits=FALSE)=='1') show.descr <- TRUE
-            if(get(".show.desc",envir=.compareGroupsEnv,inherits=FALSE)=='0') show.descr <- FALSE       
-            if(get(".type.cat.value",envir=.compareGroupsEnv,mode="any", inherits = FALSE)=="nsample") typecat <- 3
-            if(get(".type.cat.value",envir=.compareGroupsEnv,mode="any", inherits = FALSE)=="nperc") typecat <- 2
-            if(get(".type.cat.value",envir=.compareGroupsEnv,mode="any", inherits = FALSE)=="perc") typecat <- 1
+           p.trend <- as.numeric(get(".p.trend",envir=.cGroupsGUIEnv,inherits=FALSE))
+            p.mult <- as.numeric(get(".p.mult",envir=.cGroupsGUIEnv,inherits=FALSE))
+            show.all <- as.numeric(get(".show.all",envir=.cGroupsGUIEnv,inherits=FALSE))
+            show.n <- as.numeric(get(".show.n",envir=.cGroupsGUIEnv,inherits=FALSE))
+            if(get(".p.overall",envir=.cGroupsGUIEnv,inherits=FALSE)=='1') show.p.overall <- TRUE
+            if(get(".p.overall",envir=.cGroupsGUIEnv,inherits=FALSE)=='0') show.p.overall <- FALSE
+            if(get(".show.haz",envir=.cGroupsGUIEnv,inherits=FALSE)=='1') show.ratio <- TRUE
+            if(get(".show.haz",envir=.cGroupsGUIEnv,inherits=FALSE)=='0') show.ratio <- FALSE
+            if(get(".show.desc",envir=.cGroupsGUIEnv,inherits=FALSE)=='1') show.descr <- TRUE
+            if(get(".show.desc",envir=.cGroupsGUIEnv,inherits=FALSE)=='0') show.descr <- FALSE       
+            if(get(".type.cat.value",envir=.cGroupsGUIEnv,mode="any", inherits = FALSE)=="nsample") typecat <- 3
+            if(get(".type.cat.value",envir=.cGroupsGUIEnv,mode="any", inherits = FALSE)=="nperc") typecat <- 2
+            if(get(".type.cat.value",envir=.cGroupsGUIEnv,mode="any", inherits = FALSE)=="perc") typecat <- 1
             alpha <- as.numeric(as.character(tcltk::tclvalue(swtest)))
             res <- list(X = variables, y = variableF, Xext = x, selec = subs, method = method, alpha = alpha, hide = hide, digits = decimals, type = typecat, show.all = show.all, show.p.trend = p.trend, show.p.mul = p.mult, show.n=show.n, show.ratio=show.ratio, show.descr = show.descr, show.p.overall= show.p.overall, ref.y = ref.y, ref=ref)
       }

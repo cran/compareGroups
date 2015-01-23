@@ -24,6 +24,6 @@ printTable <- function(obj, row.names = TRUE, justify = 'right')
   for (i in 2:length(obj)) cat(obj[i], "\n")
   if (spchar)
     cat(paste(rep(intToUtf8(0xAFL), nch), collapse = ""), "\n")
-  else 
+  else
     cat(paste(rep("-", nch), collapse = ""), "\n")  
 }

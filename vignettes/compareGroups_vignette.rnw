@@ -1,5 +1,6 @@
 \documentclass[11pt]{article}
 \usepackage[ansinew]{inputenc}
+\usepackage[numbers]{natbib}
 %\usepackage[utf8]{inputenc}
 \usepackage{hyperref}
 \usepackage[pdftex]{color,graphicx,epsfig}
@@ -61,18 +62,18 @@
 \input{compareGroups_vignette-concordance}
 
 
-\title{\Large \bf {\tt compareGroups} 2.0: Descriptives by groups \\ \vspace{0.5cm}}
+\title{\Large \bf {\tt compareGroups} 3.0: Descriptives by groups \\ \vspace{0.5cm}}
 
 
 
-\author{Isaac Subirana$^{3,1,4}$ , Joan Vila$^{1,3}$ and H\'ector Sanz$^{2,1}$}
+\author{Isaac Subirana$^{3,1,4}$ , Joan Vila$^{1,3}$ and H\'ector Sanz$^{2}$}
 %\VignetteIndexEntry{compareGroups}
 
 \maketitle
 
 \begin{scriptsize}
-\noindent $^{1}$Cardiovascular Epidemiology \& Genetics group, Inflammatory and Cardiovascular Disease Programme, IMIM, Barcelona \\
-$^{2}$Barcelona Centre for International Health Research (CRESIB, Hospital Clínic-Universitat de Barcelona), Barcelona, Spain \\
+\noindent $^{1}$IMIM - Parc de Salut Mar, Barcelona \\
+$^{2}$Barcelona Centre for International Health Research (CRESIB, Hospital Cl\'inic-Universitat de Barcelona), Barcelona, Spain \\
 $^{3}$CIBER Epidemiology and Public Health (CIBERESP), Spain \\
 $^{4}$Statistics Department, University of Barcelona, Spain \\
 \end{scriptsize} 
@@ -90,12 +91,13 @@ $^{4}$Statistics Department, University of Barcelona, Spain \\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction} \label{section-Introduction}
 
-The \textbf{{\tt compareGroups}} package allows users to create tables displaying results of univariate analyses, stratified or not by categorical variable groupings.\\
+The \textbf{{\tt compareGroups}} package \cite{Subirana2014} allows users to create tables displaying results of univariate analyses, stratified or not by categorical variable groupings.\\
 
-
-Tables can easily be exported to CSV, \LaTeX{} or HTML. \\
+Tables can easily be exported to CSV, \LaTeX{}, HTML or PDF. \\
 
 This package can be used from the \Rlogo~ prompt or from a user-friendly GUI.\\
+
+Since version 3.0, a Web User Interface (WUI) has been implemented based on {\tt Shiny} package (\cite{Shiny}) which makes the functionality even more friendly. Also, this can be used remotely from \texttt{www.comparegroups.eu}. See the WUI vignette (`compareGroupsWUI\_vignette.pdf') for more details.\\
 
 This document provides an overview of the usage of the {\tt compareGroups} package.\\
 
@@ -124,7 +126,7 @@ The {\tt compareGroups} package has three functions:
 \item printed
 \item summarized
 \end{itemize*}
-\item {\tt export2latex}, {\tt export2csv}, {\tt export2html} will export results to CSV, \LaTeX{} or HTML, respectively. 
+\item {\tt export2csv}, {\tt export2html}, {\tt export2latex} and {\tt export2pdf} will export results to CSV, HTML, \LaTeX{} or PDF, respectively. 
 \end{itemize*}
 
 Figure \ref{fig:classes} shows the diagram of the package.
@@ -182,6 +184,7 @@ print(xtable(dicc,align=rep("l",4)),include.rownames=FALSE,size="small", sanitiz
 \item The function {\tt label} from the {\tt Hmisc} package could be used to label the variables properly. The tables of results will contain the variable labels (by default).
 
 \end{enumerate}  
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Time-to-event variables} \label{timeto}
@@ -500,6 +503,8 @@ Nota that a warning message is shown and no p-values are calculated for Smoking.
 \
 \\
 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Summary} \label{summary}
 
@@ -520,10 +525,10 @@ Note that because only variables 1, 3 \& 4 are selected, only results for Age, S
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Plotting} \label{plotting}
 
-Variables can be plotted to see their distribution. Plots differ according to whether the variable is continuous or categorical. Plots can be seen on-screen or saved as PDF.
+Variables can be plotted to see their distribution. Plots differ according to whether the variable is continuous or categorical. Plots can be seen on-screen or saved in different formats (BMP, JPG', PNG, TIF or PDF). To specify the format use the argument `type'. 
 
 <<echo=TRUE>>=
-plot(res[c(1,2)], file="./figures/univar/")
+plot(res[c(1,2)], file="./figures/univar/", type="pdf")
 @
 
 \begin{flushleft}
@@ -592,11 +597,32 @@ Note that ``Sex'' is removed as an explanatory variable but used as a filter, su
 \\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Substracting results} \label{substr}
+
+Since version 3.0, there is a new function called `getResults' to retrieve some specific results computed by `compareGroups', such as p-values, descriptives (means, proportions, ...), etc.\\
+
+For example, it may be interesting to recover the p-values for each variable as a vector to further manipulate it in R, like adjusting for multiple comparison with {\tt p.adjust}. For example, lets take the data {\tt SNPassoc} that contains information of dozens of SNPs (genetic variants) from a sample of cases and controls. In this case we analize five of them:
+
+<<>>=
+library(SNPassoc)
+data(SNPs)
+tab <- createTable(compareGroups(casco ~ snp10001 + snp10002 + snp10005 
+                                 + snp10008 + snp10009, SNPs))
+pvals <- getResults(tab, "p.overall")
+p.adjust(pvals, method = "BH")
+@
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Odds Ratios \& Hazard Ratios} \label{orhr}
+
 
 When the response variable is binary, the Odds Ratio (OR) can be printed in the final table. If the response variable is time-to-event (see Section \ref{timeto}), the Hazard Ratio (HR) can be printed instead.
 \
 \\
+
 
 \paragraph{ref} This statement can be used to change the reference category:
   
@@ -604,6 +630,7 @@ When the response variable is binary, the Odds Ratio (OR) can be printed in the 
 res1<-compareGroups(htn ~ age + sex + bmi + smoke, data=predimed, ref=1)
 createTable(res1, show.ratio=TRUE)
 @
+
 
 Note that for categorical response variables the reference category is the first one in the statement:
   
@@ -708,6 +735,11 @@ plot(compareGroups(tmain ~ age, data=predimed), bivar=TRUE, file="./figures/biva
 \
 \\
 
+
+
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Time-to-event explanatory variables} \label{timevar}
 
@@ -757,6 +789,7 @@ plot(res[2], bivar=TRUE, file="./figures/bivar/")
 \
 \\
 
+
 %%%%%%%%%%%%%%%%%%%%%%%
 \subsection{\texttt{createTable}} \label{createTable}
 
@@ -792,6 +825,7 @@ Note that the option ``avail'' returns the available data, as well as methods an
 By default only the descriptives table is shown. Stating ``both'' in {\tt which.table} options returns both tables.
 \
 \\
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Dressing up tables} \label{costum2}
@@ -920,6 +954,18 @@ createTable(compareGroups(tmain ~  group + age + sex, data=predimed),
 \
 \\
 
+\paragraph{header.labels} Change some key table header, such as the p.overall,.... Note that this is done when printing the table changing the argument in the `print' function and not in the `createTable' function. This argument is also present in other function that exports the table to pdf, plain text, etc.
+  
+<<echo=TRUE>>=
+tab<-createTable(compareGroups(tmain ~  group + age + sex, data=predimed), 
+                 show.all = TRUE)
+print(tab, header.labels = c("p.overall" = "p-value", "all" = "All"))
+@
+\
+\\
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Combining tables by row} \label{combirow}  
 
@@ -952,6 +998,7 @@ rbind("Modifiable"=restab1,"Non-modifiable"=restab2)[c(4,3,2,1)]
 @
 \
 \\
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Combining tables by column} \label{combicol}  
@@ -1041,15 +1088,16 @@ createTable(compareGroups(group ~ age + sex + bmi, data=predimed))[1:2, ]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Exporting tables} \label{exporting} 
 
-Tables can be exported to CSV, HTML or \LaTeX{}:
+Tables can be exported to CSV, HTML, \LaTeX{} or PDF:
 
 \begin{itemize*}
-\item export2csv(restab, file="table1"), exports to CSV format
-\item export2html(restab, file="table1"), exports to HTML format
-\item export2latex(restab, file="table1"), exports to \LaTeX{} format
+\item export2csv(restab, file="table1.csv"), exports to CSV format
+\item export2html(restab, file="table1.html"), exports to HTML format
+\item export2latex(restab, file="table1.tex"), exports to \LaTeX{} format
+\item export2pdf(restab, file="table1.pdf"), exports to PDF format
 \end{itemize*}
 
-File extensions are added automatically. Only the filename is needed (and the path if necessary) without the extension. \\
+Note that, since version 3.0, it is necessary write the extension of the file. \\
 \
 \\
 
@@ -1124,11 +1172,13 @@ See the help file of this function where you can find an example with the REGICO
 ?regicor  # info about REGICOR data set
 @
 
+Also, you can use the function `radiograph' that dumps the raw values on a plain text file. This may be usefull to identify possible wrong codes or non-valid values in the data set. 
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
-\section{Missing values} \label{missing}
+\subsection{Missing values} \label{missing}
 
 Many times, it is important to be aware of the missingness contained in each variable, possibly by groups.
 Althought `available' table shows the number of the non-missing values for each row-variable and in each group, it would be desirable to test whether the frequency of non-available data is different between groups.
@@ -1160,9 +1210,10 @@ restab
 @
 
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
-\section{Analysis of genetic data} \label{genetic}
+\subsection{Analysis of genetic data} \label{genetic}
 
 
 In the version 2.0 of {\tt compareGroups}, it is possible to analyse genetic data, more concretely Single Nucleotic Polymorphisms (SNPs), using the function {\tt compareSNPs}. This function takes advantage of {\tt SNPassoc}\cite{SNPassoc} and {\tt HardyWeinberg} \cite{HW} packages to perform quality control of genetic data displaying the Minor Allele Frequencies, Missingness, Hardy Weinberg Equilibrium, etc. of the whole data set or by groups. When groups are considered, it also performs a test to check whether missingness rates is the same among groups.\\
@@ -1202,7 +1253,8 @@ res
 \newpage
 \section{Using GUI} \label{gui}
 
-Once the {\tt compareGroups} package is loaded, a Graphical User Interface (GUI) is displayed in response to typing {\tt cGroupsGUI()}. The GUI is meant to make it feasible for users who are unfamiliar with \Rlogo~ to construct bivariate tables.
+Once the {\tt compareGroups} package is loaded, a Graphical User Interface (GUI) is displayed in response to typing {\tt cGroupsGUI(predimed)}. The GUI is meant to make it feasible for users who are unfamiliar with \Rlogo~ to construct bivariate tables.
+Note that, since version 3.0, it is necessary to specifiy an existing data.frame as input. So, for example, you can load the PREDIMED data by typing {\tt data(predimed)} before calling `cGroupsGUI' function.
 \\
 
 In this section we illustrate, step by step, how to construct a bivariate table containing descriptives by groups from the \textit{predimed} data  using the GUI:
@@ -1311,7 +1363,7 @@ To return to the \Rlogo~ console, just close the GUI window.
 \newpage
 \section*{Bibliography}
 %\bibliographystyle{bmc_article}  % Style BST file
-\bibliographystyle{plain}  % Style BST file
+\bibliographystyle{unsrtnat}  % Style BST file
 \bibliography{compareGroups_vignette}
 
 \end{document}

@@ -1,4 +1,4 @@
-export2pdf <- function(x, file, compile=TRUE, openfile=TRUE, ...){
+export2pdf <- function(x, file, compile=TRUE, openfile=TRUE, margin=c(2,2,1,1), ...){
 
   if (!inherits(x,"createTable"))
     stop("'x' must be of class 'createTable'")
@@ -10,8 +10,8 @@ export2pdf <- function(x, file, compile=TRUE, openfile=TRUE, ...){
   \\usepackage{longtable}
   \\usepackage{multirow}
   \\usepackage{lscape}
-  \\usepackage[top=2cm,bottom=2cm,left=1cm,right=1cm]{geometry}
-  \\usepackage[latin1]{inputenc}
+  \\usepackage[top=",margin[1],"cm,bottom=",margin[2],"cm,left=",margin[3],"cm,right=",margin[4],"cm]{geometry}
+  \\usepackage[utf8]{inputenc}
   \\begin{document}
   ",
   export2latex(x,file=tempfile(),which = if (inherits(x,"summary.createTable")) 'avail' else 'descr',...)
@@ -19,8 +19,6 @@ export2pdf <- function(x, file, compile=TRUE, openfile=TRUE, ...){
   \\end{document}
   "
   ,sep="")
-  
-  file <- paste(file,"pdf",sep=".")
   
   file.tex <- sub("pdf$","tex",file)
   write(text, file = file.tex)
@@ -37,6 +35,7 @@ export2pdf <- function(x, file, compile=TRUE, openfile=TRUE, ...){
   
   
 }
+
 
 
 

@@ -47,29 +47,23 @@ An object of class 'createTable'. For further details, see 'value' section of \c
 }
 \examples{
 
+
 require(compareGroups)
 
 # load regicor data
 data(regicor)
 
 # table of descriptives by recruitment yeear
-res<-compareGroups(year~.-id-sex,regicor,subset=sex=='Male')
-restab1 <- createTable(res, hide.no = "no")  # table for men
-restab2 <- update(restab1, x = update(res, subset = sex == 'Female')) # table for women
+res<-compareGroups(year~.-id-sex,regicor)
+restab <- createTable(res, hide.no = "no")
 
-# missingness table for men and for women
-miss1<-missingTable(restab1,type=1)
-miss2<-missingTable(restab2,type=1)
-miss1
-miss2
-
-# sex stratified table of missingness.
-cbind("Men"=miss1,"Women"=miss2)
-
-# from a compareGroups object
-missingTable(res)
+# missingness table
+missingTable(restab,type=1)
 
 \dontrun{
+
+# also create the missing table from a compareGroups object
+missingTable(res)
 
 # some methods that works for createTable objects also works for objects 
 #   computed by missTable function.
