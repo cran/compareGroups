@@ -1,15 +1,15 @@
 Package: compareGroups
 Type: Package
-Title: Descriptive analysis by groups
-Version: 3.0
-Date: 2015-01-14
+Title: Descriptive Analysis by Groups
+Version: 3.0.1
+Date: 2015-05-12
 Depends: R (>= 2.13.1), Hmisc, gdata, xtable, SNPassoc
 Imports: survival, epitools, tools, HardyWeinberg
 Suggests: tcltk2, car, XLConnect, shiny
 Author: Isaac Subirana, Joan Vila, Héctor Sanz, Gavin Lucas, Judith Peñafiel
     and David Giménez
 Maintainer: Isaac Subirana <isubirana@imim.es>
-Description: This package is designed to read, interpret, summarise, display and
+Description: Read, interpret, summarise, display and
     analyse epidemiological data. Can be used to create data summaries for
     quality control, extensive reports for exploring data, including
     publication-ready univariate or bivariate tables in plain text HTML and
@@ -27,7 +27,7 @@ URL: http://www.comparegroups.eu
 LazyLoad: yes
 Encoding: latin1
 BuildVignettes: True
-Packaged: 2015-01-23 08:33:41 UTC; isubirana
 NeedsCompilation: no
+Packaged: 2015-05-12 14:01:07 UTC; isubirana
 Repository: CRAN
-Date/Publication: 2015-01-23 12:38:06
+Date/Publication: 2015-05-13 01:16:32

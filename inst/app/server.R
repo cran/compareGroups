@@ -1,5 +1,6 @@
 library(shiny, quietly=TRUE)
 
+
 options(shiny.maxRequestSize = 10e6) # ~10 Mb
 .cGroupsWUIEnv <- new.env(parent=emptyenv())
 
@@ -20,6 +21,7 @@ wd<-getwd()
 setwd(system.file("app", package = "compareGroups"))
 
 shinyServer(function(input, output) {
+
   ###############
   ## read data ##
   ###############
@@ -242,7 +244,7 @@ shinyServer(function(input, output) {
   create<-reactive({
     dd<-dataset()
     if (is.null(dd)){
-      cat("Data not loaded\n")
+      cat("\n\nData not loaded\n")
       return(invisible(NULL))
     }
     # global subset
@@ -437,7 +439,7 @@ shinyServer(function(input, output) {
   createSNPs<-reactive({
     dd<-dataset()
     if (is.null(dd)){
-      cat("Data not loaded\n")
+      cat("\n\nData not loaded\n")
       return(invisible(NULL))
     }
     # global subset
@@ -487,7 +489,7 @@ shinyServer(function(input, output) {
   output$valuestable <- renderText({
     dd<-dataset()
     if (is.null(dd)){
-      cat("Data not loaded\n")
+      cat("\n\nData not loaded\n")
       return(invisible(NULL))
     }
     input$changemethod
@@ -527,12 +529,22 @@ shinyServer(function(input, output) {
     ans<-gsub("<TD align=\"center\">",paste("<TD align=\"center\" style=\"font-size:",input$htmlsizeinfotab,"em\">",sep=""),ans)
     ans<-gsub("<TD>",paste("<TD style=\"font-size:",input$htmlsizeinfotab,"em\">",sep=""),ans)
     ans<-gsub("<TH>",paste("<TH style=\"font-size:",input$htmlsizeinfotab,"em\">",sep=""),ans)
+    ans<-gsub("<td align=\"center\">",paste("<td align=\"center\" style=\"font-size:",input$htmlsizeinfotab,"em\">",sep=""),ans)
+    ans<-gsub("<td>",paste("<td style=\"font-size:",input$htmlsizeinfotab,"em\">",sep=""),ans)
+    ans<-gsub("<th>",paste("<th style=\"font-size:",input$htmlsizeinfotab,"em\">",sep=""),ans)
     ans
     
   })
   
   ## values extended
-  output$valuesext <- renderDataTable(dataset(), options=list(iDisplayLength = 10))
+  output$valuesexttable <- renderDataTable(dataset(), options=list(iDisplayLength = 15, lengthMenu = list(c(10, 20, -1), list('10', '20', 'All')), searching = FALSE))
+  
+  output$valuesext <- renderUI({
+      if (is.null(input$valueextsize))
+        return(NULL)
+      div(dataTableOutput("valuesexttable"),style=paste("font-size:",input$valueextsize,"%",sep=""))
+  })
+
   
   ############################
   ##### print createTable ####
@@ -563,6 +575,9 @@ shinyServer(function(input, output) {
     ans<-gsub("<TD align=\"center\">",paste("<TD align=\"center\" style=\"font-size:",input$htmlsizerestab,"em\">",sep=""),ans)
     ans<-gsub("<TD>",paste("<TD style=\"font-size:",input$htmlsizerestab,"em\">",sep=""),ans)
     ans<-gsub("<TH>",paste("<TH style=\"font-size:",input$htmlsizerestab,"em\">",sep=""),ans)
+    ans<-gsub("<td align=\"center\">",paste("<td align=\"center\" style=\"font-size:",input$htmlsizerestab,"em\">",sep=""),ans)
+    ans<-gsub("<td>",paste("<td style=\"font-size:",input$htmlsizerestab,"em\">",sep=""),ans)
+    ans<-gsub("<th>",paste("<th style=\"font-size:",input$htmlsizerestab,"em\">",sep=""),ans)    
     ans
   })
   
@@ -629,7 +644,10 @@ shinyServer(function(input, output) {
     file.remove("tablesummaryHTML_appendix.html")  
     ans<-gsub("<TD align=\"center\">",paste("<TD align=\"center\" style=\"font-size:",input$htmlsizesumtab,"em\">",sep=""),ans)
     ans<-gsub("<TD>",paste("<TD style=\"font-size:",input$htmlsizesumtab,"em\">",sep=""),ans)
-    ans<-gsub("<TH>",paste("<TH style=\"font-size:",input$htmlsizesumtab,"em\">",sep=""),ans)   
+    ans<-gsub("<TH>",paste("<TH style=\"font-size:",input$htmlsizesumtab,"em\">",sep=""),ans)  
+    ans<-gsub("<td align=\"center\">",paste("<td align=\"center\" style=\"font-size:",input$htmlsizesumtab,"em\">",sep=""),ans)
+    ans<-gsub("<td>",paste("<td style=\"font-size:",input$htmlsizesumtab,"em\">",sep=""),ans)
+    ans<-gsub("<th>",paste("<th style=\"font-size:",input$htmlsizesumtab,"em\">",sep=""),ans)        
     ans    
   })
   
@@ -642,7 +660,7 @@ shinyServer(function(input, output) {
       return(invisible(NULL))
     dd<-dataset()
     if (is.null(dd)){
-      cat("Data not loaded\n")
+      cat("\n\nData not loaded\n")
       return(invisible(NULL))
     }
     input$changeselevars
@@ -663,10 +681,10 @@ shinyServer(function(input, output) {
       assign("discvars",discvars,envir=.cGroupsWUIEnv)
     })
     nn<-names(dd)
-    div(
-      div(selectInput("selevars","I want these variables",selevars,multiple=TRUE,selectize=FALSE),tags$style(type='text/css', paste("#selevars { height: ",ifelse(length(selevars)==0,20,ifelse(length(selevars)>20,300,18*length(selevars)+5)),"px;}",sep=""))),
-      actionButton("changeselevars","",icon = icon("fa fa-sort")),
-      div(selectInput("discvars","I don't want these variables",if (length(discvars)==0) discvars else nn[which(nn%in%discvars)], multiple=TRUE,selectize=FALSE),tags$style(type='text/css', paste("#discvars { height: ",ifelse(length(discvars)==0,20,ifelse(length(discvars)>20,300,18*length(discvars)+5)),"px;}",sep="")))
+    fluidRow(
+      column(4,selectInput("selevars",HTML('<div title="Choose the variables you want to analyze">Selected<br>variables</div>'),selevars,multiple=TRUE,selectize=FALSE),tags$style(type='text/css', paste("#selevars { height: ",ifelse(length(selevars)==0,20,ifelse(length(selevars)>20,300,18*length(selevars)+5)),"px;}",sep=""))),
+      column(2,br(),br(),actionButton("changeselevars","",icon = icon("fa fa-arrows-h"))),
+      column(4,selectInput("discvars",HTML('<div title="Choose the variables you DO NOT want to analyze">Discarted<br>variables</div>'),if (length(discvars)==0) discvars else nn[which(nn%in%discvars)], multiple=TRUE,selectize=FALSE),tags$style(type='text/css', paste("#discvars { height: ",ifelse(length(discvars)==0,20,ifelse(length(discvars)>20,300,18*length(discvars)+5)),"px;}",sep="")))
     )
   })
   
@@ -679,7 +697,7 @@ shinyServer(function(input, output) {
   output$vargroup <- renderUI({
     dd<-dataset()
     if (is.null(dd)){
-      cat("Data not loaded\n")
+      cat("\n\nData not loaded\n")
       return(invisible(NULL))
     }  
     input$changemethod
@@ -704,7 +722,7 @@ shinyServer(function(input, output) {
   output$vargroupcat <- renderUI({
     dd<-dataset()
     if (is.null(dd)){
-      cat("Data not loaded\n")
+      cat("\n\nData not loaded\n")
       return(invisible(NULL))
     }
     if (is.null(input$gvar))
@@ -725,8 +743,10 @@ shinyServer(function(input, output) {
   ########################
   
   output$selemethod <- renderUI({
-    if (is.null(input$initial) || !input$initial)
-      return("Data not loaded")
+    if (is.null(input$initial) || !input$initial){
+      cat("\n\nData not loaded")
+      return(invisible(NULL))
+    }
     input$changeselevars
     if (!exists("selevars",envir=.cGroupsWUIEnv))
       return(NULL)
@@ -734,14 +754,21 @@ shinyServer(function(input, output) {
     if (is.null(selevars) || length(selevars)==0)
       return(NULL)
     div(
-      div(class="row-fluid",                    
-          div(class="span4",selectInput("varselemethod", "variable", choices = selevars, multiple = TRUE, selected = isolate({ input$varselemethod}),selectize=FALSE),
-              tags$style(type='text/css', paste("#varselemethod { height: ",ifelse(length(selevars)==0,20,ifelse(length(selevars)>20,300,18*length(selevars)+5)),"px;}",sep=""))),
-          div(class="span1 offset0",checkboxInput('varselemethodALL', 'ALL', isolate({input$varselemethodALL})))
-      ),
-      div(class="row-fluid",
-        div(class="span3",selectInput("method", "type", c("Normal","Non-normal","Categorical","NA"),isolate({input$method}),selectize=FALSE)),   
-        div(HTML("<br>"),class="span1 offset0",actionButton("changemethod","Update"))
+      hr(),
+      fluidRow(
+        column(6,
+          div(class="row-fluid",                    
+              div(class="span4",selectInput("varselemethod", "variable", choices = selevars, multiple = TRUE, selected = isolate({ input$varselemethod}),selectize=FALSE),
+              tags$style(type='text/css', paste("#varselemethod { height: ",ifelse(length(selevars)==0,20,ifelse(length(selevars)>20,300,18*length(selevars)+5)),"px; width:120px}",sep="")))
+          )
+        ),
+        column(6,
+          div(class="row-fluid",
+            div(class="span1 offset0",checkboxInput('varselemethodALL', 'ALL', isolate({input$varselemethodALL}))),
+            div(class="span3",selectInput("method", "type", c("Normal","Non-normal","Categorical","NA"),isolate({input$method}),selectize=FALSE)),   
+            div(HTML("<br>"),class="span1 offset0",actionButton("changemethod","Update"))
+          )
+        )
       )
     )
   })
@@ -762,8 +789,10 @@ shinyServer(function(input, output) {
   ###################################
   
   output$response <- renderUI({
-    if (is.null(input$initial) || !input$initial)
-      return("Data not loaded")
+    if (is.null(input$initial) || !input$initial){
+      cat("\n\nData not loaded")
+      return(invisible(NULL))
+    }
     if (input$resptype == 'Group'){
       div(
         numericInput('maxgroups',"Maximum number of groups:",value=5,min=2,max=10),
@@ -794,12 +823,18 @@ shinyServer(function(input, output) {
     if (is.null(selevars))
       return(NULL)
     div(
-      div(class="row-fluid",
-          div(class="span4",selectInput("varseledescdigits", "variable", choices = selevars, multiple = TRUE, selected = isolate({input$varseledescdigits}),selectize=FALSE)),
-          div(class="span2 offset5",checkboxInput('varseledescdigitsALL', 'ALL', isolate({input$varseledescdigitsALL})))
-      ),
-      numericInput("descdigits", label="Number of decimals (-1: default)", value = -1, min=-1, max=10),
-      actionButton("changedescdigits","Update")
+      HTML('<div style="border-bottom:1px dotted #999999"><strong>Descriptives:</strong></div>'),
+      br(),
+      fluidRow(
+        column(4,
+          selectInput("varseledescdigits", "variable", choices = selevars, multiple = TRUE, selected = isolate({input$varseledescdigits}),selectize=FALSE),
+          checkboxInput('varseledescdigitsALL', 'ALL', isolate({input$varseledescdigitsALL}))
+        ),
+        column(8,
+          numericInput("descdigits", label=HTML('<div>Number of decimals<br>(-1: default)</div>'), value = -1, min=-1, max=10),
+          actionButton("changedescdigits","Update")
+        )
+      )
     )
   })
   
@@ -814,12 +849,18 @@ shinyServer(function(input, output) {
     if (is.null(selevars))
       return(NULL)
     div(
-      div(class="row-fluid",
-          div(class="span4",selectInput("varseleratiodigits", "variable", choices = selevars, multiple = TRUE, selected = isolate({input$varseleratiodigits}),selectize=FALSE)),
-          div(class="span2 offset5",checkboxInput('varseleratiodigitsALL', 'ALL', isolate({input$varseleratiodigitsALL})))
-      ),
-      numericInput("ratiodigits", label="Number of decimals (-1: default)", value = -1, min=-1, max=10),
-      actionButton("changeratiodigits","Update")
+      HTML('<div style="border-bottom:1px dotted #999999"><strong>OR/HR:</strong></div>'),
+      br(),    
+      fluidRow(
+        column(4,
+          selectInput("varseleratiodigits", "variable", choices = selevars, multiple = TRUE, selected = isolate({input$varseleratiodigits}),selectize=FALSE),
+          checkboxInput('varseleratiodigitsALL', 'ALL', isolate({input$varseleratiodigitsALL}))
+        ),
+        column(8,
+          numericInput("ratiodigits", label=HTML('<div>Number of decimals<br>(-1: default)</div>'), value = -1, min=-1, max=10),
+          actionButton("changeratiodigits","Update")
+        )
+      )
     )
   })      
   
@@ -828,24 +869,30 @@ shinyServer(function(input, output) {
   ##########################
   
   output$selevarsubset <- renderUI({
-    if (is.null(input$initial) || !input$initial)
-      return("Data not loaded")
+    if (is.null(input$initial) || !input$initial){
+      cat("\n\nData not loaded")
+      return(invisible(NULL))
+    }
     if (!exists("selevars",envir=.cGroupsWUIEnv))
       return(NULL)  
     selevars<-get("selevars",envir=.cGroupsWUIEnv,inherits=FALSE)
     if (is.null(selevars))
       return(NULL)
     div(
-      h5("Global subset"),
-      textInput('globalsubset', 'Write subset expression', ''),
-      actionButton("changeglobalsubset","Apply"),
-      h5("Variable subset"),
-      div(class="row-fluid",
-          div(class="span4",selectInput("varselevarsubset", "variable", choices = selevars, multiple = TRUE, selected = isolate({input$varselevarsubset}),selectize=FALSE)),
-          div(class="span2 offset5",checkboxInput('varselevarsubsetALL', 'ALL', isolate({input$varselevarsubsetALL})))
+      wellPanel(
+        h4("Global subset"),
+        textInput('globalsubset', 'Write subset expression', ''),
+        actionButton("changeglobalsubset","Apply")
       ),
-      textInput("varsubset", label="Write subset expression", value = ""),
-      actionButton("changevarsubset","Apply")
+      wellPanel(
+        h4("Variable subset"),
+        div(class="row-fluid",
+            div(class="span4",selectInput("varselevarsubset", "variable", choices = selevars, multiple = TRUE, selected = isolate({input$varselevarsubset}),selectize=FALSE)),
+            div(class="span2 offset5",checkboxInput('varselevarsubsetALL', 'ALL', isolate({input$varselevarsubsetALL})))
+        ),
+        textInput("varsubset", label="Write subset expression", value = ""),
+        actionButton("changevarsubset","Apply")
+      )
     )
   })     
   
@@ -855,17 +902,23 @@ shinyServer(function(input, output) {
   
   ## ratio 
   output$ratio <- renderUI({
-    if (is.null(input$initial) || !input$initial) 
-      return("Data not loaded")
+    if (is.null(input$initial) || !input$initial){ 
+      cat("\n\nData not loaded")
+      return(invisible(NULL))
+    }
     if (input$resptype!='None'){
       div(
         # reference category
-        div(
-          uiOutput("selerefvar"),
-          uiOutput("selerefcat")
+        wellPanel(h5("Reference category:"),
+          fluidRow(
+            column(6,uiOutput("selerefvar")),
+            column(6,uiOutput("selerefcat"))
+          )
         ),
         # factor 
-        uiOutput("selefactratio")
+        wellPanel(
+          uiOutput("selefactratio")
+        )
       )
     } else {
       return("No response variable selected")
@@ -897,7 +950,6 @@ shinyServer(function(input, output) {
       return(invisible(NULL))
     }
     div(
-      h5("Reference category:"), 
       selectInput("varselerefratio", "variable", choices = vlist, multiple = FALSE, selectize=FALSE)
     )
   })
@@ -969,11 +1021,13 @@ shinyServer(function(input, output) {
   
   ## select variable
   output$selehidevar <- renderUI({
-    if (is.null(input$initial) || !input$initial)
-      return("Data not loaded")
+    if (is.null(input$initial) || !input$initial){
+      cat("\n\nData not loaded")
+      return(invisible(NULL))
+    }
     dd<-dataset()
     if (is.null(dd)){
-      cat("Data not loaded\n")
+      cat("\n\nData not loaded\n")
       return(invisible(NULL))
     }  
     input$changemethod
@@ -1000,7 +1054,7 @@ shinyServer(function(input, output) {
   output$selehidecat <- renderUI({
     dd<-dataset()
     if (is.null(dd)){
-      cat("Data not loaded\n")
+      cat("\n\nData not loaded\n")
       return(invisible(NULL))
     }
     if (!exists("selevars",envir=.cGroupsWUIEnv))
@@ -1026,7 +1080,7 @@ shinyServer(function(input, output) {
   output$timevar <- renderUI({
     dd<-dataset()
     if (is.null(dd)){
-      cat("Data not loaded\n")
+      cat("\n\nData not loaded\n")
       return(invisible(NULL))
     }  
     input$changemethod
@@ -1052,7 +1106,7 @@ shinyServer(function(input, output) {
   output$censvar <- renderUI({
     dd<-dataset()
     if (is.null(dd)){
-      cat("Data not loaded\n")
+      cat("\n\nData not loaded\n")
       return(invisible(NULL))
     }  
     input$changemethod
@@ -1078,7 +1132,7 @@ shinyServer(function(input, output) {
   output$censcat <- renderUI({
     dd<-dataset()
     if (is.null(dd)){
-      cat("Data not loaded\n")
+      cat("\n\nData not loaded\n")
       return(invisible(NULL))
     }  
     input$changemethod
@@ -1104,42 +1158,45 @@ shinyServer(function(input, output) {
   ######################################
   
   output$show <- renderUI({
-    if (is.null(input$initial) || !input$initial)
-      return("Data not loaded")
+    if (is.null(input$initial) || !input$initial){
+      cat("\n\nData not loaded")
+      return(invisible(NULL))
+    }
     div(
-      div(class="row-fluid",
-          div(class="span6",checkboxInput('showall', 'ALL', TRUE)),
-          div(class="span6",checkboxInput('showpoverall', 'p-overall', TRUE))
+      hr(),
+      fluidRow(
+          column(6,checkboxInput('showall', 'ALL', TRUE)),
+          column(6,checkboxInput('showpoverall', 'p-overall', TRUE))
       ),
-      div(class="row-fluid",
-          div(class="span6",checkboxInput('showdesc', 'Descriptives', TRUE)),
-          div(class="span6",checkboxInput('showptrend', 'p-trend', FALSE))
+      fluidRow(
+          column(6,checkboxInput('showdesc', 'Descriptives', TRUE)),
+          column(6,checkboxInput('showptrend', 'p-trend', FALSE))
       ),
-      div(class="row-fluid",
-          div(class="span6",checkboxInput('showratio', 'OR/HR', FALSE)),
-          div(class="span6",                    
+     fluidRow(
+          column(6,checkboxInput('showratio', 'OR/HR', FALSE)),
+          column(6,                    
               conditionalPanel(
                 condition = "input.showratio == true",
                 checkboxInput('showpratio', 'OR/HR p-value', FALSE)
               )                    
           )                    
       ),
-      div(class="row-fluid",
-          div(class="span6",checkboxInput('shown', 'Available', FALSE)),
-          div(class="span6",checkboxInput('includemiss', "NA category", FALSE))
+      fluidRow(
+          column(6,checkboxInput('shown', 'Available', FALSE)),
+          column(6,checkboxInput('includemiss', "NA category", FALSE))
       ),
-      div(class="row-fluid",
-          div(class="span6",checkboxInput('showpmul', 'Pairwise p-value', FALSE)),
-          div(class="span6",
+      fluidRow(
+          column(6,checkboxInput('showpmul', 'Pairwise p-value', FALSE)),
+          column(6,
               conditionalPanel(
                 condition = "input.showpmul == true",
                 checkboxInput('pcorrected', 'Correct pairwise p-values', FALSE)
               )
           )
       ),
-      div(class="row-fluid",
-          div(class="span6",checkboxInput('simplify', 'Simplify', FALSE)),
-          div(class="span6","")
+      fluidRow(
+          column(6,checkboxInput('simplify', 'Simplify', FALSE)),
+          column(6,"")
       )
     )                         
   })
@@ -1149,29 +1206,29 @@ shinyServer(function(input, output) {
   ##################################
   
   output$format <- renderUI({
-    if (is.null(input$initial) || !input$initial)
-      return("Data not loaded")
+    if (is.null(input$initial) || !input$initial){
+      cat("\n\nData not loaded")
+      return(invisible(NULL))
+    }
     div(
-      div(class="row-fluid",
-          div(class="span6",h5("Frequencies:")),                                                         
-          div(class="span6",radioButtons("type", "", c("%" = 1, "n (%)" = 2, "n"=3), selected="n (%)",inline = TRUE))
+      wellPanel(
+        HTML('<div style="border-bottom:1px dotted #999999"><strong>Frequencies:</strong></div>'),
+        radioButtons("type", "", c("%" = 1, "n (%)" = 2, "n"=3), selected="n (%)",inline = TRUE)
       ),
-      div(class="row-fluid",
-          div(class="span4",h5("Means:")),
-          div(class="span8",radioButtons("sdtype", "", c("Mean (SD)"=1,"Mean+-SD"=2), selected="Mean (SD)",inline = TRUE))
+      wellPanel(
+        HTML('<div style="border-bottom:1px dotted #999999"><strong>Mean, standard deviation:</strong></div>'),
+        radioButtons("sdtype", "", c("Mean (SD)"=1,"Mean+-SD"=2), selected="Mean (SD)",inline = TRUE)
       ),
-      h5("Quantiles: Median [a, b]:"),
-      div(class="row-fluid",
-          div(class="span2",h6("[a, ]:")),
-          div(class="span2",numericInput("Q1", label="", value = 25, min=0, max=49))
-      ),                                          
-      div(class="row-fluid",
-          div(class="span2",h6("[ , b]:")),
-          div(class="span2",numericInput("Q3", label="", value = 75, min=51, max=100))
-      ),
-      div(class="row-fluid",
-          div(class="span5",radioButtons("qtype1", "brackets", c("Squared"=1,"Rounded"=2), selected="Squared")),
-          div(class="span5",radioButtons("qtype2", "separator", c("Semicolon"=1,"Comma"=2,"Slash"=3), selected="Semicolon"))
+      wellPanel(
+        HTML('<div style="border-bottom:1px dotted #999999"><strong>Median [a, b]</strong></div>'),
+        fluidRow(
+          column(6,numericInput("Q1", label="[a, ]:", value = 25, min=0, max=49)),
+          column(6,numericInput("Q3", label="[ , b]:", value = 75, min=51, max=100))
+        ),
+        fluidRow(
+          column(6,radioButtons("qtype1", "brackets", c("Squared"=1,"Rounded"=2), selected="Squared")),
+          column(6,radioButtons("qtype2", "separator", c("Semicolon"=1,"Comma"=2,"Slash"=3), selected="Semicolon"))
+        )
       ),
       actionButton("changeformat","","Update")
     )
@@ -1182,19 +1239,20 @@ shinyServer(function(input, output) {
   ########################  
   
   output$decimals <- renderUI({  
-    if (is.null(input$initial) || !input$initial)
-      return("Data not loaded")
+    if (is.null(input$initial) || !input$initial){
+      cat("\n\nData not loaded")
+      return(invisible(NULL))
+    }
     div(
-      div(
-        h5("p-values:"),
+      wellPanel(
+        HTML('<div style="border-bottom:1px dotted #999999"><strong>p-values:</strong></div>'),
+        br(),
         numericInput("pvaldigits", label="Number of decimals", value = 3, min=1, max=20)
       ),
-      div(
-        h5("Descriptives:"),
+      wellPanel(
         uiOutput("seledescdigits")
       ),
-      div(
-        h5("OR/HR:"),
+      wellPanel(       
         uiOutput("seleratiodigits")
       )                  
     )
@@ -1205,18 +1263,20 @@ shinyServer(function(input, output) {
   ########################  
   
   output$labels <- renderUI({  
-    if (is.null(input$initial) || !input$initial) 
-      return("Data not loaded") 
+    if (is.null(input$initial) || !input$initial){ 
+      cat("\n\nData not loaded")
+      return(invisible(NULL))
+    }
     div(
-      div(class="row-fluid",
-          div(class="span2",textInput("alllabel", label="All:", value="[ALL]")),
-          div(class="span2 offset7",actionButton("changeLabels","Apply")) 
-      ),
+      hr(),
+      textInput("alllabel", label="All:", value="[ALL]"),
       textInput("poveralllabel", label="overall p-value:", value="p.overall"),
       textInput("ptrendlabel", label="p-value for trend:", value="p.trend"),
       textInput("pratiolabel", label="OR/HR p-value:", value="p.ratio"),
       textInput("Nlabel", label="Available data:", value="N"), 
-      textInput("captionlabel", label="Caption (only for PDF):", value="NULL")
+      textInput("captionlabel", label="Caption (only for PDF):", value="NULL"),
+      hr(),
+      actionButton("changeLabels","Apply") 
     )
   })
   
@@ -1225,12 +1285,14 @@ shinyServer(function(input, output) {
   ########################  
   
   output$save <- renderUI({  
-    if (is.null(input$initial) || !input$initial) 
-      return("Data not loaded")
+    if (is.null(input$initial) || !input$initial){ 
+      cat("\n\nData not loaded")
+      return(invisible(NULL))
+    }
     if (input$results=='TABLE'){  # save table
       div(
+        hr(),
         selectInput("downloadtabletype", "Select format", choices = c("PDF","CSV","HTML","TXT"),selectize=FALSE),
-        downloadButton('actiondownloadtable', 'Download'),
         conditionalPanel(
           condition="input.downloadtabletype == 'PDF'",
           wellPanel(
@@ -1244,19 +1306,23 @@ shinyServer(function(input, output) {
           wellPanel(
             radioButtons('sepcsv', 'Separator', c(Comma=',', Semicolon=';', Tab='\t'), 'Comma')
           )
-        )
+        ),
+        downloadButton('actiondownloadtable', 'Download')
       )    
     } else {
       if (input$results=='PLOT'){  # save plot
         div(
-          selectInput("downloadplottype", "Select format", choices = c('pdf','bmp','jpg','png','tif'),selectize=FALSE),
-          downloadButton('actiondownloadplot', 'Download')      
+          hr(),
+          fluidRow(
+            column(6,selectInput("downloadplottype", "Select format", choices = c('pdf','bmp','jpg','png','tif'),selectize=FALSE)),
+            column(6,downloadButton('actiondownloadplot', 'Download'))      
+          )
         )      
       } else {
-        if (input$results=='SNPs'){  # save SNPs table
+        if (input$initial && input$results=='SNPs'){  # save SNPs table
           div(
-            condition = "input.initial == true && input.results == 'SNPs'",          
-            downloadButton('actiondownloadSNPtable', 'Download')          
+            hr(),
+            downloadButton('actiondownloadSNPtable', 'Download')
           )
         }
       }
@@ -1268,17 +1334,13 @@ shinyServer(function(input, output) {
   ########################
   
   output$values <- renderUI({  
-    if (is.null(input$initial) || !input$initial) 
-      return("Data not loaded")  
+    if (is.null(input$initial) || !input$initial){ 
+      cat("\n\nData not loaded")
+      return(invisible(NULL))
+    }
     div(
-      div(class="row-fluid",
-          div(class="span1",h6("Resize:")),
-          div(class="span10",sliderInput("htmlsizeinfotab", "", min=0.5, max=2, value=1, step=0.1))
-      ),
-      div(class="row-fluid",
-          div(class="span4",h6("Maximum number of categories to display:")),
-          div(class="span1",numericInput("maxvalues", "", min=3, max=100, value=10, step=1))
-      ),
+      sliderInput("htmlsizeinfotab", "Resize", min=0.5, max=2, value=1, step=0.1),
+      numericInput("maxvalues", "Maximum number of categories to display:", min=3, max=100, value=10, step=1),
       htmlOutput('valuestable')
     )
   })
@@ -1288,13 +1350,12 @@ shinyServer(function(input, output) {
   ########################
   
   output$info <- renderUI({  
-    if (is.null(input$initial) || !input$initial) 
-      return("Data not loaded")  
+    if (is.null(input$initial) || !input$initial){ 
+      cat("\n\nData not loaded")
+      return(invisible(NULL))
+    }  
     div(
-      div(class="row-fluid",
-          div(class="span1",h6("Resize:")),
-          div(class="span10",sliderInput("htmlsizesumtab", "", min=0.5, max=2, value=1, step=0.1))
-      ),
+      sliderInput("htmlsizesumtab", "Resize:", min=0.5, max=2, value=1, step=0.1),
       htmlOutput('sumtab')
     )
   })
@@ -1304,8 +1365,10 @@ shinyServer(function(input, output) {
   ########################
   
   output$table <- renderUI({  
-    if (is.null(input$initial) || !input$initial) 
-      return("Data not loaded")  
+    if (is.null(input$initial) || !input$initial){ 
+      cat("\n\nData not loaded")
+      return(invisible(NULL))
+    }
     if (input$tabletype=='R console'){
       div(
         condition = "input.tabletype == 'R console'",
@@ -1314,19 +1377,13 @@ shinyServer(function(input, output) {
     } else {
       if (input$tabletype == 'PDF'){
         div(
-          div(class="row-fluid",
-              div(class="span1",h6("Resize:")),
-              div(class="span10",sliderInput("sizepdftab", "", min=1, max=10, value=5, step=1))
-          ),           
+          div(class="span10",sliderInput("sizepdftab", "Resize:", min=1, max=10, value=5, step=1)),
           uiOutput('pdftab')
         )              
       } else {
         if (input$tabletype == 'HTML'){
           div(
-            div(class="row-fluid",
-                div(class="span1",h6("Resize:")),
-                div(class="span10",sliderInput("htmlsizerestab", "", min=0.5, max=2, value=1, step=0.1))
-            ),           
+            sliderInput("htmlsizerestab", "Resize:", min=0.5, max=2, value=1, step=0.1),
             htmlOutput('htmltab')
           )
         }
@@ -1339,8 +1396,10 @@ shinyServer(function(input, output) {
   ########################
   
   output$uiplot <- renderUI({  
-    if (is.null(input$initial) || !input$initial) 
-      return("Data not loaded")    
+    if (is.null(input$initial) || !input$initial){ 
+      cat("\n\nData not loaded")
+      return(invisible(NULL))
+    }  
     div(  
       uiOutput("varPlot"), 
       imageOutput('plot',width = "100%", height = "500px")
@@ -1352,8 +1411,10 @@ shinyServer(function(input, output) {
   ########################
   
   output$snps <- renderUI({  
-    if (is.null(input$initial) || !input$initial) 
-      return("Data not loaded") 
+    if (is.null(input$initial) || !input$initial){
+      cat("\n\nData not loaded")
+      return(invisible(NULL))
+    }
     div(
       div(class="row-fluid",
           div(class="span3","Allele separator character"),
@@ -1379,12 +1440,12 @@ shinyServer(function(input, output) {
     if (is.null(selevars) || length(selevars)==0)
       return(invisible(NULL))
     input$changeselevars
-    div(class="row-fluid",  
-        div(class="span4",selectInput("varPlot", "", choices = selevars, selectize=FALSE)),
-        conditionalPanel(
-          condition = "input.resptype != null && input.resptype != 'None'",
-          div(class="span2",checkboxInput('bivar', 'Bivariate', FALSE))
-        )
+    div(  
+      selectInput("varPlot", HTML('<div title="Choose variable to plot">Variable</div>'), choices = selevars, selectize=FALSE),
+      conditionalPanel(
+        condition = "input.resptype != null && input.resptype != 'None'",
+        div(class="span2",checkboxInput('bivar', 'Bivariate', FALSE))
+      )
     )  
   })
   
