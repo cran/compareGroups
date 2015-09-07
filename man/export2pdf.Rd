@@ -44,7 +44,7 @@ export2pdf(x, file, compile = TRUE, openfile = TRUE, margin = c(2,2,1,1), ...)
 
 
 \seealso{
-  \code{\link{createTable}}, \code{\link{export2latex}}, \code{\link{export2csv}}, \code{\link{export2html}}, \code{\link{report}}
+  \code{\link{createTable}}, \code{\link{export2latex}}, \code{\link{export2csv}}, \code{\link{export2html}}, \code{\link{export2md}}, \code{\link{export2word}}
 } 
 
 

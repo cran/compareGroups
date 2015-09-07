@@ -53,26 +53,29 @@ require(compareGroups)
 # load regicor data
 data(regicor)
 
-# table of descriptives by recruitment yeear
-res<-compareGroups(year~.-id-sex,regicor)
+# table of descriptives by recruitment year
+res <- compareGroups(year ~ age + sex + smoker + sbp + histhtn + 
+         chol + txchol + bmi + phyact + pcs + death, regicor)
 restab <- createTable(res, hide.no = "no")
 
 # missingness table
 missingTable(restab,type=1)
 
+
 \dontrun{
 
 # also create the missing table from a compareGroups object
-missingTable(res)
+miss <- missingTable(res)
+miss
 
 # some methods that works for createTable objects also works for objects 
 #   computed by missTable function.
-miss1[1:4]
-varinfo(miss1)
-plot(miss1)
+miss[1:4]
+varinfo(miss)
+plot(miss)
 
 #... but update methods cannot be applied (this returns an error).
-update(miss1,type=2)
+update(miss,type=2) 
 
 }
 

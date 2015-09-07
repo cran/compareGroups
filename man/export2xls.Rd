@@ -1,14 +1,14 @@
-\name{export2html}
-\alias{export2html}
+\name{export2xls}
+\alias{export2xls}
 
 \title{
-Exporting descriptives table to HTML format
+Exporting descriptives table to Exel format (.xlsx or .xls)
 }
 \description{
-This function takes the result of \code{createTable} and exports the tables to HTML format.
+This function takes the result of \code{createTable} and exports the tables to Excel format (.xlsx or .xls).
 }
 \usage{
-export2html(x, file, which.table="descr", nmax = TRUE, header.labels = c(), ...)
+export2xls(x, file, which.table="descr", nmax=TRUE, header.labels=c(), ...)
 }
 
 \arguments{
@@ -23,7 +23,7 @@ export2html(x, file, which.table="descr", nmax = TRUE, header.labels = c(), ...)
   
   \item{header.labels}{see the 'header.labels' argument from \code{\link{createTable}}.}   
              
-  \item{\ldots}{currently ignored.}
+  \item{\ldots}{arguments passed to \code{\link[xlsx]{write.xlsx}} function.}
   
 }
 
@@ -31,6 +31,7 @@ export2html(x, file, which.table="descr", nmax = TRUE, header.labels = c(), ...)
 \note{
 
 The way to compute the 'N' shown in the bivariate table header, controlled by 'nmax' argument, has been changed from previous versions (<1.3). In the older versions 'N' was computed as the maximum across the cells withing each column (group) from the 'available data' table ('avail').
+
 
 }
 
@@ -44,7 +45,7 @@ The way to compute the 'N' shown in the bivariate table header, controlled by 'n
 require(compareGroups)
 data(regicor)
 res <- compareGroups(sex ~. -id-todeath-death-tocv-cv, regicor)
-export2html(createTable(res, hide.no = 'n'), file="table1.html")
+export2xls(createTable(res, hide.no = 'n'), file="table1.xlsx")
 }
 
 }

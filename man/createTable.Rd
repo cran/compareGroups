@@ -121,19 +121,16 @@ data(regicor)
 regicor$tcv <- with(regicor,Surv(tocv, as.integer(cv=='Yes')))
 label(regicor$tcv)<-"Cardiovascular incidence"
 
-# compute a time-to-overall death variable
-regicor$tdeath <- with(regicor, Surv(todeath, as.integer(death=='Yes')))
-label(regicor$tdeath) <- "Mortality incidence"
-
 # remove variables used to create time-to variables
 regicor<-remove.vars(regicor,c("todeath","death","tocv","cv"))
 
 # descriptives by time-to-cardiovascular event, taking 'no' category as 
 # the reference in computing HRs.
-res <- compareGroups(tcv ~ .-id-tdeath, regicor, ref.no='no')
+res <- compareGroups(tcv ~ age + sex + smoker + sbp + histhtn + 
+         chol + txchol + bmi + phyact + pcs + tcv, regicor, ref.no='no')
 
 # build table showing HR and hiding the 'no' category
-restab<-createTable(res, show.ratio = TRUE, hide.no = 'no')
+restab <- createTable(res, show.ratio = TRUE, hide.no = 'no')
 restab
 
 # prints available info table

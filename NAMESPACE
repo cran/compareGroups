@@ -5,6 +5,13 @@ importFrom(survival, Surv, survfit, survdiff, coxph)
 importFrom(epitools, oddsratio)
 importFrom(tools, texi2pdf)
 importFrom(HardyWeinberg, HWChisqMat)
+importFrom(rmarkdown, render, word_document)
+importFrom(knitr, kable)
+importFrom(grDevices, bmp, dev.new, dev.off, grey.colors, jpeg, pdf, png, rainbow, tiff)
+importFrom(graphics, abline, barplot, box, boxplot, hist, legend, lines, mtext, par, plot, points, text, title)
+importFrom(stats, TukeyHSD, anova, aov, as.formula, chisq.test, coef, confint, confint.default, cor, cor.test, dnorm, fisher.test, formula, glm, kruskal.test, lm, median, na.pass, p.adjust, pchisq, qqline, quantile, sd, shapiro.test, t.test, update)
+importFrom(utils, combn, read.csv, read.csv2, read.table, sessionInfo, write.table)
+importFrom(xlsx, write.xlsx)
 import(SNPassoc)
 
 
@@ -26,6 +33,9 @@ export2latex.cbind.createTable,
 export2csv,
 export2html,
 export2pdf,
+export2md,
+export2word,
+export2xls,
 cGroupsGUI,
 cGroupsWUI,
 report,

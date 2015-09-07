@@ -180,8 +180,8 @@ label(regicor$tdeath) <- "Mortality"
 res <- compareGroups(sex ~ .-id-tocv-cv-todeath-death, data = regicor)
 res
 
-# summary of the first 4 row-variables
-summary(res[1:4])
+# summary of each variable
+summary(res)
 
 # univariate plots of all row-variables
 \dontrun{

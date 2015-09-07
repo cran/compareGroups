@@ -1,3 +1,9 @@
+v3.1
+-. cGroupsWUI: improved shiny app interface.
+-. export2word: new function to export tables to Word.
+-. export2md: new function to export tables to Markdown.
+-. export2html: file argument can be left missing to return HTML code, similar to export2latex.
+
 v3.0.1
 -. cGroupsWUI: udpates and improvements in the aspect of the GUI web based application.
 

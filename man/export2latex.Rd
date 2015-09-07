@@ -69,7 +69,7 @@ export2latex(x, ...)
 
 
 \seealso{
-  \code{\link{createTable}}, \code{\link{export2csv}}, \code{\link{export2html}}, \code{\link{export2pdf}}, \code{\link{report}} 
+  \code{\link{createTable}}, \code{\link{export2csv}}, \code{\link{export2html}}, \code{\link{export2pdf}}, \code{\link{export2md}}, \code{\link{export2word}} 
 } 
 
                               

@@ -1,4 +1,4 @@
-export2html<-function(x, file, which.table="descr", nmax=TRUE, header.labels=c(), ...){
+export2xls<-function(x, file, which.table="descr", nmax=TRUE, header.labels=c(), ...){
     if (!inherits(x, "createTable")) 
         stop("x must be of class 'createTable'")
     if (inherits(x, "cbind.createTable")) 
@@ -25,22 +25,17 @@ export2html<-function(x, file, which.table="descr", nmax=TRUE, header.labels=c()
             }
         }
         table1 <- rbind(table1[1:ii, ], aux)
-        table1[, 1] <- sub("^    ", "&nbsp;&nbsp;&nbsp;&nbsp;", table1[, 1])
-        table1[, 1] <- sub("^\\&nbsp;\\&nbsp;\\&nbsp;\\&nbsp;    ", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", table1[, 1])        
         if (nrow(table1) > 1 && length(grep("^N=", trim(table1[2, 2])))) {
             wn <- grep("^N=", trim(table1[2, ]))
-            nn <- paste(trim(table1[1, wn]), "<br/>", trim(table1[2, wn]))
+            nn <- paste(trim(table1[1, wn]), " ", trim(table1[2, wn]))
             table1[1, wn] <- nn
             table1 <- table1[-2, ]
         }
-        align <- c("l", "l", rep("c", ncol(table1) - 1))
         table1[1, 1] <- "Var"
         colnames(table1) <- table1[1, ]
         table1 <- table1[-1, ,drop=FALSE]
-        if (!missing(file) && is.character(file))
-          print(xtable(table1, align = align), type = "html", file = file, include.rownames = FALSE, sanitize.text.function = function(x) x)
-        else
-          print(xtable(table1, align = align), type = "html", include.rownames = FALSE, sanitize.text.function = function(x) x)
+        table1 <- rbind(colnames(table1),table1)
+        write.xlsx(table1, file = file, showNA=FALSE, row.names=FALSE, col.names=FALSE, ...)
     }
     if (ww %in% c(2, 3)) {
         table2 <- prepare(x, nmax = nmax, c())[[2]]
@@ -61,17 +56,16 @@ export2html<-function(x, file, which.table="descr", nmax=TRUE, header.labels=c()
             }
         }
         table2 <- rbind(table2[1, ], aux)
-        table2[, 1] <- sub("^    ", "&nbsp;&nbsp;&nbsp;&nbsp;", table2[, 1])
-        table2[, 1] <- sub("^\\&nbsp;\\&nbsp;\\&nbsp;\\&nbsp;    ", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", table2[, 1])
         table2[1, 1] <- "Var"
-        align <- c("l", "l", rep("c", ncol(table2) - 1))
         colnames(table2) <- table2[1, ]
         table2 <- table2[-1, ,drop=FALSE]
-        if (!missing(file) && is.character(file)){
-          file.save<-paste(sub("\\.html$","",file),"_appendix.html",sep="")
-          print(xtable(table2, align = align), type = "html", file = file.save, include.rownames = FALSE, sanitize.text.function = function(x) x)
-        } else
-          print(xtable(table2, align = align), type = "html", include.rownames = FALSE, sanitize.text.function = function(x) x)        
+        table2 <- rbind(colnames(table2),table2)
+        extension <- 
+        if (length(grep("\\.xlsx$",file)))
+          file.save <- paste(sub("\\.xlsx$","",file),"_appendix.xlsx",sep="")
+        else
+          file.save <- paste(sub("\\.xls$","",file),"_appendix.xls",sep="")
+        write.xlsx(table2, file = file.save, showNA=FALSE, row.names=FALSE, col.names=FALSE, ...)
     }
 }
 

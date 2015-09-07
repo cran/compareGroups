@@ -1,31 +1,182 @@
-library(shiny, quietly=TRUE)
+shinyServer(function(input, output, session) {
 
+  
+  ## reactive Values
+  
+  rv<-reactiveValues()
+  
+  observeEvent(input$changeselevars,{
+    if (length(input$discvars)>0){
+      rv$selevars<-c(rv$selevars,input$discvars) 
+      rv$discvars<-rv$discvars[-which(rv$discvars%in%input$discvars)]       
+    }
+    if (length(input$selevars)>0){
+      rv$discvars<-c(rv$discvars,input$selevars)           
+      rv$selevars<-rv$selevars[-which(rv$selevars%in%input$selevars)]
+    }
+  })  
+  
+  observeEvent(input$changemethod,{
+    if (!is.null(rv$method)){
+      if (!is.null(input$varselemethodALL) && input$varselemethodALL)
+        rv$method[1:length(rv$method)]<<-ifelse(input$method=='Normal',1,
+                                                ifelse(input$method=='Non-normal',2,
+                                                       ifelse(input$method=='Categorical',3,NA)))        
+      else
+        if (length(input$varselemethod)>0)
+          rv$method[input$varselemethod]<<-ifelse(input$method=='Normal',1,
+                                                  ifelse(input$method=='Non-normal',2,
+                                                         ifelse(input$method=='Categorical',3,NA)))
+    }
+  })  
+  
+  observeEvent(input$changedescdigits,{
+    if (!is.null(rv$descdigits)){
+      if (!is.null(input$varseledescdigitsALL) && input$varseledescdigitsALL)
+        rv$descdigits[1:length(rv$descdigits)]<-ifelse(input$descdigits==-1,NA,input$descdigits) 
+      else
+        if (length(input$varseledescdigits)>0)
+          rv$descdigits[input$varseledescdigits]<-ifelse(input$descdigits==-1,NA,input$descdigits)
+    }
+  })   
+  
+  observeEvent(input$changeratiodigits,{
+    if (!is.null(rv$ratiodigits)){
+      if (!is.null(input$varseleratiodigitsALL) && input$varseleratiodigitsALL)
+        rv$ratiodigits[1:length(rv$ratiodigits)]<-ifelse(input$ratiodigits==-1,NA,input$ratiodigits) 
+      else
+        if (length(input$varseleratiodigits)>0)
+          rv$ratiodigits[input$varseleratiodigits]<-ifelse(input$ratiodigits==-1,NA,input$ratiodigits)
+    }
+  }) 
+  
+  observeEvent(input$changeratiocat,{
+    if (length(input$varselerefratio)>0 && !is.null(rv$refratiocat)){
+      catval<-as.numeric(strsplit(input$refratiocat,":")[[1]][1])
+      refratiocat[input$varselerefratio]<-catval
+      rv$refratiocat<-refratiocat
+    }      
+  })  
+  
+  observeEvent(input$changefactratio,{
+    if (!is.null(rv$factratio)){
+      if (!is.null(input$varselefactratioALL) && input$varselefactratioALL)
+        rv$factratio[1:length(factratio)]<-input$factratio 
+      else
+        if (length(input$varselefactratio)>0)
+          rv$factratio[input$varselefactratio]<-input$factratio
+    }    
+  })
+  
+  observeEvent(input$changehide,{
+    if (length(input$varselehide)>0 && !is.null(input$hidecat) && !is.null(rv$xhide)){
+      catval<-as.numeric(strsplit(input$hidecat,":")[[1]][1])
+      rv$xhide[input$varselehide]<-catval
+    }
+  })  
+  
+  observeEvent(input$changevarsubset,{
+    if (!is.null(rv$varsubset)){
+      if (!is.null(input$varselevarsubsetALL) && input$varselevarsubsetALL)
+        varsubset[1:length(varsubset)]<-input$varsubset 
+      else
+        if (length(input$varselevarsubset)>0)
+          varsubset[input$varselevarsubset]<-input$varsubset
+      rv$varsubset<-ifelse(varsubset=='',NA,varsubset)
+    }
+  })  
+  
+  ## help modal
+  rv <- reactiveValues()
+  rv$count <- 1
+  observeEvent(input$dec,{
+    rv$count<-rv$count-1
+  })
+  observeEvent(input$inc,{
+    rv$count<-rv$count+1
+  })
+  observe({
+    updateButton(session,"dec",disabled=rv$count<=1)
+    updateButton(session,"inc",disabled=rv$count>=7)
+  })
+  output$helpModalContents <- renderUI({
+    if (rv$count==1) return(div(h4("Descriptive table directly from R-console"),wellPanel(img(src='./examples/example1.png', align = "centre", width="100%"))))
+    if (rv$count==2) return(div(h4("Export tables to LaTeX file"),wellPanel(img(src='./examples/example2.png', align = "centre", width="100%"))))
+    if (rv$count==3) return(div(h4("Save tables on Word documents"),wellPanel(img(src='./examples/example3.png', align = "centre", width="100%"))))
+    if (rv$count==4) return(div(h4("Store the descriptives table on Excel spread sheets"),wellPanel(img(src='./examples/example4.png', align = "centre", width="100%"))))
+    if (rv$count==5) return(div(h4("Normality plots"),wellPanel(img(src='./examples/example5.png', align = "centre", width="90%"))))
+    if (rv$count==6) return(div(h4("Bivariate plots"),wellPanel(img(src='./examples/example6.png', align = "centre", width="90%"))))
+    if (rv$count==7) return(div(h4("Analyses of SNPs"),wellPanel(img(src='./examples/example7.png', align = "centre", width="80%"))))    
+  })
 
-options(shiny.maxRequestSize = 10e6) # ~10 Mb
-.cGroupsWUIEnv <- new.env(parent=emptyenv())
-
-loadhelp <- function(){
-  help <- gsub("\t","",readLines("help"))
-  starthelp <- which(help=="<cghelptext>") + 1
-  endhelp <- which(help=="</cghelptext>") - 1
-  helpvar <- help[starthelp - 2]
-  hlp <- sapply(1:length(helpvar), function(a) paste(help[starthelp[a]:endhelp[a]],collapse=""))
-  names(hlp) <- helpvar
-  return(hlp)
-}
-
-require(compareGroups)
-require(foreign)
-
-wd<-getwd()
-setwd(system.file("app", package = "compareGroups"))
-
-shinyServer(function(input, output) {
+  ## toggles
+    # table
+  observeEvent(input$tableoptionsaction, {
+   toggle("tableoptions", TRUE)
+  })
+  observe({
+   if (!is.null(input$tableoptionsaction))
+    updateButton(session, "tableoptionsaction", label = if(input$tableoptionsaction%%2==0) "View options (Hide)" else "View options (Show)")
+  })
+   # info
+  observeEvent(input$infooptionsaction, {
+   toggle("infooptions", TRUE)
+  })
+  observe({
+   if (!is.null(input$infooptionsaction))
+    updateButton(session, "infooptionsaction", label = if(input$infooptionsaction%%2==0) "View options (Hide)" else "View options (Show)")
+  })  
+  # values summary
+  observeEvent(input$valuessumoptionsaction, {
+   toggle("valuessumoptions", TRUE)
+  })
+  observe({
+   if (!is.null(input$valuessumoptionsaction))     
+    updateButton(session, "valuessumoptionsaction", label = if(input$valuessumoptionsaction%%2==0) "View options (Hide)" else "View options (Show)")
+  })   
+   # values extended
+  observeEvent(input$valuextoptionsaction, {
+   toggle("valuextoptions", TRUE)
+  })
+  observe({
+   if (!is.null(input$valuextoptionsaction))         
+    updateButton(session, "valuextoptionsaction", label = if(input$valuextoptionsaction%%2==0) "View options (Hide)" else "View options (Show)")
+  })   
+   # SNPs
+  observeEvent(input$SNPsoptionsaction, {
+   toggle("SNPsoptions", TRUE)
+  })
+  observe({
+   if (!is.null(input$SNPsoptionsaction))       
+    updateButton(session, "SNPsoptionsaction", label = if(input$SNPsoptionsaction%%2==0) "View options (Hide)" else "View options (Show)")
+  })     
+  # encoding
+  observeEvent(input$encodingaction,{
+   toggle("encoding", TRUE, "fade")
+  })
+   # open select variables panel when data is loaded
+  observe({
+    if (!is.null(input$initial) && input$initial && !is.null(input$loadok) && input$loadok)
+      updateCollapse(session, id="collapseInput", open = "collapseSelect", close = "collapseLoad")
+  })  
+  
+  # close loading waiting info modal
+   observe(
+     if (!is.null(input$initial) && input$initial)
+       toggleModal(session, modalId="loadwaitModal", toggle = "close")   
+   )
+  
+    
 
   ###############
   ## read data ##
   ###############
   dataset<-reactive({
+    input$loadok
+    isolate({
+    # remove all elements 
+    rm(list=ls(),envir=.cGroupsWUIEnv)  
+    with(rv,{selevars<<-discvars<<-method<<-descdigits<<-ratiodigits<<-refratiocat<<-factratio<<-xhide<<-varsubset<<-NULL})
     if (input$exampledata!='Own data'){ # read examples...
       datasetname<-input$exampledata
       if (input$exampledata=='REGICOR'){
@@ -47,14 +198,24 @@ shinyServer(function(input, output) {
       }
       # read TXT
       if (input$datatype=='*.txt'){
+        if (is.null(input$quote))
+          quote<-'"'
+        else{
+          if (input$quote==1)
+            quote<-""
+          if (input$quote==2)
+            quote<-'"'
+          if (input$quote==3)
+            quote<-"'"
+        }
         if (input$sep=='o')
           sepchar<-input$sepother
         else
           sepchar<-input$sep      
         if (input$encoding=='default')
-          dataset<- try(read.table(inFile$datapath,header=input$header,sep=sepchar,quote=input$quote,dec=input$dechar,na.strings=input$missvalue),silent=TRUE)
+          dataset<- try(read.table(inFile$datapath,header=input$header,sep=sepchar,quote=quote,dec=input$dechar,na.strings=input$missvalue),silent=TRUE)
         else
-          dataset<- try(read.table(inFile$datapath,header=input$header,sep=sepchar,quote=input$quote,dec=input$dechar,na.strings=input$missvalue,encoding=input$encoding),silent=TRUE)        
+          dataset<- try(read.table(inFile$datapath,header=input$header,sep=sepchar,quote=quote,dec=input$dechar,na.strings=input$missvalue,encoding=input$encoding),silent=TRUE)        
         if (inherits(dataset,"try-error")){
           cat("Error in reading data\n")
           return(invisible(NULL))      
@@ -70,6 +231,12 @@ shinyServer(function(input, output) {
           dataset<-try(read.spss(inFile$datapath,to.data.frame=TRUE),silent=TRUE)
         else
           dataset<-try(read.spss(inFile$datapath,to.data.frame=TRUE,reencode=input$encoding),silent=TRUE)
+        # fix date vars
+        vardict <- spss_varlist(inFile$datapath)[,'printfmt']
+        datevars<-grep("^DATE",vardict)
+        if (length(datevars)){
+          for (ii in datevars) dataset[,ii]<-importConvertDateTime(dataset[,ii],"date", "spss")
+        }
         if (inherits(dataset,"try-error")){
           cat("Error in reading data\n")
           return(invisible(NULL))      
@@ -99,76 +266,73 @@ shinyServer(function(input, output) {
       if (input$datatype=='*.xls'){
         if (is.null(input$tablenames))
           return(invisible(NULL)) 
-        library(XLConnect, quietly=TRUE)     
-        chn <- try(loadWorkbook(inFile$datapath),silent=TRUE)
-        dataset<-try(readWorksheet(chn,sheet=input$tablenames),silent=TRUE)
+        library(xlsx, quietly=TRUE)
+        dataset<-try(read.xlsx(inFile$datapath,sheetName=input$tablenames),silent=TRUE)
         if (inherits(dataset,"try-error"))
           return(invisible(NULL))
       }
     }
     if (!is.data.frame(dataset) || nrow(dataset)==0)
       return(invisible(NULL))
-    # select variables
-    if (exists("selevars",envir=.cGroupsWUIEnv))
-      rm(selevars,envir=.cGroupsWUIEnv)
-    assign("selevars",names(dataset),envir=.cGroupsWUIEnv)
-    # discarted variables
-    if (exists("discvars",envir=.cGroupsWUIEnv))
-      rm(discvars,envir=.cGroupsWUIEnv)
-    assign("discvars",character(),envir=.cGroupsWUIEnv)      
-    # store method
-    if (exists("method",envir=.cGroupsWUIEnv))
-      rm(method,envir=.cGroupsWUIEnv)
-    res<-compareGroups(~.,dataset,max.xlev=Inf,max.ylev=Inf,method=NA)
-    method<-sapply(res,function(x) paste(attr(x,"method"),collapse=" "))
-    method<-ifelse(method=="continuous normal",1,
+    # iniciate selevars and discvars
+    if (is.null(rv$selevars))
+      rv$selevars<<-names(dataset)
+    if (is.null(rv$discvars))
+      rv$discvars<<-character()
+    # iniciate method
+    if (is.null(rv$method)){
+      res<-compareGroups(~.,dataset,max.xlev=Inf,max.ylev=Inf,method=NA)
+      method<-sapply(res,function(x) paste(attr(x,"method"),collapse=" "))
+      method<-ifelse(method=="continuous normal",1,
                    ifelse(method=="continuous non-normal",2,3))
-    names(method)<-attr(res,"varnames.orig")
-    assign("method",method,envir=.cGroupsWUIEnv)
-    # store descdigits
-    if (exists("descdigits",envir=.cGroupsWUIEnv))
-      rm(descdigits,envir=.cGroupsWUIEnv)
-    res<-compareGroups(~.,dataset,max.xlev=Inf,max.ylev=Inf,method=NA)
-    descdigits<-rep(NA,length(res))
-    names(descdigits)<-attr(res,"varnames.orig")
-    assign("descdigits",descdigits,envir=.cGroupsWUIEnv) 
-    # store ratiodigits
-    if (exists("ratiodigits",envir=.cGroupsWUIEnv))
-      rm(ratiodigits,envir=.cGroupsWUIEnv)
-    res<-compareGroups(~.,dataset,max.xlev=Inf,max.ylev=Inf,method=NA)
-    ratiodigits<-rep(NA,length(res))
-    names(ratiodigits)<-attr(res,"varnames.orig")
-    assign("ratiodigits",ratiodigits,envir=.cGroupsWUIEnv)     
-    # reference category for OR/HR of categorical row-variables
-    if (exists("refratiocat",envir=.cGroupsWUIEnv))
-      rm(refratiocat,envir=.cGroupsWUIEnv)
-    res<-compareGroups(~.,dataset,max.xlev=Inf,max.ylev=Inf,method=NA)
-    refratiocat<-rep(1,length(res))
-    names(refratiocat)<-attr(res,"varnames.orig")
-    assign("refratiocat",refratiocat,envir=.cGroupsWUIEnv) 
-    # store factor to be multiplied for continuous variables in computing OR/HR
-    if (exists("factratio",envir=.cGroupsWUIEnv))
-      rm(factratio,envir=.cGroupsWUIEnv)
-    res<-compareGroups(~.,dataset,max.xlev=Inf,max.ylev=Inf,method=NA)
-    factratio<-rep(1,length(res))
-    names(factratio)<-attr(res,"varnames.orig")
-    assign("factratio",factratio,envir=.cGroupsWUIEnv)        
-    # store hide
-    if (exists("hide",envir=.cGroupsWUIEnv))
-      rm(hide,envir=.cGroupsWUIEnv)
-    nn<-names(dataset)
-    hide<-rep(NA,length(nn))
-    names(hide)<-nn
-    assign("hide",hide,envir=.cGroupsWUIEnv)
-    # store variable subset
-    if (exists("varsubset",envir=.cGroupsWUIEnv))
-      rm(varsubset,envir=.cGroupsWUIEnv)
-    nn<-names(dataset)
-    varsubset<-rep(NA,length(nn))
-    names(varsubset)<-nn
-    assign("varsubset",varsubset,envir=.cGroupsWUIEnv)    
+      names(method)<-attr(res,"varnames.orig")
+      rv$method<<-method
+    }
+    # iniciate descdigits
+    if (is.null(rv$descdigits)){
+      res<-compareGroups(~.,dataset,max.xlev=Inf,max.ylev=Inf,method=NA)
+      descdigits<-rep(NA,length(res))
+      names(descdigits)<-attr(res,"varnames.orig")
+      rv$descdigits<<-descdigits
+    }
+    # iniciate ratiodigits
+    if (is.null(rv$ratiodigits)){
+      res<-compareGroups(~.,dataset,max.xlev=Inf,max.ylev=Inf,method=NA)
+      ratiodigits<-rep(NA,length(res))
+      names(ratiodigits)<-attr(res,"varnames.orig")
+      rv$ratiodigits<<-ratiodigits
+    }    
+    # iniciate reference category for OR/HR of categorical row-variables
+    if (is.null(rv$refratiocat)){    
+      res<-compareGroups(~.,dataset,max.xlev=Inf,max.ylev=Inf,method=NA)
+      refratiocat<-rep(1,length(res))
+      names(refratiocat)<-attr(res,"varnames.orig")
+      rv$refratiocat<<-refratiocat
+    }
+    # iniciate factor to be multiplied for continuous variables in computing OR/HR
+    if (is.null(rv$factratio)){        
+      res<-compareGroups(~.,dataset,max.xlev=Inf,max.ylev=Inf,method=NA)
+      factratio<-rep(1,length(res))
+      names(factratio)<-attr(res,"varnames.orig")
+      rv$factratio<<-factratio
+    }
+    # iniciate hide
+    if (is.null(rv$xhide)){ 
+      nn<-names(dataset)
+      xhide<-rep(NA,length(nn))
+      names(xhide)<-nn
+      rv$xhide<<-xhide
+    }  
+    # iniciate variable subset
+    if (is.null(rv$varsubset)){
+      nn<-names(dataset)
+      varsubset<-rep(NA,length(nn))
+      names(varsubset)<-nn
+      rv$varsubset<<-varsubset
+    }
     # return data
     return(dataset)
+    })
   })
   
   
@@ -181,7 +345,7 @@ shinyServer(function(input, output) {
       initial <- FALSE
     else
       initial <- TRUE
-    checkboxInput("initial",HTML("<font size=2px color='grey'>Data loaded / Reset</font>"),initial)
+    checkboxInput("initial","",initial)
   })  
   
   ###############################
@@ -206,29 +370,22 @@ shinyServer(function(input, output) {
         if (inherits(tablenames,"try-error") || length(tablenames)==0)
           return(invisible(NULL))
         names(tablenames)<-tablenames
-        selectInput("tablenames", "Choose the table to read:", choices = tablenames, selectize=FALSE)
+        return(selectInput("tablenames", "Choose the table to read:", choices = tablenames, selectize=FALSE))
       } else {
         # TXT
         if (input$datatype=='*.txt'){
-          div(
-            HTML("<hr>"),
-            h5("TEXT Options:"),
-            checkboxInput('header', 'Has column headers', TRUE),
-            div(class="row-fluid",
-                HTML('<input class="span2" type="text" id="missvalue" value="" /> Missing Data String (e.g. <i>NA</i>)')
-            ),
-            div(class="row-fluid",
-                div(class="well span5",
-                    radioButtons('sep', 'Column Separator', c(Comma=',', Semicolon=';', Tab='\t', Other='o'), 'Comma'),
-                    conditionalPanel(
-                      condition = "input.sep == 'o'",
-                      HTML('<input class="span4" type="text" id="sepother" value="" />')
-                    ),
-                    radioButtons('dechar', 'Decimal point character', c(Comma=',', Dot='.'), 'Dot')                
-                ),
-                div(class="well span5",
-                    radioButtons('quote', 'Values in Quotes?', c(None='', 'Double'='"', 'Single'="'"), 'Double')
-                )
+          return(
+            wellPanel(
+              HTML('<p style="font-style:Bold; font-size:18px">TEXT Options</p>'),
+              checkboxInput('header', 'Has column headers', TRUE),
+              textInput("missvalue", HTML("Missing Data String (e.g. <i>NA</i>)"), ""),
+              selectInput('sep', 'Column Separator', c(Comma=',', Semicolon=';', Tab='\t', Other='o'), ','),
+              conditionalPanel(
+                condition = "input.sep == 'o'",
+                textInput("sepother", "Specify separator character","")
+              ),
+              selectInput('dechar', 'Decimal point character', c('Comma'=',', 'Dot'='.'), '.'),  
+              selectInput('quote', 'Values in Quotes?', c("None"=1, "Double"=2, "Single"=3), 2)
             )
           )
         }
@@ -240,6 +397,7 @@ shinyServer(function(input, output) {
   ###################
   ### create table ##
   ###################
+
   
   create<-reactive({
     dd<-dataset()
@@ -266,123 +424,46 @@ shinyServer(function(input, output) {
       }
       dd<-dd[rownames(dd2),]
     })    
-    input$changeselevars
-    if (!exists("selevars",envir=.cGroupsWUIEnv))
-      return(NULL)
-    selevars<-get("selevars",envir=.cGroupsWUIEnv,inherits=FALSE) 
-    if (is.null(selevars) || length(selevars)==0){
-      cat("No variables selected\n")
-      return(invisible(NULL)) 
-    }
-    if (input$resptype=='None'){
-      form<-as.formula(paste("~",paste(selevars,collapse="+"),sep=""))
-    } else {
-      if (input$resptype=='Survival'){
-        statusval<-as.numeric(strsplit(input$statuscat,":")[[1]][1])
-        cens<-as.integer(dd[,input$varselestatus])==statusval 
-        times<-dd[,input$varseletime]
-        dd$"respsurv"<-Surv(times,cens)
-        label(dd$"respsurv")<-paste("[ ",input$varseletime,"; ",input$varselestatus,"=", levels(as.factor(dd[,input$varselestatus]))[statusval],"]")
-        form<-as.formula(paste("respsurv~",paste(selevars,collapse="+"),sep=""))  
+    input$changeselevarsok
+    isolate({
+      if (is.null(rv$selevars) || length(rv$selevars)==0){
+        cat("No variables selected\n")
+        return(invisible(NULL)) 
+      }
+    })
+    input$changeresp
+    isolate({
+      if (input$resptype=='None'){
+        form<-as.formula(paste("~",paste(rv$selevars,collapse="+"),sep=""))
       } else {
-        form<-as.formula(paste(input$gvar,"~",paste(selevars,collapse="+"),sep=""))
+        if (input$resptype=='Survival'){
+          statusval<-as.numeric(strsplit(input$statuscat,":")[[1]][1])
+          cens<-as.integer(dd[,input$varselestatus])==statusval 
+          times<-dd[,input$varseletime]
+          dd$"respsurv"<-Surv(times,cens)
+          label(dd$"respsurv")<-paste("[ ",input$varseletime,"; ",input$varselestatus,"=", levels(as.factor(dd[,input$varselestatus]))[statusval],"]")
+          form<-as.formula(paste("respsurv~",paste(rv$selevars,collapse="+"),sep=""))  
+        } else {
+          form<-as.formula(paste(input$gvar,"~",paste(rv$selevars,collapse="+"),sep=""))
+        }
       }
-    }
-    input$changemethod
-    method<-get("method",envir=.cGroupsWUIEnv,inherits=FALSE)
-    isolate({
-      if (exists("method",envir=.cGroupsWUIEnv) && !is.null(input$method)){
-        if (!is.null(input$varselemethodALL) && input$varselemethodALL)
-          method[1:length(method)]<-ifelse(input$method=='Normal',1,
-                                           ifelse(input$method=='Non-normal',2,
-                                                  ifelse(input$method=='Categorical',3,NA)))        
-        else
-          if (length(input$varselemethod)>0)
-            method[input$varselemethod]<-ifelse(input$method=='Normal',1,
-                                                ifelse(input$method=='Non-normal',2,
-                                                       ifelse(input$method=='Categorical',3,NA)))
-        assign("method",method,envir=.cGroupsWUIEnv)
-      }
+      computeratio<-if (is.null(input$computeratio) || input$resptype=='Survival') TRUE else input$computeratio 
     })
-    input$changehide
-    hide<-get("hide",envir=.cGroupsWUIEnv,inherits=FALSE)
+    input$changepvalsdigits
     isolate({
-      if (length(input$varselehide)>0 && exists("hide",envir=.cGroupsWUIEnv) && !is.null(input$hidecat)){
-        catval<-as.numeric(strsplit(input$hidecat,":")[[1]][1])
-        hide[input$varselehide]<-catval
-        assign("hide",hide,envir=.cGroupsWUIEnv)
-      }
+      pvaldigits<-if (is.null(input$pvaldigits)) 3 else input$pvaldigits
     })
-    input$changedescdigits
-    descdigits<-get("descdigits",envir=.cGroupsWUIEnv,inherits=FALSE)
-    isolate({
-      if (exists("descdigits",envir=.cGroupsWUIEnv) && !is.null(input$descdigits)){
-        if (!is.null(input$varseledescdigitsALL) && input$varseledescdigitsALL)
-          descdigits[1:length(descdigits)]<-ifelse(input$descdigits==-1,NA,input$descdigits) 
-        else
-          if (length(input$varseledescdigits)>0)
-            descdigits[input$varseledescdigits]<-ifelse(input$descdigits==-1,NA,input$descdigits)
-        assign("descdigits",descdigits,envir=.cGroupsWUIEnv)
-      }
-    }) 
-    input$changeratiodigits
-    ratiodigits<-get("ratiodigits",envir=.cGroupsWUIEnv,inherits=FALSE)
-    isolate({
-      if (exists("ratiodigits",envir=.cGroupsWUIEnv) && !is.null(input$ratiodigits)){
-        if (!is.null(input$varseleratiodigitsALL) && input$varseleratiodigitsALL)
-          ratiodigits[1:length(ratiodigits)]<-ifelse(input$ratiodigits==-1,NA,input$ratiodigits) 
-        else
-          if (length(input$varseleratiodigits)>0)
-            ratiodigits[input$varseleratiodigits]<-ifelse(input$ratiodigits==-1,NA,input$ratiodigits)
-        assign("ratiodigits",ratiodigits,envir=.cGroupsWUIEnv)
-      }
-    })     
-    
-    input$changeratiocat
-    refratiocat<-get("refratiocat",envir=.cGroupsWUIEnv,inherits=FALSE)
-    isolate({
-      if (length(input$varselerefratio)>0 && exists("refratiocat",envir=.cGroupsWUIEnv) && !is.null(input$refratiocat)){
-        catval<-as.numeric(strsplit(input$refratiocat,":")[[1]][1])
-        refratiocat[input$varselerefratio]<-catval
-        assign("refratiocat",refratiocat,envir=.cGroupsWUIEnv)
-      }      
-    })  
-    input$changefactratio
-    factratio<-get("factratio",envir=.cGroupsWUIEnv,inherits=FALSE)
-    isolate({
-      if (exists("factratio",envir=.cGroupsWUIEnv) && !is.null(input$factratio)){
-        if (!is.null(input$varselefactratioALL) && input$varselefactratioALL)
-          factratio[1:length(factratio)]<-input$factratio 
-        else
-          if (length(input$varselefactratio)>0)
-            factratio[input$varselefactratio]<-input$factratio
-        assign("factratio",factratio,envir=.cGroupsWUIEnv)
-      }    
-    })
-    input$changevarsubset
-    varsubset<-get("varsubset",envir=.cGroupsWUIEnv,inherits=FALSE)
-    isolate({
-      if (exists("varsubset",envir=.cGroupsWUIEnv) && !is.null(input$varsubset)){
-        if (!is.null(input$varselevarsubsetALL) && input$varselevarsubsetALL)
-          varsubset[1:length(varsubset)]<-input$varsubset 
-        else
-          if (length(input$varselevarsubset)>0)
-            varsubset[input$varselevarsubset]<-input$varsubset
-        varsubset<-ifelse(varsubset=='',NA,varsubset)
-        assign("varsubset",varsubset,envir=.cGroupsWUIEnv)
-      }
-    })
-    if (any(!is.na(varsubset))){
+    if (!is.null(rv$varsubset) && any(!is.na(rv$varsubset))){
       dd2<-dd
       for (i in 1:ncol(dd2))
         if (is.factor(dd2[,i]))
           dd2[,i]<-as.integer(dd2[,i])
-      for (i in seq_along(varsubset)){
-        if (!is.na(varsubset[i])){
-          if (is.factor(dd2[,names(varsubset)[i]]))
-            dd2[,i]<-as.integer(dd2[,names(varsubset)[i]])
-          kk<-!eval(parse(text=paste("with(dd2,",varsubset[i],")",sep="")))
-          dd[kk,names(varsubset)[i]]<-NA
+      for (i in seq_along(rv$varsubset)){
+        if (!is.na(rv$varsubset[i])){
+          if (is.factor(dd2[,names(rv$varsubset)[i]]))
+            dd2[,i]<-as.integer(dd2[,names(rv$varsubset)[i]])
+          kk<-!eval(parse(text=paste("with(dd2,",rv$varsubset[i],")",sep="")))
+          dd[kk,names(rv$varsubset)[i]]<-NA
         }
       }
     }    
@@ -392,17 +473,15 @@ shinyServer(function(input, output) {
       hideno<-unlist(strsplit(input$hideno,","))
     refno<-hideno
     refy<-if (is.null(input$gvarcat)) 1 else as.numeric(strsplit(input$gvarcat,":")[[1]][1])
-    res<-compareGroups(form,dd,max.xlev=Inf,max.ylev=Inf,method=method,compute.ratio=FALSE)
-    refratiocat<-as.vector(refratiocat[attr(res,"varnames.orig")])
-    factratio<-as.vector(factratio[attr(res,"varnames.orig")])
-    method<-as.vector(method[attr(res,"varnames.orig")])
-    hide<-as.vector(hide[attr(res,"varnames.orig")])
-    descdigits<-as.vector(descdigits[attr(res,"varnames.orig")])
-    ratiodigits<-as.vector(ratiodigits[attr(res,"varnames.orig")])
+    res<-compareGroups(form,dd,max.xlev=Inf,max.ylev=Inf,method=rv$method,compute.ratio=FALSE)
+    refratiocat<-as.vector(rv$refratiocat[attr(res,"varnames.orig")])
+    factratio<-as.vector(rv$factratio[attr(res,"varnames.orig")])
+    method<-as.vector(rv$method[attr(res,"varnames.orig")])
+    xhide<-as.vector(rv$xhide[attr(res,"varnames.orig")])
+    descdigits<-as.vector(rv$descdigits[attr(res,"varnames.orig")])
+    ratiodigits<-as.vector(rv$ratiodigits[attr(res,"varnames.orig")])
     alpha<-if (is.null(input$alpha)) 0.05 else input$alpha
     mindis<-if (is.null(input$mindis)) 0.05 else input$mindis
-    pcorrected<-if (is.null(input$pcorrected)) 0.05 else input$pcorrected
-    showpmul<-if (is.null(input$showpmul)) 0.05 else input$showpmul
     input$changeformat
     isolate({
       Q1<-if (is.null(input$Q1)) 25 else input$Q1   
@@ -412,22 +491,24 @@ shinyServer(function(input, output) {
       type<-if (is.null(input$type)) NA else input$type
       sdtype<-if (is.null(input$sdtype)) 1 else input$sdtype
     })
-    computeratio<-if (is.null(input$computeratio) || input$resptype=='Survival') TRUE else input$computeratio 
-    includemiss<-if (is.null(input$includemiss)) FALSE else input$includemiss
-    simplify<-if (is.null(input$simplify)) TRUE else input$simplify
-    showpoverall<-if (is.null(input$showpoverall)) TRUE else input$showpoverall
-    showptrend<-if (is.null(input$showptrend)) FALSE else input$showptrend
-    showratio<-if (is.null(input$showratio)) FALSE else input$showratio
-    showpratio<-if (is.null(input$showpratio)) showratio else input$showpratio
-    showall<-if (is.null(input$showall)) TRUE else input$showall
-    shown<-if (is.null(input$shown)) FALSE else input$shown
-    showdesc<-if (is.null(input$showdesc)) TRUE else input$showdesc
-    pvaldigits<-if (is.null(input$pvaldigits)) 3 else input$pvaldigits
-    showpmul<-if (is.null(input$showpmul)) FALSE else input$showpmul
+    input$changeshow
+    isolate({
+      showpoverall<-if (is.null(input$showpoverall)) TRUE else input$showpoverall
+      showptrend<-if (is.null(input$showptrend)) FALSE else input$showptrend
+      showratio<-if (is.null(input$showratio)) FALSE else input$showratio
+      showpratio<-if (is.null(input$showpratio)) showratio else input$showpratio
+      showall<-if (is.null(input$showall)) TRUE else input$showall
+      shown<-if (is.null(input$shown)) FALSE else input$shown
+      showdesc<-if (is.null(input$showdesc)) TRUE else input$showdesc
+      showpmul<-if (is.null(input$showpmul)) FALSE else input$showpmul
+      pcorrected<-if (is.null(input$pcorrected)) 0.05 else input$pcorrected
+      includemiss<-if (is.null(input$includemiss)) FALSE else input$includemiss
+      simplify<-if (is.null(input$simplify)) TRUE else input$simplify
+    })
     # compareGroups
     res<-compareGroups(form,dd,max.xlev=Inf,max.ylev=Inf,method=method,include.miss=includemiss,ref.no="no",ref=refratiocat,Q1=Q1/100,Q3=Q3/100,simplify=simplify,compute.ratio=computeratio,fact.ratio=factratio,ref.y=refy,min.dis=mindis,alpha=alpha,p.corrected=pcorrected)    
     # createTable
-    restab<-createTable(res,show.p.overall=showpoverall,show.p.trend=showptrend,show.ratio=showratio,show.p.ratio=showpratio,show.all=showall,show.n=shown,show.desc=showdesc,hide.no=hideno,hide=hide,type=type,sd.type=sdtype,q.type=c(qtype1,qtype2),digits=descdigits,digits.ratio=ratiodigits,digits.p=pvaldigits,show.p.mul=showpmul)
+    restab<-createTable(res,show.p.overall=showpoverall,show.p.trend=showptrend,show.ratio=showratio,show.p.ratio=showpratio,show.all=showall,show.n=shown,show.desc=showdesc,hide.no=hideno,hide=xhide,type=type,sd.type=sdtype,q.type=c(qtype1,qtype2),digits=descdigits,digits.ratio=ratiodigits,digits.p=pvaldigits,show.p.mul=showpmul)
     # return
     return(restab)  
   })  
@@ -461,21 +542,18 @@ shinyServer(function(input, output) {
       }
       dd<-dd[rownames(dd2),]
     })    
-    input$changeselevars
-    if (!exists("selevars",envir=.cGroupsWUIEnv))
-      return(NULL)    
-    selevars<-get("selevars",envir=.cGroupsWUIEnv,inherits=FALSE) 
-    if (is.null(selevars) || length(selevars)==0){
+    input$changeselevarsok
+    if (is.null(rv$selevars) || length(rv$selevars)==0){
       cat("No variables selected\n")
       return(invisible(NULL)) 
     }   
     if (input$resptype=='None')
-      form<-as.formula(paste("~",paste(selevars,collapse="+"),sep=""))
+      form<-as.formula(paste("~",paste(rv$selevars,collapse="+"),sep=""))
     else {
       if (input$resptype=='Survival'){
         return(invisible(NULL))
       } else
-        form<-as.formula(paste(input$gvar,"~",paste(selevars,collapse="+"),sep=""))
+        form<-as.formula(paste(input$gvar,"~",paste(rv$selevars,collapse="+"),sep=""))
     }
     restabSNPs<-compareSNPs(form, dd, sep = input$sepSNPs) 
     return(restabSNPs)  
@@ -493,23 +571,21 @@ shinyServer(function(input, output) {
       return(invisible(NULL))
     }
     input$changemethod
-    if (!exists("selevars",envir=.cGroupsWUIEnv))
-      return(NULL)    
-    selevars<-get("selevars",envir=.cGroupsWUIEnv,inherits=FALSE)
-    if (is.null(selevars))
+    input$changeselevarsok
+    isolate({
+    if (is.null(rv$selevars))
       return(NULL)
-    if (length(selevars)==0){
+    if (length(rv$selevars)==0){
       cat("No variables selected\n")
       return(invisible(NULL))
     }
-    method<-get("method",envir=.cGroupsWUIEnv,inherits=FALSE)
-    res<-compareGroups(~.,dd,max.xlev=Inf,max.ylev=Inf,method=method,min.dis=if (is.null(input$mindis)) 5 else input$mindis,alpha=if (is.null(input$alpha)) 0.05 else input$alpha)
-    method.temp<-sapply(res,function(x) paste(attr(x,"method"),collapse=" "))
-    varnames.orig<-attr(res,"varnames.orig")
-    res<-compareGroups(~.,dd,max.xlev=Inf,max.ylev=Inf,method=NA,min.dis=if (is.null(input$mindis)) 5 else input$mindis,alpha=if (is.null(input$alpha)) 0.05 else input$alpha)
+    dd<-dd[,rv$selevars,drop=FALSE]
+    method<-rv$method[rv$selevars]
+    method<-ifelse(method==1,'Normal',ifelse(method==2,'Non-normal','Categorical'))
     values<-n<-NULL
-    for (i in 1:length(res)){
-      x.i<-attr(res[[i]],"x")
+    varnames.orig<-names(dd)
+    for (i in 1:ncol(dd)){
+      x.i<-dd[,i]
       n<-c(n,sum(!is.na(x.i)))
       if (is.factor(x.i)){
         if (nlevels(x.i)>input$maxvalues){
@@ -521,28 +597,46 @@ shinyServer(function(input, output) {
         }else
           values<-c(values,paste(paste(1:nlevels(x.i),paste("'",levels(x.i),"'",sep=""),sep="-"),collapse="<br/> "))
       } else
-        values<-c(values,paste(compareGroups:::format2(range(x.i)),collapse="; "))
+        if (all(is.na(x.i)))
+          values<-c(values,"-")
+        else
+          values<-c(values,paste(compareGroups:::format2(range(x.i,na.rm=TRUE)),collapse="; "))
     }
-    ans<-data.frame("Name"=varnames.orig,"Label"=names(res),"Method"=sub("continuous ","",method.temp),"N"=n,"Values"=values)
+    ans<-data.frame("Name"=varnames.orig,"Label"=sapply(dd,label),"Method"=sub("continuous ","",method),"N"=n,"Values"=values)    
     ans<-as.matrix(ans)
-    ans<-print(xtable(ans),type="html",include.rownames=FALSE, sanitize.text.function=function(x) x)
-    ans<-gsub("<TD align=\"center\">",paste("<TD align=\"center\" style=\"font-size:",input$htmlsizeinfotab,"em\">",sep=""),ans)
-    ans<-gsub("<TD>",paste("<TD style=\"font-size:",input$htmlsizeinfotab,"em\">",sep=""),ans)
-    ans<-gsub("<TH>",paste("<TH style=\"font-size:",input$htmlsizeinfotab,"em\">",sep=""),ans)
-    ans<-gsub("<td align=\"center\">",paste("<td align=\"center\" style=\"font-size:",input$htmlsizeinfotab,"em\">",sep=""),ans)
-    ans<-gsub("<td>",paste("<td style=\"font-size:",input$htmlsizeinfotab,"em\">",sep=""),ans)
-    ans<-gsub("<th>",paste("<th style=\"font-size:",input$htmlsizeinfotab,"em\">",sep=""),ans)
-    ans
+    ans<-print(xtable(ans),type="html",include.rownames=FALSE, sanitize.text.function=function(x) x, print.results=FALSE)
+    })
+    ans<-sub("<tr> <th> Var </th>","<tr> <th> </th>",ans)
+    ans<-gsub("<TH>",paste("<TH style=\"text-align:center;font-size:",input$htmlsizeinfotab,"em;padding-right:10px;padding-left:10px\">",sep=""),ans)
+    ans<-gsub("<th>",paste("<th style=\"text-align:center;font-size:",input$htmlsizeinfotab,"em;padding-right:10px;padding-left:10px\">",sep=""),ans)    
+    ans<-gsub("<TD align=\"center\">",paste("<TD align=\"center\" style=\"font-size:",input$htmlsizeinfotab,"em;padding-right:10px;padding-left:10px\">",sep=""),ans)
+    ans<-gsub("<td align=\"center\">",paste("<td align=\"center\" style=\"font-size:",input$htmlsizeinfotab,"em;padding-right:10px;padding-left:10px\">",sep=""),ans)    
+    ans<-gsub("<TD>",paste("<TD style=\"font-size:",input$htmlsizeinfotab,"em;padding-right:10px;padding-left:10px\">",sep=""),ans)
+    ans<-gsub("<td>",paste("<td style=\"font-size:",input$htmlsizeinfotab,"em;padding-right:10px;padding-left:10px\">",sep=""),ans)    
+    return(ans)
     
   })
   
   ## values extended
-  output$valuesexttable <- renderDataTable(dataset(), options=list(iDisplayLength = 15, lengthMenu = list(c(10, 20, -1), list('10', '20', 'All')), searching = FALSE))
+  output$valuesexttable <- renderDataTable({
+    datatable(dataset(), 
+              options=list(lengthMenu = list(c(10, 20, -1), list('10', '20', 'All')), pageLength = 10, scrollCollapse = TRUE, scrollX = TRUE),
+              rownames = FALSE, 
+              filter="top", 
+              style="bootstrap", 
+              selection="single")
+  })
   
   output$valuesext <- renderUI({
-      if (is.null(input$valueextsize))
-        return(NULL)
-      div(dataTableOutput("valuesexttable"),style=paste("font-size:",input$valueextsize,"%",sep=""))
+      dd<-dataset()
+      if (is.null(dd)){
+        cat("\n\nData not loaded\n")
+        return(invisible(NULL))
+      }    
+      #valueextsize <- if (is.null(input$valueextsize)) 100 else input$valueextsize#@@
+      div(
+        dataTableOutput("valuesexttable"),style=paste("font-size:",input$valueextsize,"%",sep="")
+      )
   })
 
   
@@ -570,14 +664,15 @@ shinyServer(function(input, output) {
     input$changeLabels
     isolate({header.labels<-c(input$alllabel,input$poveralllabel,input$ptrendlabel,input$pratiolabel,input$Nlabel)})
     export2html(restab,"tableHTML.html",header.labels=header.labels)      
-    ans<-scan(file="tableHTML.html",what="character",sep="\n")
+    ans<-scan(file="tableHTML.html",what="character",sep="\n",quiet=TRUE)
     file.remove("tableHTML.html")  
-    ans<-gsub("<TD align=\"center\">",paste("<TD align=\"center\" style=\"font-size:",input$htmlsizerestab,"em\">",sep=""),ans)
-    ans<-gsub("<TD>",paste("<TD style=\"font-size:",input$htmlsizerestab,"em\">",sep=""),ans)
-    ans<-gsub("<TH>",paste("<TH style=\"font-size:",input$htmlsizerestab,"em\">",sep=""),ans)
-    ans<-gsub("<td align=\"center\">",paste("<td align=\"center\" style=\"font-size:",input$htmlsizerestab,"em\">",sep=""),ans)
-    ans<-gsub("<td>",paste("<td style=\"font-size:",input$htmlsizerestab,"em\">",sep=""),ans)
-    ans<-gsub("<th>",paste("<th style=\"font-size:",input$htmlsizerestab,"em\">",sep=""),ans)    
+    ans<-sub("<tr> <th> Var </th>","<tr> <th> </th>",ans)
+    ans<-gsub("<TH>",paste("<TH style=\"text-align:center;font-size:",input$htmlsizerestab,"em;padding-right:10px;padding-left:10px\">",sep=""),ans)
+    ans<-gsub("<th>",paste("<th style=\"text-align:center;font-size:",input$htmlsizerestab,"em;padding-right:10px;padding-left:10px\">",sep=""),ans)    
+    ans<-gsub("<TD align=\"center\">",paste("<TD align=\"center\" style=\"font-size:",input$htmlsizerestab,"em;padding-right:10px;padding-left:10px\">",sep=""),ans)
+    ans<-gsub("<td align=\"center\">",paste("<td align=\"center\" style=\"font-size:",input$htmlsizerestab,"em;padding-right:10px;padding-left:10px\">",sep=""),ans)    
+    ans<-gsub("<TD>",paste("<TD style=\"font-size:",input$htmlsizerestab,"em;padding-right:10px;padding-left:10px\">",sep=""),ans)
+    ans<-gsub("<td>",paste("<td style=\"font-size:",input$htmlsizerestab,"em;padding-right:10px;padding-left:10px\">",sep=""),ans)    
     ans
   })
   
@@ -590,7 +685,6 @@ shinyServer(function(input, output) {
     if (is.null(restab))
       return(invisible(NULL))
     sizenum<-if (is.null(input$sizepdftab)) 5 else input$sizepdftab
-    #filename<-paste(system.file("app", package = "compareGroups"),"/www/tablePDF",sample(1:10000,1),".pdf",sep="")
     filename<-paste("./www/tablePDF",sample(1:10000,1),".pdf",sep="")
     input$changeLabels
     isolate({
@@ -602,7 +696,6 @@ shinyServer(function(input, output) {
     export2pdf(restab,filename,size=c("tiny","scriptsize","footnotesize","small","normalsize","large","Large","LARGE","huge","Huge")[sizenum],open=FALSE, margin=c(0.5,0,0,0),header.labels=header.labels,caption=captionlabel)
     ff<-list.files(dirname(filename),full.names=TRUE) 
     sapply(ff[ff!=filename],file.remove)
-    print(getwd())
     tags$iframe(src=basename(filename), width="800", height="700")
   })
   
@@ -626,7 +719,7 @@ shinyServer(function(input, output) {
     if (is.null(restab))
       return(invisible(NULL))
     cg<-attr(restab,"x")[[1]]
-    varsubset<-get("varsubset",envir=.cGroupsWUIEnv,inherits=FALSE)
+    varsubset<-rv$varsubset
     for (i in 1:length(cg)){
       nn<-which(names(varsubset)==attr(cg,"varnames.orig")[i])
       if ((!is.null(input$globalsubset) && input$globalsubset!='') && (!is.na(varsubset[nn]) && varsubset[nn]!=''))
@@ -640,14 +733,16 @@ shinyServer(function(input, output) {
       attr(cg[[i]],"selec")<-selec
     }
     export2html(createTable(cg),file="tablesummaryHTML.html",which.table="avail")
-    ans<-scan(file="tablesummaryHTML_appendix.html",what="character",sep="\n")
-    file.remove("tablesummaryHTML_appendix.html")  
-    ans<-gsub("<TD align=\"center\">",paste("<TD align=\"center\" style=\"font-size:",input$htmlsizesumtab,"em\">",sep=""),ans)
-    ans<-gsub("<TD>",paste("<TD style=\"font-size:",input$htmlsizesumtab,"em\">",sep=""),ans)
-    ans<-gsub("<TH>",paste("<TH style=\"font-size:",input$htmlsizesumtab,"em\">",sep=""),ans)  
-    ans<-gsub("<td align=\"center\">",paste("<td align=\"center\" style=\"font-size:",input$htmlsizesumtab,"em\">",sep=""),ans)
-    ans<-gsub("<td>",paste("<td style=\"font-size:",input$htmlsizesumtab,"em\">",sep=""),ans)
-    ans<-gsub("<th>",paste("<th style=\"font-size:",input$htmlsizesumtab,"em\">",sep=""),ans)        
+    ans<-scan(file="tablesummaryHTML_appendix.html",what="character",sep="\n",quiet=TRUE)
+    file.remove("tablesummaryHTML_appendix.html") 
+    fontsize<-"15px"
+    ans<-sub("<tr> <th> Var </th>","<tr> <th> </th>",ans)
+    ans<-gsub("<TH>",paste("<TH style=\"text-align:center;font-size:","input$htmlsizerestab",fontsize,"em;padding-right:10px;padding-left:10px\">",sep=""),ans)
+    ans<-gsub("<th>",paste("<th style=\"text-align:center;font-size:",fontsize,"em;padding-right:10px;padding-left:10px\">",sep=""),ans)    
+    ans<-gsub("<TD align=\"center\">",paste("<TD align=\"center\" style=\"font-size:",fontsize,"em;padding-right:10px;padding-left:10px\">",sep=""),ans)
+    ans<-gsub("<td align=\"center\">",paste("<td align=\"center\" style=\"font-size:",fontsize,"em;padding-right:10px;padding-left:10px\">",sep=""),ans)    
+    ans<-gsub("<TD>",paste("<TD style=\"font-size:",fontsize,"em;padding-right:10px;padding-left:10px\">",sep=""),ans)
+    ans<-gsub("<td>",paste("<td style=\"font-size:",fontsize,"em;padding-right:10px;padding-left:10px\">",sep=""),ans)    
     ans    
   })
   
@@ -663,28 +758,14 @@ shinyServer(function(input, output) {
       cat("\n\nData not loaded\n")
       return(invisible(NULL))
     }
-    input$changeselevars
-    if (!exists("discvars",envir=.cGroupsWUIEnv))
-      return(NULL)    
-    discvars<-get("discvars",envir=.cGroupsWUIEnv,inherits=FALSE)
-    if (!exists("selevars",envir=.cGroupsWUIEnv))
-      return(NULL)
-    selevars<-get("selevars",envir=.cGroupsWUIEnv,inherits=FALSE)
-    isolate({
-      discvars<-c(discvars,input$selevars)
-      if (length(input$selevars)>0)
-        selevars<-selevars[-which(selevars%in%input$selevars)]
-      selevars<-c(selevars,input$discvars)
-      if (length(input$discvars)>0)
-        discvars<-discvars[-which(discvars%in%input$discvars)]        
-      assign("selevars",selevars,envir=.cGroupsWUIEnv)
-      assign("discvars",discvars,envir=.cGroupsWUIEnv)
-    })
     nn<-names(dd)
-    fluidRow(
-      column(4,selectInput("selevars",HTML('<div title="Choose the variables you want to analyze">Selected<br>variables</div>'),selevars,multiple=TRUE,selectize=FALSE),tags$style(type='text/css', paste("#selevars { height: ",ifelse(length(selevars)==0,20,ifelse(length(selevars)>20,300,18*length(selevars)+5)),"px;}",sep=""))),
-      column(2,br(),br(),actionButton("changeselevars","",icon = icon("fa fa-arrows-h"))),
-      column(4,selectInput("discvars",HTML('<div title="Choose the variables you DO NOT want to analyze">Discarted<br>variables</div>'),if (length(discvars)==0) discvars else nn[which(nn%in%discvars)], multiple=TRUE,selectize=FALSE),tags$style(type='text/css', paste("#discvars { height: ",ifelse(length(discvars)==0,20,ifelse(length(discvars)>20,300,18*length(discvars)+5)),"px;}",sep="")))
+    div(
+      fluidRow(
+        column(4,selectInput("selevars",HTML('<div title="Choose the variables you want to analyze">Selected</div>'),rv$selevars,multiple=TRUE,selectize=FALSE),tags$style(type='text/css', paste("#selevars { height: ",ifelse(length(rv$selevars)==0,20,ifelse(length(rv$selevars)>20,300,20*length(rv$selevars)+15)),"px;}",sep=""))),
+        column(2,br(),br(),br(),bsButton("changeselevars","<>",size="extra-small"),offset=1),
+        column(4,selectInput("discvars",HTML('<div title="Choose the variables you DO NOT want to analyze">Discarted</div>'), rv$discvars, multiple=TRUE,selectize=FALSE),tags$style(type='text/css', paste("#discvars { height: ",ifelse(length(rv$discvars)==0,20,ifelse(length(rv$discvars)>20,300,20*length(rv$discvars)+15)),"px;}",sep=""))),offset=1      
+      ),
+      bsButton("changeselevarsok","","Update")
     )
   })
   
@@ -701,7 +782,7 @@ shinyServer(function(input, output) {
       return(invisible(NULL))
     }  
     input$changemethod
-    method<-get("method",envir=.cGroupsWUIEnv,inherits=FALSE)
+    method<-rv$method
     res<-compareGroups(~.,max.xlev=Inf,max.ylev=Inf,dd,method=method,min.dis=if (is.null(input$mindis)) 5 else input$mindis,alpha=if (is.null(input$alpha)) 0.05 else input$alpha)
     method.temp<-sapply(res,function(x) paste(attr(x,"method"),collapse=" "))
     method.temp<-ifelse(method.temp=="continuous normal",1,
@@ -748,26 +829,18 @@ shinyServer(function(input, output) {
       return(invisible(NULL))
     }
     input$changeselevars
-    if (!exists("selevars",envir=.cGroupsWUIEnv))
-      return(NULL)
-    selevars<-get("selevars",envir=.cGroupsWUIEnv,inherits=FALSE)
-    if (is.null(selevars) || length(selevars)==0)
+    if (is.null(rv$selevars) || length(rv$selevars)==0)
       return(NULL)
     div(
-      hr(),
       fluidRow(
         column(6,
-          div(class="row-fluid",                    
-              div(class="span4",selectInput("varselemethod", "variable", choices = selevars, multiple = TRUE, selected = isolate({ input$varselemethod}),selectize=FALSE),
-              tags$style(type='text/css', paste("#varselemethod { height: ",ifelse(length(selevars)==0,20,ifelse(length(selevars)>20,300,18*length(selevars)+5)),"px; width:120px}",sep="")))
-          )
+          selectInput("varselemethod", "", choices = rv$selevars, multiple = TRUE, selected = isolate({ input$varselemethod}),selectize=FALSE),
+          tags$style(type='text/css', paste("#varselemethod { height: ",ifelse(length(rv$selevars)==0,20,ifelse(length(rv$selevars)>20,300,18*length(rv$selevars)+5)),"px; width:120px}",sep=""))
         ),
         column(6,
-          div(class="row-fluid",
-            div(class="span1 offset0",checkboxInput('varselemethodALL', 'ALL', isolate({input$varselemethodALL}))),
-            div(class="span3",selectInput("method", "type", c("Normal","Non-normal","Categorical","NA"),isolate({input$method}),selectize=FALSE)),   
-            div(HTML("<br>"),class="span1 offset0",actionButton("changemethod","Update"))
-          )
+          checkboxInput('varselemethodALL', 'ALL', isolate({input$varselemethodALL})),
+          selectInput("method", "", c("Normal","Non-normal","Categorical","NA"),isolate({input$method}),selectize=FALSE),   
+          actionButton("changemethod","Update")
         )
       )
     )
@@ -793,14 +866,14 @@ shinyServer(function(input, output) {
       cat("\n\nData not loaded")
       return(invisible(NULL))
     }
-    if (input$resptype == 'Group'){
+    if (!is.null(input$resptype) && input$resptype == 'Group'){
       div(
         numericInput('maxgroups',"Maximum number of groups:",value=5,min=2,max=10),
         uiOutput("vargroup"),
         checkboxInput('computeratio', 'Compute OR:', FALSE)
       )    
     } else {
-      if (input$resptype=='Survival'){
+      if (!is.null(input$resptype) && input$resptype=='Survival'){
         div(
           uiOutput("timevar"),
           uiOutput("censvar"),
@@ -817,17 +890,12 @@ shinyServer(function(input, output) {
   ####################################
   
   output$seledescdigits <- renderUI({
-    if (!exists("selevars",envir=.cGroupsWUIEnv))
-      return(NULL)  
-    selevars<-get("selevars",envir=.cGroupsWUIEnv,inherits=FALSE)
-    if (is.null(selevars))
+    if (is.null(rv$selevars) || length(rv$selevars)==0)
       return(NULL)
     div(
-      HTML('<div style="border-bottom:1px dotted #999999"><strong>Descriptives:</strong></div>'),
-      br(),
       fluidRow(
         column(4,
-          selectInput("varseledescdigits", "variable", choices = selevars, multiple = TRUE, selected = isolate({input$varseledescdigits}),selectize=FALSE),
+          selectInput("varseledescdigits", "variable", choices = rv$selevars, multiple = TRUE, selected = isolate({input$varseledescdigits}),selectize=FALSE),
           checkboxInput('varseledescdigitsALL', 'ALL', isolate({input$varseledescdigitsALL}))
         ),
         column(8,
@@ -843,17 +911,12 @@ shinyServer(function(input, output) {
   ##############################
   
   output$seleratiodigits <- renderUI({
-    if (!exists("selevars",envir=.cGroupsWUIEnv))
-      return(NULL)  
-    selevars<-get("selevars",envir=.cGroupsWUIEnv,inherits=FALSE)
-    if (is.null(selevars))
+    if (is.null(rv$selevars) || length(rv$selevars)==0)
       return(NULL)
     div(
-      HTML('<div style="border-bottom:1px dotted #999999"><strong>OR/HR:</strong></div>'),
-      br(),    
       fluidRow(
         column(4,
-          selectInput("varseleratiodigits", "variable", choices = selevars, multiple = TRUE, selected = isolate({input$varseleratiodigits}),selectize=FALSE),
+          selectInput("varseleratiodigits", "variable", choices = rv$selevars, multiple = TRUE, selected = isolate({input$varseleratiodigits}),selectize=FALSE),
           checkboxInput('varseleratiodigitsALL', 'ALL', isolate({input$varseleratiodigitsALL}))
         ),
         column(8,
@@ -873,25 +936,21 @@ shinyServer(function(input, output) {
       cat("\n\nData not loaded")
       return(invisible(NULL))
     }
-    if (!exists("selevars",envir=.cGroupsWUIEnv))
-      return(NULL)  
-    selevars<-get("selevars",envir=.cGroupsWUIEnv,inherits=FALSE)
-    if (is.null(selevars))
+    if (is.null(rv$selevars) || length(rv$selevars)==0)
       return(NULL)
     div(
-      wellPanel(
-        h4("Global subset"),
-        textInput('globalsubset', 'Write subset expression', ''),
-        actionButton("changeglobalsubset","Apply")
-      ),
-      wellPanel(
-        h4("Variable subset"),
-        div(class="row-fluid",
-            div(class="span4",selectInput("varselevarsubset", "variable", choices = selevars, multiple = TRUE, selected = isolate({input$varselevarsubset}),selectize=FALSE)),
-            div(class="span2 offset5",checkboxInput('varselevarsubsetALL', 'ALL', isolate({input$varselevarsubsetALL})))
+      HTML('<div style="height:10px"></div>'),
+      bsCollapse(
+        bsCollapsePanel(title=HTML('<div style="font-color:black; height:15px">Global subset</p>'),style="info",
+          textInput('globalsubset', 'Write subset expression', ''),
+          actionButton("changeglobalsubset","Apply")
         ),
-        textInput("varsubset", label="Write subset expression", value = ""),
-        actionButton("changevarsubset","Apply")
+        bsCollapsePanel(title=HTML('<div style="font-color:black; height:15px">Variable subset</p>'),style="info",
+          selectInput("varselevarsubset", "variable", choices = rv$selevars, multiple = TRUE, selected = isolate({input$varselevarsubset}),selectize=FALSE),
+          checkboxInput('varselevarsubsetALL', 'ALL', isolate({input$varselevarsubsetALL})),
+          textInput("varsubset", label="Write subset expression", value = ""),
+          actionButton("changevarsubset","Update")
+        )
       )
     )
   })     
@@ -908,20 +967,21 @@ shinyServer(function(input, output) {
     }
     if (input$resptype!='None'){
       div(
-        # reference category
-        wellPanel(h5("Reference category:"),
-          fluidRow(
-            column(6,uiOutput("selerefvar")),
-            column(6,uiOutput("selerefcat"))
+        HTML('<div style="height:10px"></div>'),
+        bsCollapse(
+          bsCollapsePanel(title=HTML('<div style="font-color:black; height:15px">Reference category</p>'), style="info",
+            fluidRow(
+              column(6,uiOutput("selerefvar")),
+              column(6,uiOutput("selerefcat"))
+            )
+          ),
+          bsCollapsePanel(title=HTML('<div style="font-color:black; height:15px">Multiplying factor</p>'), style="info",
+            uiOutput("selefactratio")
           )
-        ),
-        # factor 
-        wellPanel(
-          uiOutput("selefactratio")
         )
       )
     } else {
-      return("No response variable selected")
+      return(HTML('<p style="color:red"><br>No response variable selected</p>'))
     }
   })
   
@@ -932,11 +992,10 @@ shinyServer(function(input, output) {
       cat("Data not loaded\n")
       return(invisible(NULL))
     }  
-    if (!exists("selevars",envir=.cGroupsWUIEnv))
-      return(NULL)    
-    selevars<-get("selevars",envir=.cGroupsWUIEnv,inherits=FALSE)
+    if (is.null(rv$selevars) || length(rv$selevars)==0)
+      return(NULL)
     input$changemethod
-    method<-get("method",envir=.cGroupsWUIEnv,inherits=FALSE)
+    method<-rv$method
     res<-compareGroups(~.,max.xlev=Inf,max.ylev=Inf,dd,method=method,min.dis=if (is.null(input$mindis)) 5 else input$mindis,alpha=if (is.null(input$alpha)) 0.05 else input$alpha)
     method.temp<-sapply(res,function(x) paste(attr(x,"method"),collapse=" "))
     method.temp<-ifelse(method.temp=="continuous normal",1,
@@ -945,7 +1004,7 @@ shinyServer(function(input, output) {
     vlist<-names(method.temp)
     vlist<-vlist[method.temp==3]  
     names(vlist)<-vlist
-    vlist<-intersect(vlist,selevars)
+    vlist<-intersect(vlist,rv$selevars)
     if (length(vlist)==0){
       return(invisible(NULL))
     }
@@ -961,10 +1020,7 @@ shinyServer(function(input, output) {
       cat("Data not loaded\n")
       return(invisible(NULL))
     }
-    if (!exists("selevars",envir=.cGroupsWUIEnv))
-      return(NULL)    
-    selevars<-get("selevars",envir=.cGroupsWUIEnv,inherits=FALSE)
-    if (is.null(selevars))
+    if (is.null(rv$selevars) || length(rv$selevars)==0)
       return(invisible(NULL))  
     if (is.null(input$varselerefratio) || input$varselerefratio=="No categorical variables")
       return(invisible(NULL))
@@ -988,10 +1044,9 @@ shinyServer(function(input, output) {
       return(invisible(NULL))
     }  
     input$changemethod
-    if (!exists("selevars",envir=.cGroupsWUIEnv))
-      return(NULL)    
-    selevars<-get("selevars",envir=.cGroupsWUIEnv,inherits=FALSE)
-    method<-get("method",envir=.cGroupsWUIEnv,inherits=FALSE)
+    if (is.null(rv$selevars) || length(rv$selevars)==0)
+      return(NULL)
+    method<-rv$method
     res<-compareGroups(~.,max.xlev=Inf,max.ylev=Inf,dd,method=method,min.dis=if (is.null(input$mindis)) 5 else input$mindis,alpha=if (is.null(input$alpha)) 0.05 else input$alpha)
     method.temp<-sapply(res,function(x) paste(attr(x,"method"),collapse=" "))
     method.temp<-ifelse(method.temp=="continuous normal",1,
@@ -1000,7 +1055,7 @@ shinyServer(function(input, output) {
     vlist<-names(method.temp)
     vlist<-vlist[method.temp!=3] 
     names(vlist)<-vlist
-    vlist<-intersect(vlist,selevars) 
+    vlist<-intersect(vlist,rv$selevars) 
     if (length(vlist)==0){
       return(invisible(NULL))
     }    
@@ -1031,10 +1086,9 @@ shinyServer(function(input, output) {
       return(invisible(NULL))
     }  
     input$changemethod
-    if (!exists("selevars",envir=.cGroupsWUIEnv))
-      return(NULL)    
-    selevars<-get("selevars",envir=.cGroupsWUIEnv,inherits=FALSE)
-    method<-get("method",envir=.cGroupsWUIEnv,inherits=FALSE)
+    if (is.null(rv$selevars) || length(rv$selevars)==0)
+      return(NULL)
+    method<-rv$method
     res<-compareGroups(~.,max.xlev=Inf,max.ylev=Inf,dd,method=method,min.dis=if (is.null(input$mindis)) 5 else input$mindis,alpha=if (is.null(input$alpha)) 0.05 else input$alpha)
     method.temp<-sapply(res,function(x) paste(attr(x,"method"),collapse=" "))
     method.temp<-ifelse(method.temp=="continuous normal",1,
@@ -1043,7 +1097,7 @@ shinyServer(function(input, output) {
     vlist<-names(method.temp)
     vlist<-vlist[method.temp==3]  
     names(vlist)<-vlist 
-    vlist<-intersect(vlist,selevars) 
+    vlist<-intersect(vlist,rv$selevars) 
     if (length(vlist)==0){
       return(invisible(NULL))
     }
@@ -1057,11 +1111,8 @@ shinyServer(function(input, output) {
       cat("\n\nData not loaded\n")
       return(invisible(NULL))
     }
-    if (!exists("selevars",envir=.cGroupsWUIEnv))
-      return(NULL)    
-    selevars<-get("selevars",envir=.cGroupsWUIEnv,inherits=FALSE)
-    if (is.null(selevars) || length(selevars)==0)
-      return(invisible(NULL))  
+    if (is.null(rv$selevars) || length(rv$selevars)==0)
+      return(invisible(NULL))      
     if (is.null(input$varselehide))
       return(invisible(NULL))             
     vv<-as.factor(dd[,input$varselehide])
@@ -1084,7 +1135,7 @@ shinyServer(function(input, output) {
       return(invisible(NULL))
     }  
     input$changemethod
-    method<-get("method",envir=.cGroupsWUIEnv,inherits=FALSE)
+    method<-rv$method
     res<-compareGroups(~.,max.xlev=Inf,max.ylev=Inf,dd,method=method,min.dis=if (is.null(input$mindis)) 5 else input$mindis,alpha=if (is.null(input$alpha)) 0.05 else input$alpha)
     method.temp<-sapply(res,function(x) paste(attr(x,"method"),collapse=" "))
     method.temp<-ifelse(method.temp=="continuous normal",1,
@@ -1110,7 +1161,7 @@ shinyServer(function(input, output) {
       return(invisible(NULL))
     }  
     input$changemethod
-    method<-get("method",envir=.cGroupsWUIEnv,inherits=FALSE)
+    method<-rv$method
     res<-compareGroups(~.,max.xlev=Inf,max.ylev=Inf,dd,method=method,min.dis=if (is.null(input$mindis)) 5 else input$mindis,alpha=if (is.null(input$alpha)) 0.05 else input$alpha)
     method.temp<-sapply(res,function(x) paste(attr(x,"method"),collapse=" "))
     method.temp<-ifelse(method.temp=="continuous normal",1,
@@ -1136,7 +1187,7 @@ shinyServer(function(input, output) {
       return(invisible(NULL))
     }  
     input$changemethod
-    method<-get("method",envir=.cGroupsWUIEnv,inherits=FALSE)
+    method<-rv$method
     res<-compareGroups(~.,max.xlev=Inf,max.ylev=Inf,dd,method=method,min.dis=if (is.null(input$mindis)) 5 else input$mindis,alpha=if (is.null(input$alpha)) 0.05 else input$alpha)
     method.temp<-sapply(res,function(x) paste(attr(x,"method"),collapse=" "))
     method.temp<-ifelse(method.temp=="continuous normal",1,
@@ -1163,7 +1214,6 @@ shinyServer(function(input, output) {
       return(invisible(NULL))
     }
     div(
-      hr(),
       fluidRow(
           column(6,checkboxInput('showall', 'ALL', TRUE)),
           column(6,checkboxInput('showpoverall', 'p-overall', TRUE))
@@ -1197,7 +1247,8 @@ shinyServer(function(input, output) {
       fluidRow(
           column(6,checkboxInput('simplify', 'Simplify', FALSE)),
           column(6,"")
-      )
+      ),
+      actionButton("changeshow","","Update")
     )                         
   })
   
@@ -1211,27 +1262,27 @@ shinyServer(function(input, output) {
       return(invisible(NULL))
     }
     div(
-      wellPanel(
-        HTML('<div style="border-bottom:1px dotted #999999"><strong>Frequencies:</strong></div>'),
-        radioButtons("type", "", c("%" = 1, "n (%)" = 2, "n"=3), selected="n (%)",inline = TRUE)
-      ),
-      wellPanel(
-        HTML('<div style="border-bottom:1px dotted #999999"><strong>Mean, standard deviation:</strong></div>'),
-        radioButtons("sdtype", "", c("Mean (SD)"=1,"Mean+-SD"=2), selected="Mean (SD)",inline = TRUE)
-      ),
-      wellPanel(
-        HTML('<div style="border-bottom:1px dotted #999999"><strong>Median [a, b]</strong></div>'),
-        fluidRow(
-          column(6,numericInput("Q1", label="[a, ]:", value = 25, min=0, max=49)),
-          column(6,numericInput("Q3", label="[ , b]:", value = 75, min=51, max=100))
+      HTML('<div style="height:10px"></div>'),
+      bsCollapse(
+        bsCollapsePanel(title=HTML('<div style="font-color:black; height:15px">Frequencies</p>'), style="info",
+          radioButtons("type", "", c("%" = 1, "n (%)" = 2, "n"=3), selected="n (%)",inline = TRUE)
         ),
-        fluidRow(
-          column(6,radioButtons("qtype1", "brackets", c("Squared"=1,"Rounded"=2), selected="Squared")),
-          column(6,radioButtons("qtype2", "separator", c("Semicolon"=1,"Comma"=2,"Slash"=3), selected="Semicolon"))
-        )
+        bsCollapsePanel(title=HTML('<div style="font-color:black; height:15px">Mean, standard deviation</p>'), style="info",
+          radioButtons("sdtype", "", c("Mean (SD)"=1,"Mean+-SD"=2), selected="Mean (SD)",inline = TRUE)
+        ),
+        bsCollapsePanel(title=HTML('<div style="font-color:black; height:15px">Median [a, b]</p>'), style="info",
+          fluidRow(
+            column(6,numericInput("Q1", label="[a, ]:", value = 25, min=0, max=49)),
+            column(6,numericInput("Q3", label="[ , b]:", value = 75, min=51, max=100))
+          ),
+          fluidRow(
+            column(6,radioButtons("qtype1", "brackets", c("Squared"=1,"Rounded"=2), selected="Squared")),
+            column(6,radioButtons("qtype2", "separator", c("Semicolon"=1,"Comma"=2,"Slash"=3), selected="Semicolon"))
+          )
+        )               
       ),
       actionButton("changeformat","","Update")
-    )
+    )           
   })
   
   ########################
@@ -1244,17 +1295,19 @@ shinyServer(function(input, output) {
       return(invisible(NULL))
     }
     div(
-      wellPanel(
-        HTML('<div style="border-bottom:1px dotted #999999"><strong>p-values:</strong></div>'),
-        br(),
-        numericInput("pvaldigits", label="Number of decimals", value = 3, min=1, max=20)
-      ),
-      wellPanel(
-        uiOutput("seledescdigits")
-      ),
-      wellPanel(       
-        uiOutput("seleratiodigits")
-      )                  
+      HTML('<div style="height:10px"></div>'),
+      bsCollapse(
+        bsCollapsePanel(title=HTML('<div style="font-color:black; height:15px">p-values</p>'), style="info", 
+          numericInput("pvaldigits", label="Number of decimals", value = 3, min=1, max=20),
+          actionButton("changepvalsdigits","","Update")
+        ),
+        bsCollapsePanel(title=HTML('<div style="font-color:black; height:15px">Descriptives</p>'), style="info",
+          uiOutput("seledescdigits")
+        ),
+        bsCollapsePanel(title=HTML('<div style="font-color:black; height:15px">OR/HR</p>'), style="info",      
+          uiOutput("seleratiodigits")
+        )
+      )
     )
   })
   
@@ -1268,7 +1321,6 @@ shinyServer(function(input, output) {
       return(invisible(NULL))
     }
     div(
-      hr(),
       textInput("alllabel", label="All:", value="[ALL]"),
       textInput("poveralllabel", label="overall p-value:", value="p.overall"),
       textInput("ptrendlabel", label="p-value for trend:", value="p.trend"),
@@ -1281,55 +1333,6 @@ shinyServer(function(input, output) {
   })
   
   ########################
-  ##### save #############
-  ########################  
-  
-  output$save <- renderUI({  
-    if (is.null(input$initial) || !input$initial){ 
-      cat("\n\nData not loaded")
-      return(invisible(NULL))
-    }
-    if (input$results=='TABLE'){  # save table
-      div(
-        hr(),
-        selectInput("downloadtabletype", "Select format", choices = c("PDF","CSV","HTML","TXT"),selectize=FALSE),
-        conditionalPanel(
-          condition="input.downloadtabletype == 'PDF'",
-          wellPanel(
-            selectInput('sizepdf', 'Resize', c("tiny","scriptsize","footnotesize","small","normalsize","large","Large","LARGE","huge","Huge"),"normalsize", selectize=FALSE),
-            h4(""),
-            checkboxInput('landscape', 'Landscape', FALSE)
-          )
-        ),
-        conditionalPanel(        
-          condition="input.downloadtabletype == 'CSV'",
-          wellPanel(
-            radioButtons('sepcsv', 'Separator', c(Comma=',', Semicolon=';', Tab='\t'), 'Comma')
-          )
-        ),
-        downloadButton('actiondownloadtable', 'Download')
-      )    
-    } else {
-      if (input$results=='PLOT'){  # save plot
-        div(
-          hr(),
-          fluidRow(
-            column(6,selectInput("downloadplottype", "Select format", choices = c('pdf','bmp','jpg','png','tif'),selectize=FALSE)),
-            column(6,downloadButton('actiondownloadplot', 'Download'))      
-          )
-        )      
-      } else {
-        if (input$initial && input$results=='SNPs'){  # save SNPs table
-          div(
-            hr(),
-            downloadButton('actiondownloadSNPtable', 'Download')
-          )
-        }
-      }
-    }
-  })
-  
-  ########################
   ####### values #########
   ########################
   
@@ -1339,27 +1342,18 @@ shinyServer(function(input, output) {
       return(invisible(NULL))
     }
     div(
-      sliderInput("htmlsizeinfotab", "Resize", min=0.5, max=2, value=1, step=0.1),
-      numericInput("maxvalues", "Maximum number of categories to display:", min=3, max=100, value=10, step=1),
+      bsButton("valuessumoptionsaction","View",style="info"),
+      wellPanel(id="valuessumoptions",
+        fluidRow(
+          column(4,numericInput("maxvalues", "Maximum number of categories to display:", min=3, max=100, value=10, step=1)),
+          column(8,sliderInput("htmlsizeinfotab", "Resize", min=0.5, max=2, value=1, step=0.1))
+        )
+      ),
       htmlOutput('valuestable')
     )
   })
   
-  ########################
-  ####### info ###########
-  ########################
-  
-  output$info <- renderUI({  
-    if (is.null(input$initial) || !input$initial){ 
-      cat("\n\nData not loaded")
-      return(invisible(NULL))
-    }  
-    div(
-      sliderInput("htmlsizesumtab", "Resize:", min=0.5, max=2, value=1, step=0.1),
-      htmlOutput('sumtab')
-    )
-  })
-  
+
   ########################
   ####### table ##########
   ########################
@@ -1376,16 +1370,10 @@ shinyServer(function(input, output) {
       )
     } else {
       if (input$tabletype == 'PDF'){
-        div(
-          div(class="span10",sliderInput("sizepdftab", "Resize:", min=1, max=10, value=5, step=1)),
-          uiOutput('pdftab')
-        )              
+        uiOutput('pdftab')             
       } else {
         if (input$tabletype == 'HTML'){
-          div(
-            sliderInput("htmlsizerestab", "Resize:", min=0.5, max=2, value=1, step=0.1),
-            htmlOutput('htmltab')
-          )
+          htmlOutput('htmltab')
         }
       }
     }
@@ -1402,7 +1390,11 @@ shinyServer(function(input, output) {
     }  
     div(  
       uiOutput("varPlot"), 
-      imageOutput('plot',width = "100%", height = "500px")
+      imageOutput('plot',width = "100%", height = "500px"),
+      bsModal("plotModal", "Download plot", "plot",
+              selectInput("downloadplottype", "Select format", choices = c('pdf','bmp','jpg','png','tif'), selectize=FALSE),
+              downloadButton('actiondownloadplot', 'Download')
+      ) 
     )
   })
   
@@ -1417,8 +1409,13 @@ shinyServer(function(input, output) {
     }
     div(
       div(class="row-fluid",
-          div(class="span3","Allele separator character"),
-          HTML('<input class="span1" type="text" id="sepSNPs" value="" />')
+          bsButton("SNPsoptionsaction","View",style="info"),
+          wellPanel(id="SNPsoptions",
+            fluidRow(
+              column(4,textInput("sepSNPs","Allele separator")),
+              column(4,br(),downloadButton('actiondownloadSNPtable', 'Download'),offset=4)
+            )                    
+          )
       ),
       verbatimTextOutput('restabSNPs')
     )
@@ -1434,14 +1431,11 @@ shinyServer(function(input, output) {
       if (is.null(inFile))
         return(invisible(NULL))  
     }
-    if (!exists("selevars",envir=.cGroupsWUIEnv))
-      return(NULL)      
-    selevars<-get("selevars",envir=.cGroupsWUIEnv,inherits=FALSE)
-    if (is.null(selevars) || length(selevars)==0)
+    if (is.null(rv$selevars) || length(rv$selevars)==0)
       return(invisible(NULL))
     input$changeselevars
     div(  
-      selectInput("varPlot", HTML('<div title="Choose variable to plot">Variable</div>'), choices = selevars, selectize=FALSE),
+      selectInput("varPlot", HTML('<div title="Choose variable to plot">Variable</div>'), choices = rv$selevars, selectize=FALSE),
       conditionalPanel(
         condition = "input.resptype != null && input.resptype != 'None'",
         div(class="span2",checkboxInput('bivar', 'Bivariate', FALSE))
@@ -1466,64 +1460,28 @@ shinyServer(function(input, output) {
   ############  HELP  ################
   ####################################
   
+  output$helpload<-renderUI(HTML(hlp['LOAD']))
+  output$helpselect<-renderUI(HTML(hlp['SELECT']))
+  output$helptype<-renderUI(HTML(hlp['Type']))
+  output$helpresponse<-renderUI(HTML(hlp['Response']))
+  output$helphide<-renderUI(HTML(hlp['Hide']))
+  output$helpsubset<-renderUI(HTML(hlp['Subset']))
+  output$helpratio<-renderUI(HTML(hlp['OR/HR']))
+  output$helpshow<-renderUI(HTML(hlp['Show']))
+  output$helpformat<-renderUI(HTML(hlp['Format']))
+  output$helpdecimals<-renderUI(HTML(hlp['Decimals']))
+  output$helplabel<-renderUI(HTML(hlp['Label']))
+  output$helpsave<-renderUI(HTML(hlp['SAVE']))
+
+  output$helpabout<-renderUI(HTML(hlp['HELPCG']))
+  output$helpwui<-renderUI(HTML(hlp['HELPWUI']))
+  output$helpsecurity<-renderUI(HTML(hlp['DATASECURITY']))
+  output$helpsummary<-renderUI(HTML(hlp['SUMMARY']))
+  output$helpvalues<-renderUI(HTML(hlp['VALUES']))
+  output$helptable<-renderUI(HTML(hlp['TABLE']))
+  output$helpplot<-renderUI(HTML(hlp['PLOT']))
+  output$helpsnps<-renderUI(HTML(hlp['SNPs'])) 
   
-  ## about
-  output$helpabout <- renderUI({
-    hlp <- loadhelp()
-    if (input$about=='compareGroups'){
-      div(HTML(hlp["HELPCG"]))
-    } else {
-      if (input$about=='WUI'){
-        div(HTML(hlp["HELPWUI"]))
-      } else {
-          div(HTML(hlp["DATASECURITY"]))
-      }
-    }
-  })
-  
-  ## help screens
-  output$helpscreens <- renderUI({
-    hlp <- loadhelp()
-    if (input$screens=='Results'){
-      div(
-        tabsetPanel(id="respanelhelp",
-                      tabPanel(HTML("<font size=2px color='blue'> INFO	</font>"), HTML(hlp["INFO"])),
-                      navbarMenu(HTML("<font size=2px color='blue'> VALUES </font>"),
-                                 tabPanel(HTML("<font size=2px color='blue'> Summary </font>"), HTML(hlp["Summary"])),
-                                 tabPanel(HTML("<font size=2px color='blue'> Extended </font>"), HTML(hlp["Extended"]))
-                      ),                                     
-                      tabPanel(HTML("<font size=2px color='blue'> TABLE </font>"), HTML(hlp["TABLE"])),                       
-                      tabPanel(HTML("<font size=2px color='blue'> PLOT	</font>"), HTML(hlp["PLOT"])),                       
-                      tabPanel(HTML("<font size=2px color='blue'> SNPs	</font>"), HTML(hlp["SNPs"])),
-                      tabPanel(HTML("<font size=2px color='blue'> HELP	</font>"), HTML(hlp["Help"]))
-        ),
-        br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br()        
-      )       
-    } else {
-      if (input$screens=='Control'){
-        div(
-          tabsetPanel(id="contpanelhelp",
-                      tabPanel(HTML("<font size=2px color='blue'> START	</font>"), HTML(hlp["LOAD"])),
-                      navbarMenu(HTML("<font size=2px color='blue'> SETTINGS </font>"),
-                                 tabPanel(HTML("<font size=2px color='blue'> Type </font>"), HTML(hlp["Type"])),
-                                 tabPanel(HTML("<font size=2px color='blue'> Response </font>"), HTML(hlp["Response"])),
-                                 tabPanel(HTML("<font size=2px color='blue'> Hide </font>"), HTML(hlp["Hide"])),
-                                 tabPanel(HTML("<font size=2px color='blue'> Subset </font>"), HTML(hlp["Subset"])),                                                                               
-                                 tabPanel(HTML("<font size=2px color='blue'> OR/HR </font>"), HTML(hlp["OR/HR"]))
-                      ),         
-                      navbarMenu(HTML("<font size=2px color='blue'> DISPLAY </font>"),
-                                 tabPanel(HTML("<font size=2px color='blue'> Show </font>"), HTML(hlp["Show"])),
-                                 tabPanel(HTML("<font size=2px color='blue'> Format </font>"), HTML(hlp["Format"])),
-                                 tabPanel(HTML("<font size=2px color='blue'> Decimals </font>"), HTML(hlp["Decimals"])),
-                                 tabPanel(HTML("<font size=2px color='blue'> Label </font>"), HTML(hlp["Label"]))                                                                              
-                      ), 
-                      tabPanel(HTML("<font size=2px color='blue'> SAVE	</font>"), HTML(hlp["SAVE"]))
-          ),
-          br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br() 
-        )    
-      }
-    }
-  })  
   
   ####################################
   ##### DOWNLOAD RESULTS #############
@@ -1531,7 +1489,11 @@ shinyServer(function(input, output) {
   
   ####### table #########
   output$actiondownloadtable <- downloadHandler(
-    filename = function() paste("tableOuput",tolower(input$downloadtabletype),sep="."),
+    filename = function(){
+      extension <- ifelse(input$downloadtabletype=="Word","docx",tolower(input$downloadtabletype))
+      extension <- ifelse(input$downloadtabletype=="Excel","xlsx",extension)
+      paste("tableOuput",extension,sep=".")
+    },
     content = function(ff) {
       input$changeLabels
       isolate({
@@ -1559,7 +1521,13 @@ shinyServer(function(input, output) {
         sink(ff)
         print(restab,header.labels=header.labels)
         sink()
-      }              
+      } 
+      if (input$downloadtabletype=='Word'){
+        export2word(restab, file=ff,header.labels=header.labels)
+      } 
+      if (input$downloadtabletype=='Excel'){
+        export2xls(restab, file=ff,header.labels=header.labels)
+      }         
     }
   )
   
@@ -1594,8 +1562,7 @@ shinyServer(function(input, output) {
     }
   )  
   
-  
-  
 })
+
 
 setwd(wd)

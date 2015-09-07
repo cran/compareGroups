@@ -38,8 +38,9 @@ The way to compute the 'N' shown in the bivariate table header, controlled by 'n
 
 
 \seealso{
-  \code{\link{createTable}}, \code{\link{export2latex}}, \code{\link{export2html}}
-}                               
+  \code{\link{createTable}}, \code{\link{export2latex}}, \code{\link{export2pdf}}, \code{\link{export2html}}, \code{\link{export2md}}, \code{\link{export2word}}
+} 
+
                                                                                                                                    
 \examples{
 

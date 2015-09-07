@@ -44,7 +44,7 @@ If a variable has no "label" attribute, then the 'original varname' is the same 
 require(compareGroups)
 data(regicor)
 res<-compareGroups(sex ~ . ,regicor)
-createTable(res, hide.no = 'no')
+#createTable(res, hide.no = 'no')  
 varinfo(res)
 }
 

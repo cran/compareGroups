@@ -1,33 +1,22 @@
 Package: compareGroups
 Type: Package
 Title: Descriptive Analysis by Groups
-Version: 3.0.1
-Date: 2015-05-12
+Version: 3.1
+Date: 2015-09-07
 Depends: R (>= 2.13.1), Hmisc, gdata, xtable, SNPassoc
-Imports: survival, epitools, tools, HardyWeinberg
-Suggests: tcltk2, car, XLConnect, shiny
-Author: Isaac Subirana, Joan Vila, Héctor Sanz, Gavin Lucas, Judith Peñafiel
-    and David Giménez
+Imports: survival, epitools, tools, HardyWeinberg, rmarkdown, knitr,
+        xlsx
+Suggests: tcltk2, car, XLConnect, shiny, shinyBS, shinyjs, shinythemes,
+        DT
+Author: Isaac Subirana, Joan Vila, Héctor Sanz, Gavin Lucas, judith Peñafiel and David Giménez
 Maintainer: Isaac Subirana <isubirana@imim.es>
-Description: Read, interpret, summarise, display and
-    analyse epidemiological data. Can be used to create data summaries for
-    quality control, extensive reports for exploring data, including
-    publication-ready univariate or bivariate tables in plain text HTML and
-    LaTeX, and a figures to quickly visualise the distribution of your data.
-    Depending on the nature of the variable, various statistics are
-    calculated (mean, median, frequencies, incidences) and appropriate
-    tests are performed (t-test, Analysis of variance, Kruskal-Wallis, Fisher,
-    log-rank, ...). The latest version includes functionality for summarising
-    genetic data, and for performing low-level quality control of your database
-    (see radiograph()) to help identify data-entry errors. This version has
-    also been implemented in a web-interface to make this package accessible
-    to non-R-users.
+Description: Create data summaries for quality control, extensive reports for exploring data, as well as publication-ready univariate or bivariate tables in several formats (plain text, HTML,LaTeX, PDF, Word or Excel. Perform figures to quickly visualise the distribution of your data (boxplots, barplots, normality-plots, etc.). Display statistics (mean, median, frequencies, incidences, etc.). Perform the appropriate tests (t-test, Analysis of variance, Kruskal-Wallis, Fisher, log-rank, ...) depending on the nature of the described variable (normal, non-normal or qualitative). Summarize genetic data (Single Nucleotids Polymorphisms) data displaying Allele Frequencies and performing Hardy-Weinberg Equilibrium tests among other typical statistics and tests for these kind of data.
 License: GPL (>= 2)
 URL: http://www.comparegroups.eu
 LazyLoad: yes
 Encoding: latin1
 BuildVignettes: True
 NeedsCompilation: no
-Packaged: 2015-05-12 14:01:07 UTC; isubirana
+Packaged: 2015-09-07 13:40:19 UTC; isubirana
 Repository: CRAN
-Date/Publication: 2015-05-13 01:16:32
+Date/Publication: 2015-09-07 18:17:51
