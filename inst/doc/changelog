@@ -1,3 +1,8 @@
+v3.2
+-. cGroupsWUI: improved.
+-. Internal function descripSurv has been modified fixing a bug when computing K-M probabilities.
+-. xlsx not imported but suggested. Only required when calling export2xls function.
+
 v3.1
 -. cGroupsWUI: improved shiny app interface.
 -. export2word: new function to export tables to Word.

@@ -1,9 +1,61 @@
 shinyServer(function(input, output, session) {
 
   
+  ## init some input values when pressing loadok button
+
+  
+  
+
+  
   ## reactive Values
   
   rv<-reactiveValues()
+  
+  rv$changeshowcount<-0
+  observeEvent(input$changeshow,{
+    rv$changeshowcount<-rv$changeshowcount+1
+  })  
+  
+  rv$changeformatcount<-0
+  observeEvent(input$changeformat,{
+    rv$changeformatcount<-rv$changeformatcount+1
+  })    
+  
+  rv$changehidecount<-0
+  observeEvent(input$changehide,{
+    rv$changehidecount<-rv$changehidecount+1
+  })    
+  
+  rv$changepvalsdigitscount<-0
+  observeEvent(input$changepvalsdigits,{
+    rv$changepvalsdigitscount<-rv$changepvalsdigitscount+1
+  })  
+
+  rv$changerespcount<-0
+  observeEvent(input$changeresp,{
+    rv$changerespcount<-rv$changerespcount+1
+  })  
+  
+  rv$changeselevarsokcount<-0
+  observeEvent(input$changeselevarsok,{
+    rv$changeselevarsokcount<-rv$changeselevarsokcount+1
+  })  
+  
+  rv$changeglobalsubsetcount<-0
+  observeEvent(input$changeglobalsubset,{
+    rv$changeglobalsubsetcount<-rv$changeglobalsubsetcount+1
+  })  
+  
+  rv$changeratiocatcount<-0
+  observeEvent(input$changeratiocat,{
+    rv$changeratiocatcount<-rv$changeratiocatcount+1
+  })  
+  
+  rv$changefactratiocount<-0
+  observeEvent(input$changefactratio,{
+    rv$changefactratiocount<-rv$changefactratiocount+1
+  })    
+
   
   observeEvent(input$changeselevars,{
     if (length(input$discvars)>0){
@@ -51,9 +103,9 @@ shinyServer(function(input, output, session) {
   }) 
   
   observeEvent(input$changeratiocat,{
-    if (length(input$varselerefratio)>0 && !is.null(rv$refratiocat)){
+    if (length(input$varselerefratio)>0 && !is.null(input$refratiocat)){
       catval<-as.numeric(strsplit(input$refratiocat,":")[[1]][1])
-      refratiocat[input$varselerefratio]<-catval
+      rv$refratiocat[input$varselerefratio]<-catval
       rv$refratiocat<-refratiocat
     }      
   })  
@@ -78,16 +130,15 @@ shinyServer(function(input, output, session) {
   observeEvent(input$changevarsubset,{
     if (!is.null(rv$varsubset)){
       if (!is.null(input$varselevarsubsetALL) && input$varselevarsubsetALL)
-        varsubset[1:length(varsubset)]<-input$varsubset 
+        rv$varsubset[1:length(rv$varsubset)]<-input$varsubset 
       else
         if (length(input$varselevarsubset)>0)
-          varsubset[input$varselevarsubset]<-input$varsubset
-      rv$varsubset<-ifelse(varsubset=='',NA,varsubset)
+          rv$varsubset[input$varselevarsubset]<-input$varsubset
+      rv$varsubset<-ifelse(rv$varsubset=='',NA,rv$varsubset)
     }
   })  
   
   ## help modal
-  rv <- reactiveValues()
   rv$count <- 1
   observeEvent(input$dec,{
     rv$count<-rv$count-1
@@ -154,20 +205,19 @@ shinyServer(function(input, output, session) {
   observeEvent(input$encodingaction,{
    toggle("encoding", TRUE, "fade")
   })
-   # open select variables panel when data is loaded
+  # open select variables panel when data is loaded
   observe({
     if (!is.null(input$initial) && input$initial && !is.null(input$loadok) && input$loadok)
       updateCollapse(session, id="collapseInput", open = "collapseSelect", close = "collapseLoad")
   })  
+  # move to TABLE tab once data is loaded
+  observe(
+    if (!is.null(input$initial) && input$initial){
+      updateNavbarPage(session, inputId="results", selected = "resultsTable")
+    }
+  )
   
-  # close loading waiting info modal
-   observe(
-     if (!is.null(input$initial) && input$initial)
-       toggleModal(session, modalId="loadwaitModal", toggle = "close")   
-   )
   
-    
-
   ###############
   ## read data ##
   ###############
@@ -176,7 +226,10 @@ shinyServer(function(input, output, session) {
     isolate({
     # remove all elements 
     rm(list=ls(),envir=.cGroupsWUIEnv)  
-    with(rv,{selevars<<-discvars<<-method<<-descdigits<<-ratiodigits<<-refratiocat<<-factratio<<-xhide<<-varsubset<<-NULL})
+    progress <- shiny::Progress$new(session, min=1, max=3)
+    progress$set(message = "Reading data",value=1)
+    on.exit(progress$close())    
+    rv$selevars<<-rv$discvars<<-rv$method<<-rv$descdigits<<-rv$ratiodigits<<-rv$refratiocat<<-rv$factratio<<-rv$xhide<<-rv$varsubset<<-NULL
     if (input$exampledata!='Own data'){ # read examples...
       datasetname<-input$exampledata
       if (input$exampledata=='REGICOR'){
@@ -267,7 +320,7 @@ shinyServer(function(input, output, session) {
         if (is.null(input$tablenames))
           return(invisible(NULL)) 
         library(xlsx, quietly=TRUE)
-        dataset<-try(read.xlsx(inFile$datapath,sheetName=input$tablenames),silent=TRUE)
+        dataset<-try(xlsx::read.xlsx(inFile$datapath,sheetName=input$tablenames),silent=TRUE)
         if (inherits(dataset,"try-error"))
           return(invisible(NULL))
       }
@@ -363,10 +416,10 @@ shinyServer(function(input, output, session) {
       if (input$datatype=='*.xls'){
         if (is.null(inFile))
           return(invisible(NULL))
-        chn <- try(loadWorkbook(inFile$datapath),silent=TRUE)
+        chn <- try(XLConnect::loadWorkbook(inFile$datapath),silent=TRUE)
         if (inherits(chn,"try-error"))
           return(invisible(NULL))
-        tablenames <- try(getSheets(chn),silent=TRUE)
+        tablenames <- try(XLConnect::getSheets(chn),silent=TRUE)
         if (inherits(tablenames,"try-error") || length(tablenames)==0)
           return(invisible(NULL))
         names(tablenames)<-tablenames
@@ -400,13 +453,16 @@ shinyServer(function(input, output, session) {
 
   
   create<-reactive({
+    progress <- shiny::Progress$new(session, min=0, max=3)
+    progress$set(message = "Creating bivariate table",value=1)
+    on.exit(progress$close())
     dd<-dataset()
     if (is.null(dd)){
       cat("\n\nData not loaded\n")
       return(invisible(NULL))
     }
     # global subset
-    input$changeglobalsubset  
+    rv$changeglobalsubsetcount
     isolate({
       dd2<-dd
       for (i in 1:ncol(dd2))
@@ -424,14 +480,14 @@ shinyServer(function(input, output, session) {
       }
       dd<-dd[rownames(dd2),]
     })    
-    input$changeselevarsok
+    rv$changeselevarsokcount
     isolate({
       if (is.null(rv$selevars) || length(rv$selevars)==0){
         cat("No variables selected\n")
         return(invisible(NULL)) 
       }
     })
-    input$changeresp
+    rv$changerespcount
     isolate({
       if (input$resptype=='None'){
         form<-as.formula(paste("~",paste(rv$selevars,collapse="+"),sep=""))
@@ -449,7 +505,7 @@ shinyServer(function(input, output, session) {
       }
       computeratio<-if (is.null(input$computeratio) || input$resptype=='Survival') TRUE else input$computeratio 
     })
-    input$changepvalsdigits
+    rv$changepvalsdigitscount
     isolate({
       pvaldigits<-if (is.null(input$pvaldigits)) 3 else input$pvaldigits
     })
@@ -466,23 +522,32 @@ shinyServer(function(input, output, session) {
           dd[kk,names(rv$varsubset)[i]]<-NA
         }
       }
-    }    
-    if (length(input$hideno)==0 || input$hideno=='')
-      hideno<-NA
-    else
-      hideno<-unlist(strsplit(input$hideno,","))
+    }
+    rv$changehidecount
+    isolate({
+      if (length(input$hideno)==0 || input$hideno=='')
+        hideno<-NA
+      else
+        hideno<-unlist(strsplit(input$hideno,","))
+    })
     refno<-hideno
     refy<-if (is.null(input$gvarcat)) 1 else as.numeric(strsplit(input$gvarcat,":")[[1]][1])
     res<-compareGroups(form,dd,max.xlev=Inf,max.ylev=Inf,method=rv$method,compute.ratio=FALSE)
-    refratiocat<-as.vector(rv$refratiocat[attr(res,"varnames.orig")])
-    factratio<-as.vector(rv$factratio[attr(res,"varnames.orig")])
+    rv$changeratiocatcount
+    isolate({
+      refratiocat<-as.vector(rv$refratiocat[attr(res,"varnames.orig")])
+    })
+    rv$changefactratiocount
+    isolate({
+      factratio<-as.vector(rv$factratio[attr(res,"varnames.orig")])
+    })
     method<-as.vector(rv$method[attr(res,"varnames.orig")])
     xhide<-as.vector(rv$xhide[attr(res,"varnames.orig")])
     descdigits<-as.vector(rv$descdigits[attr(res,"varnames.orig")])
     ratiodigits<-as.vector(rv$ratiodigits[attr(res,"varnames.orig")])
     alpha<-if (is.null(input$alpha)) 0.05 else input$alpha
     mindis<-if (is.null(input$mindis)) 0.05 else input$mindis
-    input$changeformat
+    rv$changeformatcount
     isolate({
       Q1<-if (is.null(input$Q1)) 25 else input$Q1   
       Q3<-if (is.null(input$Q3)) 75 else input$Q3
@@ -491,7 +556,7 @@ shinyServer(function(input, output, session) {
       type<-if (is.null(input$type)) NA else input$type
       sdtype<-if (is.null(input$sdtype)) 1 else input$sdtype
     })
-    input$changeshow
+    rv$changeshowcount
     isolate({
       showpoverall<-if (is.null(input$showpoverall)) TRUE else input$showpoverall
       showptrend<-if (is.null(input$showptrend)) FALSE else input$showptrend
@@ -507,10 +572,13 @@ shinyServer(function(input, output, session) {
     })
     # compareGroups
     res<-compareGroups(form,dd,max.xlev=Inf,max.ylev=Inf,method=method,include.miss=includemiss,ref.no="no",ref=refratiocat,Q1=Q1/100,Q3=Q3/100,simplify=simplify,compute.ratio=computeratio,fact.ratio=factratio,ref.y=refy,min.dis=mindis,alpha=alpha,p.corrected=pcorrected)    
+    progress$set(value=2)
     # createTable
     restab<-createTable(res,show.p.overall=showpoverall,show.p.trend=showptrend,show.ratio=showratio,show.p.ratio=showpratio,show.all=showall,show.n=shown,show.desc=showdesc,hide.no=hideno,hide=xhide,type=type,sd.type=sdtype,q.type=c(qtype1,qtype2),digits=descdigits,digits.ratio=ratiodigits,digits.p=pvaldigits,show.p.mul=showpmul)
+    progress$set(value=3)
     # return
     return(restab)  
+    
   })  
   
   #########################
@@ -572,6 +640,7 @@ shinyServer(function(input, output, session) {
     }
     input$changemethod
     input$changeselevarsok
+    input$maxvalues
     isolate({
     if (is.null(rv$selevars))
       return(NULL)
@@ -641,19 +710,6 @@ shinyServer(function(input, output, session) {
 
   
   ############################
-  ##### print createTable ####
-  ############################
-  
-  output$restab <- renderPrint({
-    restab<-create()
-    if (is.null(restab))
-      return(invisible(NULL))
-    input$changeLabels
-    isolate({header.labels<-c(input$alllabel,input$poveralllabel,input$ptrendlabel,input$pratiolabel,input$Nlabel)})
-    isolate({print(restab,header.labels=header.labels)})
-  })
-  
-  ############################
   ##### html createTable #####
   ############################
   
@@ -676,28 +732,6 @@ shinyServer(function(input, output, session) {
     ans
   })
   
-  #############################
-  ##### PDF createTable #######
-  #############################
-  
-  output$pdftab<-renderUI({
-    restab<-create()
-    if (is.null(restab))
-      return(invisible(NULL))
-    sizenum<-if (is.null(input$sizepdftab)) 5 else input$sizepdftab
-    filename<-paste("./www/tablePDF",sample(1:10000,1),".pdf",sep="")
-    input$changeLabels
-    isolate({
-      header.labels<-c(input$alllabel,input$poveralllabel,input$ptrendlabel,input$pratiolabel,input$Nlabel)
-      captionlabel<-input$captionlabel
-      if (!is.null(captionlabel) && captionlabel=='NULL')
-        captionlabel<-NULL 
-    })
-    export2pdf(restab,filename,size=c("tiny","scriptsize","footnotesize","small","normalsize","large","Large","LARGE","huge","Huge")[sizenum],open=FALSE, margin=c(0.5,0,0,0),header.labels=header.labels,caption=captionlabel)
-    ff<-list.files(dirname(filename),full.names=TRUE) 
-    sapply(ff[ff!=filename],file.remove)
-    tags$iframe(src=basename(filename), width="800", height="700")
-  })
   
   ############################
   ##### print compareSNPs ####
@@ -715,6 +749,11 @@ shinyServer(function(input, output, session) {
   ##############################
   
   output$sumtab <- renderText({
+    
+    progress <- shiny::Progress$new(session, min=1, max=3)
+    progress$set(message = "Creating info table",value=0)
+    on.exit(progress$close())    
+    
     restab<-create()
     if (is.null(restab))
       return(invisible(NULL))
@@ -1119,8 +1158,7 @@ shinyServer(function(input, output, session) {
     vlist<-c(NA,1:nlevels(vv))
     names(vlist)<-paste(vlist,c("<<None>>",levels(vv)),sep=":")
     div(
-      selectInput("hidecat", "category", vlist, "<<None>>", selectize=FALSE),
-      actionButton("changehide","Update")    
+      selectInput("hidecat", "category", vlist, "<<None>>", selectize=FALSE)
     )
   }) 
   
@@ -1363,27 +1401,15 @@ shinyServer(function(input, output, session) {
       cat("\n\nData not loaded")
       return(invisible(NULL))
     }
-    if (input$tabletype=='R console'){
-      div(
-        condition = "input.tabletype == 'R console'",
-        verbatimTextOutput('restab')
-      )
-    } else {
-      if (input$tabletype == 'PDF'){
-        uiOutput('pdftab')             
-      } else {
-        if (input$tabletype == 'HTML'){
-          htmlOutput('htmltab')
-        }
-      }
-    }
+    htmlOutput('htmltab')
   })
   
   ########################
   ###### ui plot #########
   ########################
   
-  output$uiplot <- renderUI({  
+  output$uiplot <- renderUI({ 
+    
     if (is.null(input$initial) || !input$initial){ 
       cat("\n\nData not loaded")
       return(invisible(NULL))
@@ -1426,6 +1452,7 @@ shinyServer(function(input, output, session) {
   ########################
   
   output$varPlot <- renderUI({
+    
     if (input$exampledata=='Own data'){
       inFile<-input$files
       if (is.null(inFile))

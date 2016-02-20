@@ -32,6 +32,8 @@ export2xls(x, file, which.table="descr", nmax=TRUE, header.labels=c(), ...)
 
 The way to compute the 'N' shown in the bivariate table header, controlled by 'nmax' argument, has been changed from previous versions (<1.3). In the older versions 'N' was computed as the maximum across the cells withing each column (group) from the 'available data' table ('avail').
 
+To use this function you must have the \pkg{xlsx} package installed, which depends on \pkg{rjava} package.
+
 
 }
 

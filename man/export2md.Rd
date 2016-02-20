@@ -52,7 +52,7 @@ The way to compute the 'N' shown in the bivariate table header, controlled by 'n
 require(compareGroups)
 data(regicor)
 res <- compareGroups(sex ~. -id-todeath-death-tocv-cv, regicor)
-export2md(createTable(res, hide.no = 'n'))
+export2md(createTable(res, hide.no = 'no'))
 }
 
 }

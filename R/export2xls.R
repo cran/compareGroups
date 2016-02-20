@@ -1,4 +1,7 @@
 export2xls<-function(x, file, which.table="descr", nmax=TRUE, header.labels=c(), ...){
+
+    requireNamespace("xlsx", quietly=TRUE)
+  
     if (!inherits(x, "createTable")) 
         stop("x must be of class 'createTable'")
     if (inherits(x, "cbind.createTable")) 
@@ -35,7 +38,7 @@ export2xls<-function(x, file, which.table="descr", nmax=TRUE, header.labels=c(),
         colnames(table1) <- table1[1, ]
         table1 <- table1[-1, ,drop=FALSE]
         table1 <- rbind(colnames(table1),table1)
-        write.xlsx(table1, file = file, showNA=FALSE, row.names=FALSE, col.names=FALSE, ...)
+        xlsx::write.xlsx(table1, file = file, showNA=FALSE, row.names=FALSE, col.names=FALSE, ...)
     }
     if (ww %in% c(2, 3)) {
         table2 <- prepare(x, nmax = nmax, c())[[2]]
@@ -65,7 +68,7 @@ export2xls<-function(x, file, which.table="descr", nmax=TRUE, header.labels=c(),
           file.save <- paste(sub("\\.xlsx$","",file),"_appendix.xlsx",sep="")
         else
           file.save <- paste(sub("\\.xls$","",file),"_appendix.xls",sep="")
-        write.xlsx(table2, file = file.save, showNA=FALSE, row.names=FALSE, col.names=FALSE, ...)
+        xlsx::write.xlsx(table2, file = file.save, showNA=FALSE, row.names=FALSE, col.names=FALSE, ...)
     }
 }
 

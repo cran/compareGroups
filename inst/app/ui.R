@@ -77,11 +77,7 @@ shinyUI(fluidPage(theme = shinytheme("spacelab"),
                 uiOutput("loadoptions")
               ),
               br(),
-              actionButton("loadok","OK"),
-              bsModal(id="loadwaitModal",title="",trigger="loadok",
-                HTML('<div align="center"><p style="font-size:25px;">Loading data <br> Please be patient ...</p><img id="loading-image" src="./images/loading.gif" height="50px" alt="" /></div>')
-                #HTML('<div align="center"><p style="font-size:25px;">Loading data <br> Please be patient ...</p></div>')              
-              )
+              actionButton("loadok","OK")
             ),
             
             ## vars list
@@ -118,13 +114,15 @@ shinyUI(fluidPage(theme = shinytheme("spacelab"),
                   ),            
                   ## hide
                   tabPanel("Hide",
+                    br(),
                     wellPanel(
                       fluidRow(
                         column(6,uiOutput("selehidevar")),
                         column(6,uiOutput("selehidecat"))
                       )
                     ),
-                    textInput('hideno', "Hide 'no' category", '')
+                    textInput('hideno', "Hide 'no' category", ''),
+                    actionButton("changehide","Update")
                   ),
                   ## subset
                   tabPanel("Subset", uiOutput("selevarsubset")),
@@ -196,7 +194,7 @@ shinyUI(fluidPage(theme = shinytheme("spacelab"),
 
           navbarPage(title="", id="results", inverse=FALSE, 
             # About
-            tabPanel(HTML('<p title="About compareGroups project">ABOUT</p>'),
+            tabPanel(value="resultsAbout",HTML('<p title="About compareGroups project">ABOUT</p>'),
               # compareGroups
               uiOutput("helpabout"),
               br(),
@@ -217,13 +215,13 @@ shinyUI(fluidPage(theme = shinytheme("spacelab"),
             # Data
             navbarMenu("DATA",
               # summary         
-              tabPanel(title=HTML('<p title="Short summary from loaded data set">Summary</p>'),
+              tabPanel(value="resultsSummary",title=HTML('<p title="Short summary from loaded data set">Summary</p>'),
                 column(1,bsButton("infoSummary","",size="extra-small",style="info",icon=icon("info-circle")),offset=11),
                 bsModal("infoSummaryModal",HTML('<p> <strong>Summary</strong></p>'), "infoSummary",uiOutput("helpsummary")),
                 uiOutput("values")
               ),
               # VALUES (extended)
-              tabPanel(title=HTML('<p title="Navigate thru the whole data set">Values</p>'),
+              tabPanel(value="resultsValues",title=HTML('<p title="Navigate thru the whole data set">Values</p>'),
                 column(1,bsButton("infoExtended","",size="extra-small",style="info",icon=icon("info-circle")),offset=11),
                 bsModal("infoExtendedModal",HTML('<p> <strong>Extended</strong></p>'), "infoExtended",uiOutput("helpvalues")),
                 conditionalPanel(
@@ -234,7 +232,7 @@ shinyUI(fluidPage(theme = shinytheme("spacelab"),
                 uiOutput("valuesext")
               )
             ),
-            tabPanel(title=HTML('<p title="View descriptive table" style="font-size:140%;">TABLE</p>'),
+            tabPanel(value="resultsTable",title=HTML('<p title="View descriptive table" style="font-size:140%;">TABLE</p>'),
               column(1,bsButton("infoTable","",size="extra-small",style="info",icon=icon("info-circle")),offset=11),
               bsModal("infoTableModal",HTML('<p> <strong>TABLE</strong></p>'), "infoTable",uiOutput("helptable")),
               conditionalPanel(
@@ -242,19 +240,7 @@ shinyUI(fluidPage(theme = shinytheme("spacelab"),
                 br(),
                 bsButton("tableoptionsaction", "View (hide)", style="info"),
                 wellPanel(id="tableoptions",
-                  fluidRow(
-                    column(3,selectInput("tabletype", "", c("HTML","PDF","R console"), selected="HTML")),
-                    column(9,
-                      conditionalPanel(
-                        condition="input.tabletype=='PDF'",
-                        sliderInput("sizepdftab", "Resize:", min=1, max=10, value=5, step=1)
-                      ),
-                      conditionalPanel(
-                        condition="input.tabletype=='HTML'",
-                        sliderInput("htmlsizerestab", "Resize:", min=0.5, max=2, value=1, step=0.1)
-                      )
-                    )
-                  ),
+                  sliderInput("htmlsizerestab", "Resize:", min=0.5, max=2, value=1, step=0.1),
                   bsButton("tableinfo","Info"),
                   bsModal("tableinfoModal",title="Info table",trigger="tableinfo",
                     htmlOutput("sumtab")
@@ -263,12 +249,12 @@ shinyUI(fluidPage(theme = shinytheme("spacelab"),
                 uiOutput("table")
               )        
             ),
-            tabPanel(title=HTML('<p title="Visualize data">PLOT</p>'),
+            tabPanel(value="resultsPlot",title=HTML('<p title="Visualize data">PLOT</p>'),
               column(1,bsButton("infoPlot","",size="extra-small",style="info",icon=icon("info-circle")),offset=11),
               bsModal("infoPlotModal",HTML('<p> <strong>PLOT</strong></p>'), "infoPlot",uiOutput("helpplot")),
               uiOutput("uiplot")
             ),
-            tabPanel(title=HTML('<p title="single nucleotide polymorphisms (SNPs) analyses">SNPs</p>'),
+            tabPanel(value="resultsSNPs",title=HTML('<p title="single nucleotide polymorphisms (SNPs) analyses">SNPs</p>'),
               column(1,bsButton("infoSNPs","",size="extra-small",style="info",icon=icon("info-circle")),offset=11),
               bsModal("infoSNPsModal",HTML('<p> <strong>SNPs</strong></p>'), "infoSNPs",uiOutput("helpsnps")),
               uiOutput("snps")
