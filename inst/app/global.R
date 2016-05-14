@@ -1,9 +1,8 @@
 library(shiny, quietly=TRUE)
 library(shinyBS, quietly=TRUE)
 library(shinyjs, quietly=TRUE)
-library(shinythemes, quietly=TRUE)
 library(DT, quietly=TRUE)
-library(XLConnect, quietly=TRUE)
+
 
 options(shiny.maxRequestSize = 10e6) # ~10 Mb
 .cGroupsWUIEnv <- new.env(parent=emptyenv())

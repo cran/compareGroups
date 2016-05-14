@@ -24,7 +24,7 @@ function(x, file, var.label.x, ...)
         pdf(file,...)                             
   }
 
-  barplot(table(x),main=paste("Barplot of '",var.label.x,"'",sep=""),ylab="Freq")
+  barplot(table(x),main=paste("Barplot of '",var.label.x,"'",sep=""),ylab="Freq",col="red")
 
   if (!is.null(file) && (length(grep("pdf$",file))==0 || !onefile))
     dev.off()

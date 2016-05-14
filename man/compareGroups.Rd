@@ -22,7 +22,8 @@ compareGroups(X, ...)
 \method{compareGroups}{default}(X, y = NULL, Xext = NULL, selec = NA, method = 1, timemax = NA, 
 alpha = 0.05, min.dis = 5, max.ylev = 5, max.xlev = 10, include.label = TRUE, 
 Q1 = 0.25, Q3 = 0.75, simplify = TRUE, ref = 1, ref.no = NA, fact.ratio = 1, 
-ref.y = 1, p.corrected = TRUE, compute.ratio = TRUE, include.miss = FALSE, ...)
+ref.y = 1, p.corrected = TRUE, compute.ratio = TRUE, include.miss = FALSE, 
+oddsratio.method = "midp", ...)
 \method{compareGroups}{formula}(X, data, subset, na.action=NULL, include.label=TRUE, ...)
 \method{plot}{compareGroups}(x, file, type = "pdf", bivar = FALSE, z=1.5, n.breaks = "Sturges", ...)
 }
@@ -77,6 +78,8 @@ ref.y = 1, p.corrected = TRUE, compute.ratio = TRUE, include.miss = FALSE, ...)
   \item{compute.ratio}{logical, indicating whether Odds Ratio (for a binary response) or Hazard Ratio (for a time-to-event response) must be computed. Default value is TRUE.}  
   
   \item{include.miss}{logical, indicating whether to treat missing values as a new category for categorical variables. Default value is FALSE.}   
+  
+  \item{oddsratio.method}{Which method to compute the Odds Ratio. See 'method' argument from \code{\link[epitools]{oddsratio}}. Default value is "midp".}    
 
   \item{x}{an object of class 'compareGroups'.}  
 

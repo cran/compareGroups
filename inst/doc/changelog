@@ -1,3 +1,7 @@
+v3.2.1
+-. package vignette updated.
+-. new argument "oddsratio.method" in "compareGroups.default" function to compute odds ratio under different methods.
+-. XLConnect and shinythemes removed from suggested packages.
 v3.2
 -. cGroupsWUI: improved.
 -. Internal function descripSurv has been modified fixing a bug when computing K-M probabilities.

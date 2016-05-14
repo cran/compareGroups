@@ -1,10 +1,52 @@
 shinyServer(function(input, output, session) {
 
+  output$loadpanel<-renderUI({
+    if (is.null(input$files)) return(invisible(NULL))
+    return(
+      div(
+        selectInput("datatype", "Data format", c('SPSS'='*.sav', 'TEXT'='*.txt','EXCEL'='*.xls','R'='*.rda'),'*.sav'),                  
+        bsButton("encodingaction", "Encoding", size="extra-small", style="info"),
+        radioButtons("encoding", "", c('default'='default','latin1'='latin1','utf8'='utf8'),'default',inline=TRUE),
+        uiOutput("loadoptions")
+      )
+    )
+  })
   
-  ## init some input values when pressing loadok button
+  output$loadokui<-renderUI({
+    if (input$exampledata != 'Own data' || (input$exampledata == 'Own data' && !is.null(input$files))){
+      return(
+        div(
+          br(),
+          actionButton("loadok","Read data")          
+        )
+      )
+    } else {
+      return(invisible(NULL))
+    }
+  })
+  
+  
+  
+  ## shinythemes
+  
+  output$shinythemesout <- renderUI({
+    HTML(paste("<link rel=\"stylesheet\" href=\"bootstrap.",input$shinythemes,".min.css\" type=\"text/css\" />",sep=""))
+  })
+  
+  ## input and output panels width
+  
+  output$panelwidthout <- renderUI({
+    if (is.null(input$panelwidth)) return(invisible(NULL))
+    x<-4*3*input$panelwidth/300
+    y<-100*(12-4*3*input$panelwidth/100)/8
+    div(
+      HTML(paste("<style type=\"text/css\"> #inputpanel{width:",input$panelwidth*3,"%} </style>",sep="")),
+      HTML(paste("<style type=\"text/css\"> #outpanel {width:",y,"%; float:right} </style>",sep=""))
+    )
+  })
 
   
-  
+  ## init some input values when pressing loadok button
 
   
   ## reactive Values
@@ -54,7 +96,12 @@ shinyServer(function(input, output, session) {
   rv$changefactratiocount<-0
   observeEvent(input$changefactratio,{
     rv$changefactratiocount<-rv$changefactratiocount+1
-  })    
+  })   
+  
+  rv$initial<-FALSE
+  observeEvent(input$loadok,{
+    if (!is.null(dataset())) rv$initial<<-TRUE
+  })
 
   
   observeEvent(input$changeselevars,{
@@ -106,14 +153,14 @@ shinyServer(function(input, output, session) {
     if (length(input$varselerefratio)>0 && !is.null(input$refratiocat)){
       catval<-as.numeric(strsplit(input$refratiocat,":")[[1]][1])
       rv$refratiocat[input$varselerefratio]<-catval
-      rv$refratiocat<-refratiocat
+      #rv$refratiocat<-refratiocat
     }      
   })  
   
   observeEvent(input$changefactratio,{
     if (!is.null(rv$factratio)){
       if (!is.null(input$varselefactratioALL) && input$varselefactratioALL)
-        rv$factratio[1:length(factratio)]<-input$factratio 
+        rv$factratio[1:length(rv$factratio)]<-input$factratio 
       else
         if (length(input$varselefactratio)>0)
           rv$factratio[input$varselefactratio]<-input$factratio
@@ -163,43 +210,43 @@ shinyServer(function(input, output, session) {
   ## toggles
     # table
   observeEvent(input$tableoptionsaction, {
-   toggle("tableoptions", TRUE)
+    if (input$tableoptionsaction%%2==0) hide("tableoptions", TRUE) else show("tableoptions", TRUE)
   })
   observe({
    if (!is.null(input$tableoptionsaction))
-    updateButton(session, "tableoptionsaction", label = if(input$tableoptionsaction%%2==0) "View options (Hide)" else "View options (Show)")
+     updateButton(session, "tableoptionsaction", label = if(input$tableoptionsaction%%2==1) "View options (Hide)" else "View options (Show)")
   })
    # info
   observeEvent(input$infooptionsaction, {
-   toggle("infooptions", TRUE)
+    if (input$infooptionsaction%%2==0) hide("infooptions", TRUE) else show("infooptions", TRUE)
   })
   observe({
    if (!is.null(input$infooptionsaction))
-    updateButton(session, "infooptionsaction", label = if(input$infooptionsaction%%2==0) "View options (Hide)" else "View options (Show)")
+    updateButton(session, "infooptionsaction", label = if(input$infooptionsaction%%2==1) "View options (Hide)" else "View options (Show)")
   })  
   # values summary
   observeEvent(input$valuessumoptionsaction, {
-   toggle("valuessumoptions", TRUE)
+    if (input$valuessumoptionsaction%%2==0) hide("valuessumoptions", TRUE) else show("valuessumoptions", TRUE)    
   })
   observe({
    if (!is.null(input$valuessumoptionsaction))     
-    updateButton(session, "valuessumoptionsaction", label = if(input$valuessumoptionsaction%%2==0) "View options (Hide)" else "View options (Show)")
+    updateButton(session, "valuessumoptionsaction", label = if(input$valuessumoptionsaction%%2==1) "View options (Hide)" else "View options (Show)")
   })   
    # values extended
   observeEvent(input$valuextoptionsaction, {
-   toggle("valuextoptions", TRUE)
+    if (input$valuextoptionsaction%%2==0) hide("valuextoptions", TRUE) else show("valuextoptions", TRUE)      
   })
   observe({
    if (!is.null(input$valuextoptionsaction))         
-    updateButton(session, "valuextoptionsaction", label = if(input$valuextoptionsaction%%2==0) "View options (Hide)" else "View options (Show)")
+    updateButton(session, "valuextoptionsaction", label = if(input$valuextoptionsaction%%2==1) "View options (Hide)" else "View options (Show)")
   })   
    # SNPs
   observeEvent(input$SNPsoptionsaction, {
-   toggle("SNPsoptions", TRUE)
+    if (input$SNPsoptionsaction%%2==0) hide("SNPsoptions", TRUE) else show("SNPsoptions", TRUE)        
   })
   observe({
    if (!is.null(input$SNPsoptionsaction))       
-    updateButton(session, "SNPsoptionsaction", label = if(input$SNPsoptionsaction%%2==0) "View options (Hide)" else "View options (Show)")
+    updateButton(session, "SNPsoptionsaction", label = if(input$SNPsoptionsaction%%2==1) "View options (Hide)" else "View options (Show)")
   })     
   # encoding
   observeEvent(input$encodingaction,{
@@ -207,15 +254,37 @@ shinyServer(function(input, output, session) {
   })
   # open select variables panel when data is loaded
   observe({
-    if (!is.null(input$initial) && input$initial && !is.null(input$loadok) && input$loadok)
+    if (!is.null(rv$initial) && rv$initial && !is.null(input$loadok) && input$loadok)
       updateCollapse(session, id="collapseInput", open = "collapseSelect", close = "collapseLoad")
   })  
   # move to TABLE tab once data is loaded
   observe(
-    if (!is.null(input$initial) && input$initial){
+    if (!is.null(rv$initial) && rv$initial){
       updateNavbarPage(session, inputId="results", selected = "resultsTable")
     }
   )
+  
+  
+  output$tableoptionsout <- renderUI({
+    if (!rv$initial) return(invisible(NULL))
+    return(div(
+      br(),
+      bsButton("tableoptionsaction", "View (show)", style="info"),
+      conditionalPanel(condition="input.tableoptionsaction>0",
+        div(id="tableoptions",               
+          fluidRow(
+            column(8,sliderInput("htmlsizerestab", "Resize:", min=0.5, max=2, value=1, step=0.1)),
+            column(4,
+              bsButton("tableinfo","Info"),
+              bsModal("tableinfoModal",title="Info table",trigger="tableinfo",
+                htmlOutput("sumtab")
+              )
+            )
+          )
+        )
+      )
+    ))
+  })  
   
   
   ###############
@@ -230,6 +299,7 @@ shinyServer(function(input, output, session) {
     progress$set(message = "Reading data",value=1)
     on.exit(progress$close())    
     rv$selevars<<-rv$discvars<<-rv$method<<-rv$descdigits<<-rv$ratiodigits<<-rv$refratiocat<<-rv$factratio<<-rv$xhide<<-rv$varsubset<<-NULL
+    rv$initial<<-FALSE
     if (input$exampledata!='Own data'){ # read examples...
       datasetname<-input$exampledata
       if (input$exampledata=='REGICOR'){
@@ -392,14 +462,15 @@ shinyServer(function(input, output, session) {
   ###############################
   #### check if data is read ####
   ###############################
+
   
-  output$initial <- renderUI({
-    if (is.null(dataset()))
-      initial <- FALSE
-    else
-      initial <- TRUE
-    checkboxInput("initial","",initial)
-  })  
+  #output$initial <- renderUI({
+  #  if (is.null(dataset()))
+  #    initial <- FALSE
+  #  else
+  #    initial <- TRUE
+  #  checkboxInput("initial","",initial)
+  #})  
   
   ###############################
   #### LOAD OPTIONS #############
@@ -489,7 +560,7 @@ shinyServer(function(input, output, session) {
     })
     rv$changerespcount
     isolate({
-      if (input$resptype=='None'){
+      if (is.null(input$resptype) || input$resptype=='None'){
         form<-as.formula(paste("~",paste(rv$selevars,collapse="+"),sep=""))
       } else {
         if (input$resptype=='Survival'){
@@ -578,7 +649,6 @@ shinyServer(function(input, output, session) {
     progress$set(value=3)
     # return
     return(restab)  
-    
   })  
   
   #########################
@@ -615,7 +685,7 @@ shinyServer(function(input, output, session) {
       cat("No variables selected\n")
       return(invisible(NULL)) 
     }   
-    if (input$resptype=='None')
+    if (is.null(input$resptype) || input$resptype=='None')
       form<-as.formula(paste("~",paste(rv$selevars,collapse="+"),sep=""))
     else {
       if (input$resptype=='Survival'){
@@ -707,8 +777,96 @@ shinyServer(function(input, output, session) {
         dataTableOutput("valuesexttable"),style=paste("font-size:",input$valueextsize,"%",sep="")
       )
   })
-
   
+  output$valuextoptionsout <- renderUI({
+    if (!rv$initial) return(invisible(NULL))
+    return(div(
+      bsButton("valuextoptionsaction","View",style="info"),
+      conditionalPanel(condition="input.valuextoptionsaction>0",
+        div(id="valuextoptions",
+          sliderInput("valueextsize", "Resize (%):", min=10, max=300, value=100, step=10)
+        )
+      )
+    ))
+  })
+  
+  
+  output$settingsout <- renderUI({
+    if (!rv$initial) return(invisible(NULL))
+    return(div(
+      tabsetPanel(
+        ## methods
+        tabPanel("Type",
+                 uiOutput("selemethod"),
+                 uiOutput("selemethodNA")
+        ),
+        ## response
+        tabPanel("Response",
+                 radioButtons("resptype", "", c("None","Group","Survival"),"None"),                 
+                 actionButton("changeresp","","Update"),
+                 uiOutput("response")
+        ),            
+        ## hide
+        tabPanel("Hide",
+                 br(),
+                 wellPanel(
+                   fluidRow(
+                     column(6,uiOutput("selehidevar")),
+                     column(6,uiOutput("selehidecat"))
+                   )
+                 ),
+                 textInput('hideno', "Hide 'no' category", ''),
+                 actionButton("changehide","Update")
+        ),
+        ## subset
+        tabPanel("Subset", uiOutput("selevarsubset")),
+        ## OR/HR ratio for row-variables
+        tabPanel("OR/HR", uiOutput("ratio"))
+      )
+    ))
+  })
+  
+  
+  output$displayout <- renderUI({
+    if (!rv$initial) return(invisible(NULL))
+    return(div(
+      tabsetPanel(
+        ## show
+        tabPanel("Show",uiOutput("show")),
+        ## Format display
+        tabPanel("Format", uiOutput("format")),
+        ## number of decimals
+        tabPanel("Decimals", uiOutput("decimals")),
+        ## header labels
+        tabPanel("Labels", uiOutput("labels"))
+      )
+    ))
+  })
+  
+  
+  output$saveout <- renderUI({
+    if (!rv$initial) return(invisible(NULL))
+    return(div(
+      selectInput("downloadtabletype", "Select format", choices = c("PDF","CSV","HTML","TXT","Word","Excel"),selectize=FALSE),
+      conditionalPanel(
+        condition="input.downloadtabletype == 'PDF'",
+        wellPanel(
+          selectInput('sizepdf', 'Resize', c("tiny","scriptsize","footnotesize","small","normalsize","large","Large","LARGE","huge","Huge"),"normalsize", selectize=FALSE),
+          h4(""),
+          checkboxInput('landscape', 'Landscape', FALSE)
+        )
+      ),
+      conditionalPanel(        
+        condition="input.downloadtabletype == 'CSV'",
+        wellPanel(
+          radioButtons('sepcsv', 'Separator', c(Comma=',', Semicolon=';', Tab='\t'), ',')
+        )
+      ),
+      downloadButton('actiondownloadtable', 'Download')
+    ))
+  })
+  
+    
   ############################
   ##### html createTable #####
   ############################
@@ -790,7 +948,7 @@ shinyServer(function(input, output, session) {
   ##########################################
   
   output$selevarslist<-renderUI({
-    if (is.null(input$initial) || !input$initial)
+    if (is.null(rv$initial) || !rv$initial)
       return(invisible(NULL))
     dd<-dataset()
     if (is.null(dd)){
@@ -863,7 +1021,7 @@ shinyServer(function(input, output, session) {
   ########################
   
   output$selemethod <- renderUI({
-    if (is.null(input$initial) || !input$initial){
+    if (is.null(rv$initial) || !rv$initial){
       cat("\n\nData not loaded")
       return(invisible(NULL))
     }
@@ -886,7 +1044,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$selemethodNA <- renderUI({
-    if (is.null(input$initial) || !input$initial)
+    if (is.null(rv$initial) || !rv$initial)
       return(invisible(NULL))
     if (is.null(input$method) || input$method!='NA')    
       return(NULL)
@@ -901,7 +1059,7 @@ shinyServer(function(input, output, session) {
   ###################################
   
   output$response <- renderUI({
-    if (is.null(input$initial) || !input$initial){
+    if (is.null(rv$initial) || !rv$initial){
       cat("\n\nData not loaded")
       return(invisible(NULL))
     }
@@ -971,7 +1129,7 @@ shinyServer(function(input, output, session) {
   ##########################
   
   output$selevarsubset <- renderUI({
-    if (is.null(input$initial) || !input$initial){
+    if (is.null(rv$initial) || !rv$initial){
       cat("\n\nData not loaded")
       return(invisible(NULL))
     }
@@ -1000,7 +1158,7 @@ shinyServer(function(input, output, session) {
   
   ## ratio 
   output$ratio <- renderUI({
-    if (is.null(input$initial) || !input$initial){ 
+    if (is.null(rv$initial) || !rv$initial){ 
       cat("\n\nData not loaded")
       return(invisible(NULL))
     }
@@ -1115,7 +1273,7 @@ shinyServer(function(input, output, session) {
   
   ## select variable
   output$selehidevar <- renderUI({
-    if (is.null(input$initial) || !input$initial){
+    if (is.null(rv$initial) || !rv$initial){
       cat("\n\nData not loaded")
       return(invisible(NULL))
     }
@@ -1247,7 +1405,7 @@ shinyServer(function(input, output, session) {
   ######################################
   
   output$show <- renderUI({
-    if (is.null(input$initial) || !input$initial){
+    if (is.null(rv$initial) || !rv$initial){
       cat("\n\nData not loaded")
       return(invisible(NULL))
     }
@@ -1295,7 +1453,7 @@ shinyServer(function(input, output, session) {
   ##################################
   
   output$format <- renderUI({
-    if (is.null(input$initial) || !input$initial){
+    if (is.null(rv$initial) || !rv$initial){
       cat("\n\nData not loaded")
       return(invisible(NULL))
     }
@@ -1328,7 +1486,7 @@ shinyServer(function(input, output, session) {
   ########################  
   
   output$decimals <- renderUI({  
-    if (is.null(input$initial) || !input$initial){
+    if (is.null(rv$initial) || !rv$initial){
       cat("\n\nData not loaded")
       return(invisible(NULL))
     }
@@ -1354,7 +1512,7 @@ shinyServer(function(input, output, session) {
   ########################  
   
   output$labels <- renderUI({  
-    if (is.null(input$initial) || !input$initial){ 
+    if (is.null(rv$initial) || !rv$initial){ 
       cat("\n\nData not loaded")
       return(invisible(NULL))
     }
@@ -1375,16 +1533,18 @@ shinyServer(function(input, output, session) {
   ########################
   
   output$values <- renderUI({  
-    if (is.null(input$initial) || !input$initial){ 
+    if (is.null(rv$initial) || !rv$initial){ 
       cat("\n\nData not loaded")
       return(invisible(NULL))
     }
     div(
       bsButton("valuessumoptionsaction","View",style="info"),
-      wellPanel(id="valuessumoptions",
-        fluidRow(
-          column(4,numericInput("maxvalues", "Maximum number of categories to display:", min=3, max=100, value=10, step=1)),
-          column(8,sliderInput("htmlsizeinfotab", "Resize", min=0.5, max=2, value=1, step=0.1))
+      conditionalPanel(condition="input.valuessumoptionsaction>0",
+        div(id="valuessumoptions",
+          fluidRow(
+            column(4,numericInput("maxvalues", "Maximum number of categories to display:", min=3, max=100, value=10, step=1)),
+            column(8,sliderInput("htmlsizeinfotab", "Resize", min=0.5, max=2, value=1, step=0.1))
+          )
         )
       ),
       htmlOutput('valuestable')
@@ -1396,11 +1556,8 @@ shinyServer(function(input, output, session) {
   ####### table ##########
   ########################
   
-  output$table <- renderUI({  
-    if (is.null(input$initial) || !input$initial){ 
-      cat("\n\nData not loaded")
-      return(invisible(NULL))
-    }
+  output$table <- renderUI({
+    if (!rv$initial) return(invisible(NULL))
     htmlOutput('htmltab')
   })
   
@@ -1410,7 +1567,7 @@ shinyServer(function(input, output, session) {
   
   output$uiplot <- renderUI({ 
     
-    if (is.null(input$initial) || !input$initial){ 
+    if (is.null(rv$initial) || !rv$initial){ 
       cat("\n\nData not loaded")
       return(invisible(NULL))
     }  
@@ -1429,18 +1586,21 @@ shinyServer(function(input, output, session) {
   ########################
   
   output$snps <- renderUI({  
-    if (is.null(input$initial) || !input$initial){
+    if (is.null(rv$initial) || !rv$initial){
       cat("\n\nData not loaded")
       return(invisible(NULL))
     }
     div(
       div(class="row-fluid",
           bsButton("SNPsoptionsaction","View",style="info"),
-          wellPanel(id="SNPsoptions",
-            fluidRow(
-              column(4,textInput("sepSNPs","Allele separator")),
-              column(4,br(),downloadButton('actiondownloadSNPtable', 'Download'),offset=4)
-            )                    
+          conditionalPanel(
+            condition="input.SNPsoptionsaction>0",
+            wellPanel(id="SNPsoptions",
+              fluidRow(
+                column(4,textInput("sepSNPs","Allele separator")),
+                column(4,br(),downloadButton('actiondownloadSNPtable', 'Download'),offset=4)
+              )                    
+            )
           )
       ),
       verbatimTextOutput('restabSNPs')

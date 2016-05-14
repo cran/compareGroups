@@ -1,5 +1,5 @@
 compare.i <-
-function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, Q1, Q3, groups, simplify, Xext, ref, fact.ratio, ref.y, p.corrected, compute.ratio, include.miss) {
+function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, Q1, Q3, groups, simplify, Xext, ref, fact.ratio, ref.y, p.corrected, compute.ratio, include.miss, oddsratio.method) {
 
   x.orig <- x
   y.orig <- y
@@ -383,7 +383,7 @@ function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, 
             tb<-tb[,2:1]
           if (ref!=1)
             tb<-rbind(tb[ref,,drop=FALSE],tb[-ref,,drop=FALSE])
-          or.res<-try(oddsratio(tb),silent=TRUE)
+          or.res<-try(oddsratio(tb,method=oddsratio.method),silent=TRUE)
           if (inherits(or.res,"try-error")){
             ci<-matrix(NaN,nlevels(x),3)
             ci[ref,]<-c(1,NA,NA)          

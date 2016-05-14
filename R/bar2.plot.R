@@ -27,8 +27,8 @@ bar2.plot<-function(x, y, file, var.label.x, var.label.y, ...)
   }
     
   tt <- table(x, y)
-  barplot(tt, beside=TRUE, main = paste("Barplot of '",var.label.x,"' by '",var.label.y,"'", sep=""),ylim=c(0,max(tt)*1.3),ylab="Freq") 
-  legend("topleft",levels(x),fill=grey.colors(nlevels(x)),bty="n")
+  barplot(tt, beside=TRUE, main = paste("Barplot of '",var.label.x,"' by '",var.label.y,"'", sep=""),ylim=c(0,max(tt)*1.3),ylab="Freq",col=rainbow(nlevels(x))) 
+  legend("topleft",levels(x),fill=rainbow(nlevels(x)),bty="n")
 
   if (!is.null(file) && (length(grep("pdf$",file))==0 || !onefile))
     dev.off()
