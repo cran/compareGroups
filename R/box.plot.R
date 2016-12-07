@@ -17,7 +17,7 @@ function(x, y, file, var.label.x, var.label.y, ...)
   }
 
   if (is.null(file))
-    dev.new()
+    {} #dev.new()
   else {
     if (length(grep("bmp$",file)))
       bmp(file,...) 

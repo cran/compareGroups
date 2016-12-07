@@ -60,7 +60,7 @@ createTable(x, hide = NA, digits = NA, type = NA, show.p.overall = TRUE,
   
   \item{nmax}{logical, indicating whether to show the number of subjects with at least one valid value across all row-variables. Default value is TRUE.}
 
-  \item{header.labels}{a character named vector with 'all', 'p.overall', 'p.trend' and 'p.ratio' components indicating the label for '[ALL]', 'p.overall', 'p.trend' and 'p.ratio', respectively. Default is a zero length vector which makes no changes, i.e. '[ALL]', 'p.overall', 'p.trend' and 'p.ratio' labels appear for descriptives of entire cohort, global p-value, p-value for trend, and p-value of each HR/OR, respectively.}  
+  \item{header.labels}{a character named vector with 'all', 'p.overall', 'p.trend', 'ratio', 'p.ratio' and 'N' components indicating the label for '[ALL]', 'p.overall', 'p.trend', 'ratio', 'p.ratio' and 'N' (available data), respectively. Default is a zero length vector which makes no changes, i.e. '[ALL]', 'p.overall', 'p.trend', 'ratio', 'p.ratio' and 'N' labels appear for descriptives of entire cohort, global p-value, p-value for trend, HR/OR and p-value of each HR/OR and available data, respectively.}  
 
   \item{...}{other arguments passed to \code{\link[base]{print.default}}.}
   

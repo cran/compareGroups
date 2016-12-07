@@ -51,8 +51,8 @@ function (x, nmax, header.labels)
     if (ncol(table1) == 0) table1 <- table1[-1, ]
     if (nmax) table1 <- rbind(colnames(table1), c(paste("N=", Nmax, sep = ""), rep("", ncol(table1) - length(Nmax))), table1) else table1 <- rbind(colnames(table1), table1)
     table1 <- ifelse(is.na(table1), "", table1)
-    if (length(header.labels)==5 && is.null(names(header.labels))){
-      names(header.labels)<-c("all","p.overall","p.trend","p.ratio","N")
+    if (length(header.labels)==6 && is.null(names(header.labels))){
+      names(header.labels)<-c("all","p.overall","p.trend","ratio","p.ratio","N")
     }
     if ("all"%in%names(header.labels)){
       ww.all<-grep("^\\[ALL\\]",trim(table1[1,]))
@@ -75,6 +75,13 @@ function (x, nmax, header.labels)
         table1[1,ww.p.trend]<-header.labels["p.trend"]
       }
     } 
+    if ("ratio"%in%names(header.labels)){
+      ww.ratio<-which(table1[1,]%in%c("OR","HR"))
+      if (length(ww.ratio)>0){
+        ww.ratio<-rev(ww.ratio)[1]
+        table1[1,ww.ratio]<-header.labels["ratio"]
+      }
+    }     
     if ("p.ratio"%in%names(header.labels)){
       ww.p.ratio<-which(table1[1,]=="p.ratio")
       if (length(ww.p.ratio)>0){

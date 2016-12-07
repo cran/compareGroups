@@ -51,7 +51,7 @@ shinyUI(
             ## load data
             bsCollapsePanel(title=HTML('<font style="font-size:18px">Step 1. Load data</font>'), value="collapseLoad", style = "primary",
               uiOutput("initial"),
-              column(1,bsButton("infoLoad","",size="extra-small",style="info",icon=icon("info-circle")),offset=11),
+              column(1,bsButton("infoLoad","",size="extra-small",style="info",icon=shiny::icon("info-circle")),offset=11),
               bsModal("infoLoadModal",HTML('<p> <strong>Step 1. Load data</strong></p>'), "infoLoad",uiOutput("helpload")),
               #radioButtons("exampledata", "", choices = c("Own data","REGICOR","PREDIMED","SNPS")),
               HTML('

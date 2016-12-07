@@ -9,7 +9,7 @@ KM.plot<-function(x, file, var.label.x, ...)
     onefile<- dots.args$onefile  
 
   if (is.null(file))
-    dev.new()
+    {} #dev.new()
   else {
     if (length(grep("bmp$",file)))
       bmp(file,...) 

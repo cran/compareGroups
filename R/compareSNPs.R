@@ -1,4 +1,4 @@
-compareSNPs <- function(formula, data, subset, na.action = NULL, sep = "", ...) 
+compareSNPs <- function(formula, data, subset, na.action = NULL, sep = "", verbose = FALSE, ...) 
 {
     call <- match.call()
     if (missing(data)) 
@@ -60,18 +60,18 @@ compareSNPs <- function(formula, data, subset, na.action = NULL, sep = "", ...)
     if (!length(pos) > 0) 
         stop("no row-variables selected")
     X <- data[rownames(m), pos, drop = FALSE]
-    checkit<-try(setupSNP(X,1:ncol(X),sep=sep,...))
+    checkit<-try(setupSNP(X,1:ncol(X),sep=sep))
     if (inherits(checkit,"try-error"))
       stop(" some variables cannot be converted to snp")
     if (is.null(y)){
-      ans <- snpQC(X,sep=sep,...)
+      ans <- snpQC(X,sep=sep,verbose=verbose)
       attr(ans,"groups")<-FALSE
       class(ans)<-c("compareSNPs","data.frame")
     }else{
       ans <- list()
       X.s <- split(X,y)
       for (i in 1:length(X.s))
-        ans[[i]] <- snpQC(X.s[[i]], sep=sep,...)
+        ans[[i]] <- snpQC(X.s[[i]], sep=sep, verbose=FALSE)
       p.miss <- sapply(1:ncol(X), function(j) fisher.test(sapply(ans,function(ans.i) unlist(ans.i[j,c("Ntyped","Miss.ct")])))$p.value)
       ans[[length(ans)+1]] <- data.frame(snps=names(X),p.miss)
       lab.y <- label(y)

@@ -1,7 +1,7 @@
-snpQC <- function(X,sep,...)
+snpQC <- function(X,sep,verbose)
 {
 
-    X<-setupSNP(X,1:ncol(X),sep=sep,...)
+    X<-setupSNP(X,1:ncol(X),sep=sep)
     snps<-attr(X,"label.SNPs")
     snp.sum<-data.frame(SNP=snps,
                         Ntotal=NA,    # Total number of samples for which genotyping was attempted
@@ -76,7 +76,7 @@ snpQC <- function(X,sep,...)
     #require(HardyWeinberg)    
     hw <- as.matrix(snp.sum[,c("Hom1.ct","Het.ct","Hom2.ct")])
     hw[is.na(hw)] <- 0; hw <- matrix(as.numeric(hw),ncol=ncol(hw))
-    snp.sum$HWE.p[rowSums(hw)>0]<-HWChisqMat(hw[rowSums(hw)>0,])$pvalvec
+    snp.sum$HWE.p[rowSums(hw)>0]<-HWChisqMat(hw[rowSums(hw)>0,], verbose=verbose)$pvalvec
 
     # Set classes and return results
     numvar <- c("Ntotal","Ntyped","Typed.p","Miss.ct","Miss.p","MAF","A1.ct","A2.ct","A1.p","A2.p","Hom1.ct","Het.ct","Hom2.ct","Hom1.p","Het.p","Hom2.p","HWE.p")

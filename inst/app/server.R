@@ -803,7 +803,7 @@ shinyServer(function(input, output, session) {
         ## response
         tabPanel("Response",
                  radioButtons("resptype", "", c("None","Group","Survival"),"None"),                 
-                 actionButton("changeresp","","Update"),
+                 actionButton("changeresp","Update"),
                  uiOutput("response")
         ),            
         ## hide
@@ -876,7 +876,7 @@ shinyServer(function(input, output, session) {
     if (is.null(restab))
       return(invisible(NULL))
     input$changeLabels
-    isolate({header.labels<-c(input$alllabel,input$poveralllabel,input$ptrendlabel,input$pratiolabel,input$Nlabel)})
+    isolate({header.labels<-c('all'=input$alllabel,'p.overall'=input$poveralllabel,'p.trend'=input$ptrendlabel,'p.ratio'=input$pratiolabel,'N'=input$Nlabel)})
     export2html(restab,"tableHTML.html",header.labels=header.labels)      
     ans<-scan(file="tableHTML.html",what="character",sep="\n",quiet=TRUE)
     file.remove("tableHTML.html")  
@@ -962,7 +962,7 @@ shinyServer(function(input, output, session) {
         column(2,br(),br(),br(),bsButton("changeselevars","<>",size="extra-small"),offset=1),
         column(4,selectInput("discvars",HTML('<div title="Choose the variables you DO NOT want to analyze">Discarted</div>'), rv$discvars, multiple=TRUE,selectize=FALSE),tags$style(type='text/css', paste("#discvars { height: ",ifelse(length(rv$discvars)==0,20,ifelse(length(rv$discvars)>20,300,20*length(rv$discvars)+15)),"px;}",sep=""))),offset=1      
       ),
-      bsButton("changeselevarsok","","Update")
+      bsButton("changeselevarsok","Update") #@
     )
   })
   
@@ -1444,7 +1444,7 @@ shinyServer(function(input, output, session) {
           column(6,checkboxInput('simplify', 'Simplify', FALSE)),
           column(6,"")
       ),
-      actionButton("changeshow","","Update")
+      actionButton("changeshow","Update")
     )                         
   })
   
@@ -1477,7 +1477,7 @@ shinyServer(function(input, output, session) {
           )
         )               
       ),
-      actionButton("changeformat","","Update")
+      actionButton("changeformat","Update")
     )           
   })
   
@@ -1495,7 +1495,7 @@ shinyServer(function(input, output, session) {
       bsCollapse(
         bsCollapsePanel(title=HTML('<div style="font-color:black; height:15px">p-values</p>'), style="info", 
           numericInput("pvaldigits", label="Number of decimals", value = 3, min=1, max=20),
-          actionButton("changepvalsdigits","","Update")
+          actionButton("changepvalsdigits","Update")
         ),
         bsCollapsePanel(title=HTML('<div style="font-color:black; height:15px">Descriptives</p>'), style="info",
           uiOutput("seledescdigits")

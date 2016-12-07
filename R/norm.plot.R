@@ -13,7 +13,7 @@ norm.plot<-function(x, file, var.label.x, z, n.breaks, ...)
     onefile<- dots.args$onefile
 
   if (is.null(file))
-    dev.new()
+    {} #dev.new()
   else {
     if (length(grep("bmp$",file)))
       bmp(file,...) 

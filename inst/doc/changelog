@@ -1,3 +1,8 @@
+v3.2.2
+-. plot do not open new windows when file argument is NULL.
+-. new argument "verbose" set to FALSE by default in "compareSNPs"
+-. new component in header.labels argument to modify OR/HR bivariate table column label.
+-. bug fixed in getResults function when exctracting proportions.  
 v3.2.1
 -. package vignette updated.
 -. new argument "oddsratio.method" in "compareGroups.default" function to compute odds ratio under different methods.

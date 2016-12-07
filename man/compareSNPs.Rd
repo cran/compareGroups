@@ -12,7 +12,7 @@ This function provides an extensive summary range of your SNP data, allowing you
 }
 
 \usage{
-compareSNPs(formula, data, subset, na.action = NULL, sep = "", ...) 
+compareSNPs(formula, data, subset, na.action = NULL, sep = "", verbose = FALSE, ...) 
 }
 
 \arguments{
@@ -26,6 +26,8 @@ compareSNPs(formula, data, subset, na.action = NULL, sep = "", ...)
   \item{na.action}{a function which indicates what should happen when the data contain NAs. The default is NULL, and that is equivalent to \code{\link[stats]{na.pass}}, which means no action. Value \code{\link[stats]{na.exclude}} can be useful if it is desired to removed all individuals with some NA in any variable.}    
 
   \item{sep}{character string indicating the separator between alleles (e.g. when using A/A, A/T and T/T genotype codification, 'sep' should be set to '/'. Default value is '' indicating that genotypes are coded as AA, AT and TT.} 
+  
+  \item{verbose}{logical, print results from \code{\link[HardyWeinberg]{HWChisq}} function. Default value is FALSE.}
   
   \item{\dots}{currently ignored.}
 
@@ -69,7 +71,7 @@ Additionaly, when analysis is stratified by groups, the last component consists 
 
 \note{
 
-  It uses some functions taken from \pkg{SNPassoc} created by Juan Ramón González et al. \cr
+  It uses some functions taken from \pkg{SNPassoc} created by Juan Ram?n Gonz?lez et al. \cr
   
   Hardy-Weinberg equilibrium test is performed using the  \code{\link[HardyWeinberg]{HWChisqMat}}
 

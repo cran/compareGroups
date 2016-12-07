@@ -28,7 +28,7 @@ getResults <- function(obj, what = "descr"){
       dd<-obj.i$desc
       if ("categorical"%in%mm){
         nn<-t(dd)
-        pp<-nn/colSums(nn)
+        pp<-prop.table(nn,margin=2)
         nn.tot<-rbind(nn.tot,nn)
         pp.tot<-rbind(pp.tot,pp)
         mean.tot<-rbind(mean.tot,matrix(NA,nrow=nrow(pp),ncol=ncol(pp)))

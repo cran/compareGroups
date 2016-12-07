@@ -56,7 +56,7 @@ KM.plot(x, file, var.label.x, ...)
 bar.plot(x, file, var.label.x, ...)
 norm.plot(x, file, var.label.x, z, n.breaks, ...)
 prepare(x, nmax, header.labels)
-snpQC(X, sep, ...)
+snpQC(X, sep, verbose)
 }
 
 \details{These are not to be called by the user}
