@@ -33,13 +33,14 @@ export2pdf(x, file, compile = TRUE, openfile = TRUE, margin = c(2,2,1,1), ...)
 \note{
 
   To make the .tex file be compiled, some LaTeX compiler such as Miktex must be installed. Also, the tex file must include the following LaTeX packages:
-  - babel \cr
-  - longtable  \cr
-  - multirow    \cr
-  - lscape     \cr
-  - geometry \cr
-  - inputenc \cr
-
+  \itemize{
+  \item babel \cr
+  \item longtable  \cr
+  \item multirow    \cr
+  \item lscape     \cr
+  \item geometry \cr
+  \item inputenc \cr
+  }
 }
 
 

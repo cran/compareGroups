@@ -5,7 +5,9 @@ export2word <- function(x, file, which.table="descr", nmax = TRUE, header.labels
     stop("x cannot be of class 'cbind.createTable'")
   if (is.null(caption)) caption<-"NULL"
   if (length(header.labels)==0) header.labels<-"c()"
-  tempfile<-file.path(tempdir(),"temp.Rmd")
+  #tempfile<-file.path(tempdir(),"temp.Rmd")
+  tempfile <- sub("docx$","Rmd",file)
+  tempfile <- sub("doc$","Rmd",file)  
   instr<-paste(
 "
 ---

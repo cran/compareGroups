@@ -1,3 +1,5 @@
+v3.2.3
+-. export2word: changed working directory
 v3.2.2
 -. plot do not open new windows when file argument is NULL.
 -. new argument "verbose" set to FALSE by default in "compareSNPs"

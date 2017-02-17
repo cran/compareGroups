@@ -190,7 +190,7 @@ pre {
 </p>
 <p>Variables and labels in this data frame are:</p>
 <!-- html table generated in R 3.3.2 by xtable 1.8-2 package -->
-<!-- Wed Dec 07 15:42:14 2016 -->
+<!-- Fri Feb 17 13:46:57 2017 -->
 <table border="1">
 <tr>
 <th>
@@ -377,7 +377,7 @@ No; Yes
 <div id="time-to-event-variables" class="section level2">
 <h2>Time-to-event variables</h2>
 <p>A variable of class <code>Surv</code> must be created to deal with time-to-event variables (i.e., time to Cardiovascular event/censored in our example):</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">predimed$tmain &lt;-<span class="st"> </span><span class="kw">with</span>(predimed, <span class="kw">Surv</span>(toevent, event ==<span class="st"> 'Yes'</span>))
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">predimed$tmain &lt;-<span class="st"> </span><span class="kw">with</span>(predimed, <span class="kw">Surv</span>(toevent, event ==<span class="st"> &quot;Yes&quot;</span>))
 <span class="kw">label</span>(predimed$tmain) &lt;-<span class="st"> &quot;AMI, stroke, or CV Death&quot;</span></code></pre></div>
 <p>Note that variables <em>tmain</em> and <em>tcv</em> are created as time-to-death and time-to-cardiovascular event, respectively, both taking into account censoring (i.e. they are of class Surv).</p>
 <p style="margin-top:50px">
@@ -394,16 +394,17 @@ No; Yes
 <h2><code>compareGroups</code></h2>
 <p>This is the main function. It does all the calculus. It is needed to store results in an object. Later, applying the function <code>createTable</code> (Section 4.2) to this object will create tables of the analysis results.</p>
 <p>For example, to perform a univariate analysis with the <em>predimed</em> data between <em>group</em> (“response” variable) and all other variables (“explanatory” variables), this formula is required:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">compareGroups</span>(group ~<span class="st"> </span>. , <span class="dt">data=</span>predimed)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">compareGroups</span>(group ~<span class="st"> </span>., <span class="dt">data =</span> predimed)</code></pre></div>
 <p style="margin-top:50px">
 </p>
 <div id="selecting-response-variables" class="section level3">
 <h3>Selecting response variables</h3>
 <p>If only a dot occurs on the right side of the <code>~</code> all variables in the data frame will be used.</p>
 <p>To remove the variable <em>toevent</em> and <em>event</em> from the analysis:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">compareGroups</span>(group ~<span class="st"> </span>. -toevent -<span class="st"> </span>event, <span class="dt">data=</span>predimed)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">compareGroups</span>(group ~<span class="st"> </span>. -<span class="st"> </span>toevent -<span class="st"> </span>event, <span class="dt">data =</span> predimed)</code></pre></div>
 <p>To select some explanatory variables (e.g., <em>age</em>, <em>sex</em> and <em>waist</em>) and store results in an object of class <code>compareGroups</code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res&lt;-<span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>smoke +<span class="st"> </span>waist +<span class="st"> </span>hormo, <span class="dt">data=</span>predimed)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res &lt;-<span class="st"> </span><span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>smoke +<span class="st"> </span>waist +<span class="st"> </span>hormo, 
+    <span class="dt">data =</span> predimed)
 res</code></pre></div>
 <pre><code>
 
@@ -428,7 +429,8 @@ Signif. codes:  0 '**' 0.05 '*' 0.1 ' ' 1 </code></pre>
 <div id="subsetting" class="section level3">
 <h3>Subsetting</h3>
 <p>To perform the analysis in a subset of participants (e.g., “female” participants):</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>smoke +<span class="st"> </span>waist +<span class="st"> </span>hormo, <span class="dt">data=</span>predimed, <span class="dt">subset =</span> sex==<span class="st">'Female'</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>smoke +<span class="st"> </span>waist +<span class="st"> </span>hormo, <span class="dt">data =</span> predimed, 
+    <span class="dt">subset =</span> sex ==<span class="st"> &quot;Female&quot;</span>)</code></pre></div>
 <pre><code>
 
 -------- Summary of results by groups of 'Intervention group'---------
@@ -448,7 +450,8 @@ Signif. codes:  0 '**' 0.05 '*' 0.1 ' ' 1 </code></pre>
 Signif. codes:  0 '**' 0.05 '*' 0.1 ' ' 1 </code></pre>
 <p>Note that only results for female participants are shown.</p>
 <p>To subset specific variable/s (e.g., <em>hormo</em> and <em>waist</em>):</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>smoke +<span class="st"> </span>waist +<span class="st"> </span>hormo, <span class="dt">data=</span>predimed, <span class="dt">selec =</span> <span class="kw">list</span>(<span class="dt">hormo=</span> sex==<span class="st">&quot;Female&quot;</span>, <span class="dt">waist =</span> waist&gt;<span class="dv">20</span> ))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>smoke +<span class="st"> </span>waist +<span class="st"> </span>hormo, <span class="dt">data =</span> predimed, 
+    <span class="dt">selec =</span> <span class="kw">list</span>(<span class="dt">hormo =</span> sex ==<span class="st"> &quot;Female&quot;</span>, <span class="dt">waist =</span> waist &gt;<span class="st"> </span><span class="dv">20</span>))</code></pre></div>
 <pre><code>
 
 -------- Summary of results by groups of 'Intervention group'---------
@@ -469,7 +472,8 @@ Signif. codes:  0 '**' 0.05 '*' 0.1 ' ' 1 </code></pre>
 -----
 Signif. codes:  0 '**' 0.05 '*' 0.1 ' ' 1 </code></pre>
 <p>Combinations are also allowed, e.g.:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>smoke +<span class="st"> </span>waist +<span class="st"> </span>hormo, <span class="dt">data=</span>predimed, <span class="dt">selec =</span> <span class="kw">list</span>(<span class="dt">waist=</span> !<span class="kw">is.na</span>(hormo)), <span class="dt">subset =</span> sex==<span class="st">&quot;Female&quot;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>smoke +<span class="st"> </span>waist +<span class="st"> </span>hormo, <span class="dt">data =</span> predimed, 
+    <span class="dt">selec =</span> <span class="kw">list</span>(<span class="dt">waist =</span> !<span class="kw">is.na</span>(hormo)), <span class="dt">subset =</span> sex ==<span class="st"> &quot;Female&quot;</span>)</code></pre></div>
 <pre><code>
 
 -------- Summary of results by groups of 'Intervention group'---------
@@ -488,7 +492,8 @@ Signif. codes:  0 '**' 0.05 '*' 0.1 ' ' 1 </code></pre>
 -----
 Signif. codes:  0 '**' 0.05 '*' 0.1 ' ' 1 </code></pre>
 <p>A variable can appear twice in the formula, e.g.:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>bmi +<span class="st"> </span>bmi +<span class="st"> </span>waist +<span class="st"> </span>hormo, <span class="dt">data=</span>predimed, <span class="dt">selec =</span> <span class="kw">list</span>(<span class="dt">bmi.1=</span>!<span class="kw">is.na</span>(hormo)))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>bmi +<span class="st"> </span>bmi +<span class="st"> </span>waist +<span class="st"> </span>hormo, 
+    <span class="dt">data =</span> predimed, <span class="dt">selec =</span> <span class="kw">list</span>(<span class="dt">bmi.1 =</span> !<span class="kw">is.na</span>(hormo)))</code></pre></div>
 <pre><code>
 
 -------- Summary of results by groups of 'Intervention group'---------
@@ -517,7 +522,8 @@ Signif. codes:  0 '**' 0.05 '*' 0.1 ' ' 1 </code></pre>
 <div id="methods-for-continuous-variables" class="section level3">
 <h3>Methods for continuous variables</h3>
 <p>By default continuous variables are analyzed as normal-distributed. When a table is built (see <code>createTable</code> function, Section 4.2), continuous variables will be described with mean and standard deviation. To change default options, e.g., “waist” used as non-normal distributed:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>smoke +<span class="st"> </span>waist +<span class="st"> </span>hormo, <span class="dt">data=</span>predimed, <span class="dt">method =</span> <span class="kw">c</span>(<span class="dt">waist=</span><span class="dv">2</span>))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>smoke +<span class="st"> </span>waist +<span class="st"> </span>hormo, <span class="dt">data =</span> predimed, 
+    <span class="dt">method =</span> <span class="kw">c</span>(<span class="dt">waist =</span> <span class="dv">2</span>))</code></pre></div>
 <pre><code>
 
 -------- Summary of results by groups of 'Intervention group'---------
@@ -539,7 +545,8 @@ Signif. codes:  0 '**' 0.05 '*' 0.1 ' ' 1 </code></pre>
 <li><p>NA: performs a Shapiro-Wilks test to decide between normal or non-normal</p></li>
 </ul>
 <p>If the <code>method</code> argument is stated as <code>NA</code> for a variable, then a Shapiro-Wilk test for normality is used to decide if the variable is normal or non-normal distributed. To change the significance threshold:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>smoke +<span class="st"> </span>waist +<span class="st"> </span>hormo, <span class="dt">data=</span>predimed, <span class="dt">method =</span> <span class="kw">c</span>(<span class="dt">waist=</span><span class="ot">NA</span>), <span class="dt">alpha=</span> <span class="fl">0.01</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>smoke +<span class="st"> </span>waist +<span class="st"> </span>hormo, <span class="dt">data =</span> predimed, 
+    <span class="dt">method =</span> <span class="kw">c</span>(<span class="dt">waist =</span> <span class="ot">NA</span>), <span class="dt">alpha =</span> <span class="fl">0.01</span>)</code></pre></div>
 <pre><code>
 
 -------- Summary of results by groups of 'Intervention group'---------
@@ -554,9 +561,9 @@ Signif. codes:  0 '**' 0.05 '*' 0.1 ' ' 1 </code></pre>
 Signif. codes:  0 '**' 0.05 '*' 0.1 ' ' 1 </code></pre>
 <p>According to Shapiro-Wilk test, stating the cutpoint at 0.01 level, “Hormone-replacement therapy” departed significantly from the normal distribution and therefore the method for this variable will be “continuous non-normal”.</p>
 <p>All non factor variables are considered as continuous. Exception is made (by default) for those that have fewer than 5 different values. This threshold can be changed in the <strong>min.dis</strong> statement:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cuts&lt;-<span class="st">&quot;lo:55=1; 56:60=2; 61:65=3; 66:70=4; 71:75=5; 76:80=6; 81:hi=7&quot;</span>
-predimed$age7gr&lt;-car::<span class="kw">recode</span>(predimed$age, cuts)
-<span class="kw">compareGroups</span>(group ~<span class="st"> </span>age7gr, <span class="dt">data=</span>predimed, <span class="dt">method =</span> <span class="kw">c</span>(<span class="dt">age7gr=</span><span class="ot">NA</span>))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cuts &lt;-<span class="st"> &quot;lo:55=1; 56:60=2; 61:65=3; 66:70=4; 71:75=5; 76:80=6; 81:hi=7&quot;</span>
+predimed$age7gr &lt;-<span class="st"> </span>car::<span class="kw">recode</span>(predimed$age, cuts)
+<span class="kw">compareGroups</span>(group ~<span class="st"> </span>age7gr, <span class="dt">data =</span> predimed, <span class="dt">method =</span> <span class="kw">c</span>(<span class="dt">age7gr =</span> <span class="ot">NA</span>))</code></pre></div>
 <pre><code>
 
 -------- Summary of results by groups of 'Intervention group'---------
@@ -566,7 +573,8 @@ predimed$age7gr&lt;-car::<span class="kw">recode</span>(predimed$age, cuts)
 1 Age 6324 0.007** continuous non-normal ALL      
 -----
 Signif. codes:  0 '**' 0.05 '*' 0.1 ' ' 1 </code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">compareGroups</span>(group ~<span class="st"> </span>age7gr, <span class="dt">data=</span>predimed, <span class="dt">method =</span> <span class="kw">c</span>(<span class="dt">age7gr=</span><span class="ot">NA</span>), <span class="dt">min.dis=</span><span class="dv">8</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">compareGroups</span>(group ~<span class="st"> </span>age7gr, <span class="dt">data =</span> predimed, <span class="dt">method =</span> <span class="kw">c</span>(<span class="dt">age7gr =</span> <span class="ot">NA</span>), 
+    <span class="dt">min.dis =</span> <span class="dv">8</span>)</code></pre></div>
 <pre><code>
 
 -------- Summary of results by groups of 'Intervention group'---------
@@ -583,7 +591,7 @@ Signif. codes:  0 '**' 0.05 '*' 0.1 ' ' 1 </code></pre>
 number of groups must be less or equal to 5</code></pre>
 </div>
 <p>Defaults setting can be changed with the <strong>max.ylev</strong> statement:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">compareGroups</span>(age7gr ~<span class="st"> </span>sex +<span class="st"> </span>bmi +<span class="st"> </span>waist, <span class="dt">data=</span>predimed, <span class="dt">max.ylev=</span><span class="dv">7</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">compareGroups</span>(age7gr ~<span class="st"> </span>sex +<span class="st"> </span>bmi +<span class="st"> </span>waist, <span class="dt">data =</span> predimed, <span class="dt">max.ylev =</span> <span class="dv">7</span>)</code></pre></div>
 <pre><code>
 
 -------- Summary of results by groups of 'Age'---------
@@ -596,7 +604,8 @@ number of groups must be less or equal to 5</code></pre>
 -----
 Signif. codes:  0 '**' 0.05 '*' 0.1 ' ' 1 </code></pre>
 <p>Similarly, by default there is a limit for the maximum number of levels for an explanatory variable. If this level is exceeded, the variable is removed from the analysis and a warning message is printed:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">compareGroups</span>(group ~<span class="st"> </span>sex +<span class="st"> </span>age7gr, <span class="dt">method=</span> (<span class="dt">age7gr=</span><span class="dv">3</span>), <span class="dt">data=</span>predimed, <span class="dt">max.xlev=</span><span class="dv">5</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">compareGroups</span>(group ~<span class="st"> </span>sex +<span class="st"> </span>age7gr, <span class="dt">method =</span> (<span class="dt">age7gr =</span> <span class="dv">3</span>), <span class="dt">data =</span> predimed, 
+    <span class="dt">max.xlev =</span> <span class="dv">5</span>)</code></pre></div>
 <div style="color:blue">
 <pre><code>Warning in compareGroups.default(X = X, y = y, include.label = include.label,  :
 Variables 'age7gr' have been removed since some errors ocurred</code></pre>
@@ -610,7 +619,8 @@ Variables 'age7gr' have been removed since some errors ocurred</code></pre>
 <ul>
 <li><strong><code>include.label</code>:</strong> By default the variable labels are shown in the output (if there is no label the name will be printed). Changing the statement include.label from “= TRUE” (default) to “= FALSE” will cause variable names to be printed instead.</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>smoke +<span class="st"> </span>waist +<span class="st"> </span>hormo, <span class="dt">data=</span>predimed, <span class="dt">include.label=</span> <span class="ot">FALSE</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>smoke +<span class="st"> </span>waist +<span class="st"> </span>hormo, <span class="dt">data =</span> predimed, 
+    <span class="dt">include.label =</span> <span class="ot">FALSE</span>)</code></pre></div>
 <pre><code>
 
 -------- Summary of results by groups of 'group'---------
@@ -626,7 +636,8 @@ Signif. codes:  0 '**' 0.05 '*' 0.1 ' ' 1 </code></pre>
 <ul>
 <li><strong><code>Q1</code>, <code>Q3</code>:</strong> When the method for a variable is stated as “2” (i.e., to be analyzed as continuous non-normal; see section 4.1.3), by default the median and quartiles 1 and 3 will be shown in the final results, after applying the function <code>createTable</code> (see Section 4.2).</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">resu1&lt;-<span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>waist, <span class="dt">data=</span>predimed, <span class="dt">method =</span> <span class="kw">c</span>(<span class="dt">waist=</span><span class="dv">2</span>))
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">resu1 &lt;-<span class="st"> </span><span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>waist, <span class="dt">data =</span> predimed, 
+    <span class="dt">method =</span> <span class="kw">c</span>(<span class="dt">waist =</span> <span class="dv">2</span>))
 <span class="kw">createTable</span>(resu1)</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'Intervention group'---------
@@ -640,7 +651,8 @@ Waist circumference 101 [94.0;108] 100 [93.0;107] 100 [93.0;107]   0.085
 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯ </code></pre>
 <p>Note: percentiles 25 and 75 are calculated for “Waist circumference”.</p>
 <p>To get instead percentile 2.5% and 97.5%:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">resu2&lt;-<span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>smoke +<span class="st"> </span>waist +<span class="st"> </span>hormo, <span class="dt">data=</span>predimed, <span class="dt">method =</span> <span class="kw">c</span>(<span class="dt">waist=</span><span class="dv">2</span>), <span class="dt">Q1=</span><span class="fl">0.025</span>, <span class="dt">Q3=</span><span class="fl">0.975</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">resu2 &lt;-<span class="st"> </span><span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>smoke +<span class="st"> </span>waist +<span class="st"> </span>hormo, <span class="dt">data =</span> predimed, 
+    <span class="dt">method =</span> <span class="kw">c</span>(<span class="dt">waist =</span> <span class="dv">2</span>), <span class="dt">Q1 =</span> <span class="fl">0.025</span>, <span class="dt">Q3 =</span> <span class="fl">0.975</span>)
 <span class="kw">createTable</span>(resu2)</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'Intervention group'---------
@@ -661,13 +673,15 @@ Hormone-replacement therapy:                                                0.85
 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯ </code></pre>
 <p>Note: percentiles 2.5% and 97.5% are calculated for Follow-up.</p>
 <p>To get minimum and maximum:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>smoke +<span class="st"> </span>waist +<span class="st"> </span>hormo, <span class="dt">data=</span>predimed, <span class="dt">method =</span> <span class="kw">c</span>(<span class="dt">waist=</span><span class="dv">2</span>), <span class="dt">Q1=</span><span class="dv">0</span>, <span class="dt">Q3=</span><span class="dv">1</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>smoke +<span class="st"> </span>waist +<span class="st"> </span>hormo, <span class="dt">data =</span> predimed, 
+    <span class="dt">method =</span> <span class="kw">c</span>(<span class="dt">waist =</span> <span class="dv">2</span>), <span class="dt">Q1 =</span> <span class="dv">0</span>, <span class="dt">Q3 =</span> <span class="dv">1</span>)</code></pre></div>
 <ul>
 <li><strong><code>simplify</code>:</strong> Sometimes a categorical variable has no individuals for a specific group. For example, <em>smoker</em> has 3 levels. As an example and to illustrate this problem, we have created a new variable <em>smk</em> with a new category (“Unknown”):</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">predimed$smk&lt;-predimed$smoke
-<span class="kw">levels</span>(predimed$smk)&lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Never smoker&quot;</span>, <span class="st">&quot;Current or former &lt; 1y&quot;</span>, <span class="st">&quot;Never or former &gt;= 1y&quot;</span>, <span class="st">&quot;Unknown&quot;</span>)
-<span class="kw">label</span>(predimed$smk)&lt;-<span class="st">&quot;Smoking 4 cat.&quot;</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">predimed$smk &lt;-<span class="st"> </span>predimed$smoke
+<span class="kw">levels</span>(predimed$smk) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Never smoker&quot;</span>, <span class="st">&quot;Current or former &lt; 1y&quot;</span>, 
+    <span class="st">&quot;Never or former &gt;= 1y&quot;</span>, <span class="st">&quot;Unknown&quot;</span>)
+<span class="kw">label</span>(predimed$smk) &lt;-<span class="st"> &quot;Smoking 4 cat.&quot;</span>
 <span class="kw">cbind</span>(<span class="kw">table</span>(predimed$smk))</code></pre></div>
 <pre><code>                       [,1]
 Never smoker           3892
@@ -675,7 +689,7 @@ Current or former &lt; 1y  858
 Never or former &gt;= 1y  1574
 Unknown                   0</code></pre>
 <p>Note that this new category (“unknown”) has no individuals:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>smk +<span class="st"> </span>waist +<span class="st"> </span>hormo, <span class="dt">data=</span>predimed)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>smk +<span class="st"> </span>waist +<span class="st"> </span>hormo, <span class="dt">data =</span> predimed)</code></pre></div>
 <div style="font-color:blue">
 <pre><code>
 -------- Summary of results by groups of 'Intervention group'---------
@@ -695,7 +709,7 @@ In compare.i(X[, i], y = y, selec.i = selec[i], method.i = method[i],  :
 </div>
 <p>Note that a “Warning” message is printed related to the problem with <em>smk</em>.</p>
 <p>To avoid using empty categories, <code>simplify</code> must be stated as <code>TRUE</code> (Default value).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>smk, <span class="dt">data=</span>predimed, <span class="dt">simplify=</span><span class="ot">FALSE</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>smk, <span class="dt">data =</span> predimed, <span class="dt">simplify =</span> <span class="ot">FALSE</span>)</code></pre></div>
 <div style="font-color:blue">
 <pre><code>
 -------- Summary of results by groups of 'Intervention group'---------
@@ -720,7 +734,8 @@ Warning messages:
 <div id="summary" class="section level3">
 <h3>Summary</h3>
 <p>Applying the <code>summary</code> function to an object of class <code>createTable</code> will obtain a more detailed output:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res&lt;-<span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>smoke +<span class="st"> </span>waist +<span class="st"> </span>hormo, <span class="dt">method =</span> <span class="kw">c</span>(<span class="dt">waist=</span><span class="dv">2</span>), <span class="dt">data=</span>predimed)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res &lt;-<span class="st"> </span><span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>smoke +<span class="st"> </span>waist +<span class="st"> </span>hormo, 
+    <span class="dt">method =</span> <span class="kw">c</span>(<span class="dt">waist =</span> <span class="dv">2</span>), <span class="dt">data =</span> predimed)
 <span class="kw">summary</span>(res[<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">4</span>)])</code></pre></div>
 <pre><code>
  --- Descriptives of each row-variable by groups of 'Intervention group' ---
@@ -788,10 +803,10 @@ MedDiet + VOO                                   </code></pre>
 <div id="plotting" class="section level3">
 <h3>Plotting</h3>
 <p>Variables can be plotted to see their distribution. Plots differ according to whether the variable is continuous or categorical. Plots can be seen on-screen or saved in different formats (BMP, JPG’, PNG, TIF or PDF). To specify the format use the argument `type’.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(res[<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)], <span class="dt">file=</span><span class="st">&quot;./figures/univar/&quot;</span>, <span class="dt">type=</span><span class="st">&quot;png&quot;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(res[<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)], <span class="dt">file =</span> <span class="st">&quot;./figures/univar/&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;png&quot;</span>)</code></pre></div>
 <p><img src="data:image/png;base64,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" alt="alt text" /> <img src="data:image/png;base64,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" alt="alt text" /></p>
 <p>Plots also can be done according to grouping variable. In this case only a boxplot is shown for continuous variables:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(res[<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)], <span class="dt">bivar=</span><span class="ot">TRUE</span>, <span class="dt">file=</span><span class="st">&quot;./figures/bivar/&quot;</span>, <span class="dt">type=</span><span class="st">&quot;png&quot;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(res[<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)], <span class="dt">bivar =</span> <span class="ot">TRUE</span>, <span class="dt">file =</span> <span class="st">&quot;./figures/bivar/&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;png&quot;</span>)</code></pre></div>
 <p><img src="data:image/png;base64,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" alt="alt text" /> <img src="data:image/png;base64,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" alt="alt text" /></p>
 <p style="margin-top:50px">
 </p>
@@ -799,7 +814,8 @@ MedDiet + VOO                                   </code></pre>
 <div id="updating" class="section level3">
 <h3>Updating</h3>
 <p>The object from <code>compareGroups</code> can later be updated. For example:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res&lt;-<span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>smoke +<span class="st"> </span>waist +<span class="st"> </span>hormo, <span class="dt">data=</span>predimed)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res &lt;-<span class="st"> </span><span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>smoke +<span class="st"> </span>waist +<span class="st"> </span>hormo, 
+    <span class="dt">data =</span> predimed)
 res</code></pre></div>
 <pre><code>
 
@@ -815,7 +831,8 @@ res</code></pre></div>
 -----
 Signif. codes:  0 '**' 0.05 '*' 0.1 ' ' 1 </code></pre>
 <p>The object <code>res</code> is updated using:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res&lt;-<span class="kw">update</span>(res, . ~. -<span class="st"> </span>sex +<span class="st">  </span>bmi +<span class="st"> </span>toevent, <span class="dt">subset =</span> sex==<span class="st">'Female'</span>, <span class="dt">method =</span> <span class="kw">c</span>(<span class="dt">waist=</span><span class="dv">2</span>, <span class="dt">tovent=</span><span class="dv">2</span>), <span class="dt">selec =</span> <span class="kw">list</span>(<span class="dt">bmi=</span>!<span class="kw">is.na</span>(hormo)))
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res &lt;-<span class="st"> </span><span class="kw">update</span>(res, . ~<span class="st"> </span>. -<span class="st"> </span>sex +<span class="st"> </span>bmi +<span class="st"> </span>toevent, <span class="dt">subset =</span> sex ==<span class="st"> </span>
+<span class="st">    &quot;Female&quot;</span>, <span class="dt">method =</span> <span class="kw">c</span>(<span class="dt">waist =</span> <span class="dv">2</span>, <span class="dt">tovent =</span> <span class="dv">2</span>), <span class="dt">selec =</span> <span class="kw">list</span>(<span class="dt">bmi =</span> !<span class="kw">is.na</span>(hormo)))
 res</code></pre></div>
 <p>Note that “Sex” is removed as an explanatory variable but used as a filter, subsetting only “Female” participants. Variable “Waist circumference” has been changed to “continuous non-normal”. Two new variables have been added: Body mass index and Follow-up (stated continuous non-normal). For Body mass index is stated to show only data of participants with non-missing values in Hormone-replacement therapy.</p>
 <p style="margin-top:50px">
@@ -827,7 +844,8 @@ res</code></pre></div>
 <p>For example, it may be interesting to recover the p-values for each variable as a vector to further manipulate it in <strong><code>R</code></strong>, like adjusting for multiple comparison with <code>p.adjust</code>. For example, lets take the example data from <strong><code>SNPassoc</code></strong> package that contains information of dozens of SNPs (genetic variants) from a sample of cases and controls. In this case we analize five of them:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(SNPassoc)
 <span class="kw">data</span>(SNPs)
-tab &lt;-<span class="st"> </span><span class="kw">createTable</span>(<span class="kw">compareGroups</span>(casco ~<span class="st"> </span>snp10001 +<span class="st"> </span>snp10002 +<span class="st"> </span>snp10005 +<span class="st"> </span>snp10008 +<span class="st"> </span>snp10009, SNPs))
+tab &lt;-<span class="st"> </span><span class="kw">createTable</span>(<span class="kw">compareGroups</span>(casco ~<span class="st"> </span>snp10001 +<span class="st"> </span>snp10002 +<span class="st"> </span>
+<span class="st">    </span>snp10005 +<span class="st"> </span>snp10008 +<span class="st"> </span>snp10009, SNPs))
 pvals &lt;-<span class="st"> </span><span class="kw">getResults</span>(tab, <span class="st">&quot;p.overall&quot;</span>)
 <span class="kw">p.adjust</span>(pvals, <span class="dt">method =</span> <span class="st">&quot;BH&quot;</span>)</code></pre></div>
 <pre><code> snp10001  snp10002  snp10005  snp10008  snp10009 
@@ -841,8 +859,9 @@ pvals &lt;-<span class="st"> </span><span class="kw">getResults</span>(tab, <spa
 <ul>
 <li><strong><code>ref</code>:</strong> This statement can be used to change the reference category:</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res1&lt;-<span class="kw">compareGroups</span>(htn ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>bmi +<span class="st"> </span>smoke, <span class="dt">data=</span>predimed, <span class="dt">ref=</span><span class="dv">1</span>)
-<span class="kw">createTable</span>(res1, <span class="dt">show.ratio=</span><span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res1 &lt;-<span class="st"> </span><span class="kw">compareGroups</span>(htn ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>bmi +<span class="st"> </span>smoke, <span class="dt">data =</span> predimed, 
+    <span class="dt">ref =</span> <span class="dv">1</span>)
+<span class="kw">createTable</span>(res1, <span class="dt">show.ratio =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'Hypertension'---------
 
@@ -861,8 +880,9 @@ Smoking:                                                           &lt;0.001
     Former      320 (29.4%) 1254 (24.0%) 0.63 [0.54;0.73] &lt;0.001            
 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯ </code></pre>
 <p>Note that for categorical response variables the reference category is the first one in the statement:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res2&lt;-<span class="kw">compareGroups</span>(htn ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>bmi +<span class="st"> </span>smoke, <span class="dt">data=</span>predimed, <span class="dt">ref=</span><span class="kw">c</span>(<span class="dt">smoke=</span><span class="dv">1</span>, <span class="dt">sex=</span><span class="dv">2</span>))
-<span class="kw">createTable</span>(res2, <span class="dt">show.ratio=</span><span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res2 &lt;-<span class="st"> </span><span class="kw">compareGroups</span>(htn ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>bmi +<span class="st"> </span>smoke, <span class="dt">data =</span> predimed, 
+    <span class="dt">ref =</span> <span class="kw">c</span>(<span class="dt">smoke =</span> <span class="dv">1</span>, <span class="dt">sex =</span> <span class="dv">2</span>))
+<span class="kw">createTable</span>(res2, <span class="dt">show.ratio =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'Hypertension'---------
 
@@ -884,8 +904,9 @@ Smoking:                                                           &lt;0.001
 <ul>
 <li><strong><code>ref.no</code>:</strong> Similarly to the <code>ref</code> statement, <code>ref.no</code> is used to state “no” as the reference category for all variables with this category:</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res&lt;-<span class="kw">compareGroups</span>(htn ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>bmi +<span class="st"> </span>hormo +<span class="st"> </span>hyperchol, <span class="dt">data=</span>predimed, <span class="dt">ref.no=</span><span class="st">'NO'</span>)
-<span class="kw">createTable</span>(res, <span class="dt">show.ratio=</span><span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res &lt;-<span class="st"> </span><span class="kw">compareGroups</span>(htn ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>bmi +<span class="st"> </span>hormo +<span class="st"> </span>hyperchol, 
+    <span class="dt">data =</span> predimed, <span class="dt">ref.no =</span> <span class="st">&quot;NO&quot;</span>)
+<span class="kw">createTable</span>(res, <span class="dt">show.ratio =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'Hypertension'---------
 
@@ -909,8 +930,8 @@ Dyslipidemia:                                                                   
 <ul>
 <li><strong><code>fact.ratio</code></strong>: By default OR or HR for continuous variables are calculated for each unit increase. It can be changed by the <code>fact.or</code> statement:</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res&lt;-<span class="kw">compareGroups</span>(htn ~<span class="st"> </span>age +<span class="st"> </span>bmi, <span class="dt">data=</span>predimed)
-<span class="kw">createTable</span>(res, <span class="dt">show.ratio=</span><span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res &lt;-<span class="st"> </span><span class="kw">compareGroups</span>(htn ~<span class="st"> </span>age +<span class="st"> </span>bmi, <span class="dt">data =</span> predimed)
+<span class="kw">createTable</span>(res, <span class="dt">show.ratio =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'Hypertension'---------
 
@@ -922,8 +943,9 @@ Age             65.9 (6.19) 67.2 (6.15) 1.04 [1.03;1.05] &lt;0.001   &lt;0.001
 Body mass index 28.9 (3.69) 30.2 (3.80) 1.10 [1.08;1.12] &lt;0.001   &lt;0.001   
 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯ </code></pre>
 <p>Here the OR is for the increase of one unit for Age and Systolic blood pressure.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res&lt;-<span class="kw">compareGroups</span>(htn ~<span class="st"> </span>age +<span class="st"> </span>bmi, <span class="dt">data=</span>predimed, <span class="dt">fact.ratio=</span> <span class="kw">c</span>(<span class="dt">age=</span><span class="dv">10</span>, <span class="dt">bmi=</span><span class="dv">2</span>))
-<span class="kw">createTable</span>(res, <span class="dt">show.ratio=</span><span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res &lt;-<span class="st"> </span><span class="kw">compareGroups</span>(htn ~<span class="st"> </span>age +<span class="st"> </span>bmi, <span class="dt">data =</span> predimed, <span class="dt">fact.ratio =</span> <span class="kw">c</span>(<span class="dt">age =</span> <span class="dv">10</span>, 
+    <span class="dt">bmi =</span> <span class="dv">2</span>))
+<span class="kw">createTable</span>(res, <span class="dt">show.ratio =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'Hypertension'---------
 
@@ -938,8 +960,8 @@ Body mass index 28.9 (3.69) 30.2 (3.80) 1.22 [1.17;1.26] &lt;0.001   &lt;0.001
 <ul>
 <li><strong><code>ref.y</code>:</strong> By default when OR or HR are calculated, the reference category for the response variable is the first. The reference category could be changed using the <code>ref.y</code> statement:</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res&lt;-<span class="kw">compareGroups</span>(htn ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>bmi +<span class="st"> </span>hyperchol, <span class="dt">data=</span>predimed)
-<span class="kw">createTable</span>(res, <span class="dt">show.ratio=</span><span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res &lt;-<span class="st"> </span><span class="kw">compareGroups</span>(htn ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>bmi +<span class="st"> </span>hyperchol, <span class="dt">data =</span> predimed)
+<span class="kw">createTable</span>(res, <span class="dt">show.ratio =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'Hypertension'---------
 
@@ -957,8 +979,9 @@ Dyslipidemia:                                                      &lt;0.001
     Yes         680 (62.4%) 3898 (74.5%) 1.75 [1.53;2.01] &lt;0.001            
 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯ </code></pre>
 <p>Note: This output shows the OR of having hypertension. Therefore, “Non-hypertension” is the reference category.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res&lt;-<span class="kw">compareGroups</span>(htn ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>bmi +<span class="st"> </span>hyperchol, <span class="dt">data=</span>predimed, <span class="dt">ref.y=</span><span class="dv">2</span>)
-<span class="kw">createTable</span>(res, <span class="dt">show.ratio=</span><span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res &lt;-<span class="st"> </span><span class="kw">compareGroups</span>(htn ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>bmi +<span class="st"> </span>hyperchol, <span class="dt">data =</span> predimed, 
+    <span class="dt">ref.y =</span> <span class="dv">2</span>)
+<span class="kw">createTable</span>(res, <span class="dt">show.ratio =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'Hypertension'---------
 
@@ -977,8 +1000,10 @@ Dyslipidemia:                                                      &lt;0.001
 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯ </code></pre>
 <p>Note: This output shows the OR of having No hypertension, and ‘Hypertension’ is now the reference category.</p>
 <p>When the response variable is of class <code>Surv</code>, the bivariate <code>plot</code> function returns a Kaplan-Meier figure if the explanatory variable is categorical. For continuous variables the function returns a line for each individual, ending with a circle for censored and with a plus sign for uncensored.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="kw">compareGroups</span>(tmain ~<span class="st"> </span>sex, <span class="dt">data=</span>predimed), <span class="dt">bivar=</span><span class="ot">TRUE</span>, <span class="dt">file=</span><span class="st">&quot;./figures/bivarsurv/&quot;</span>, <span class="dt">type=</span><span class="st">&quot;png&quot;</span>)
-<span class="kw">plot</span>(<span class="kw">compareGroups</span>(tmain ~<span class="st"> </span>age, <span class="dt">data=</span>predimed), <span class="dt">bivar=</span><span class="ot">TRUE</span>, <span class="dt">file=</span><span class="st">&quot;./figures/bivarsurv/&quot;</span>, <span class="dt">type=</span><span class="st">&quot;png&quot;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="kw">compareGroups</span>(tmain ~<span class="st"> </span>sex, <span class="dt">data =</span> predimed), <span class="dt">bivar =</span> <span class="ot">TRUE</span>, 
+    <span class="dt">file =</span> <span class="st">&quot;./figures/bivarsurv/&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;png&quot;</span>)
+<span class="kw">plot</span>(<span class="kw">compareGroups</span>(tmain ~<span class="st"> </span>age, <span class="dt">data =</span> predimed), <span class="dt">bivar =</span> <span class="ot">TRUE</span>, 
+    <span class="dt">file =</span> <span class="st">&quot;./figures/bivarsurv/&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;png&quot;</span>)</code></pre></div>
 <p><img src="data:image/png;base64,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" alt="alt text" /> <img src="data:image/png;base64,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" alt="alt text" /></p>
 <p style="margin-top:50px">
 </p>
@@ -989,12 +1014,13 @@ Dyslipidemia:                                                      &lt;0.001
 <ul>
 <li><strong><code>timemax</code>:</strong> By default probability is calculated at the median of the follow-up period. <code>timemax</code> option allows us to change at what time probability is calculated.</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res&lt;-<span class="kw">compareGroups</span>(sex ~<span class="st">  </span>age +<span class="st"> </span>tmain, <span class="dt">timemax=</span><span class="kw">c</span>(<span class="dt">tmain=</span><span class="dv">3</span>), <span class="dt">data=</span>predimed)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res &lt;-<span class="st"> </span><span class="kw">compareGroups</span>(sex ~<span class="st"> </span>age +<span class="st"> </span>tmain, <span class="dt">timemax =</span> <span class="kw">c</span>(<span class="dt">tmain =</span> <span class="dv">3</span>), 
+    <span class="dt">data =</span> predimed)
 res</code></pre></div>
 <p>Note that <code>tmain</code> is calculated at 3 years (see section 3.1).</p>
 <p>The <code>plot</code> function applied to a variable of class <code>Surv</code> returns a Kaplan-Meier figure. The figure can be stratified by the grouping variable.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(res[<span class="dv">2</span>], <span class="dt">file=</span><span class="st">&quot;./figures/univar/&quot;</span>, <span class="dt">type=</span><span class="st">&quot;png&quot;</span>)
-<span class="kw">plot</span>(res[<span class="dv">2</span>], <span class="dt">bivar=</span><span class="ot">TRUE</span>, <span class="dt">file=</span><span class="st">&quot;./figures/bivar/&quot;</span>, <span class="dt">type=</span><span class="st">&quot;png&quot;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(res[<span class="dv">2</span>], <span class="dt">file =</span> <span class="st">&quot;./figures/univar/&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;png&quot;</span>)
+<span class="kw">plot</span>(res[<span class="dv">2</span>], <span class="dt">bivar =</span> <span class="ot">TRUE</span>, <span class="dt">file =</span> <span class="st">&quot;./figures/bivar/&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;png&quot;</span>)</code></pre></div>
 <p><img src="data:image/png;base64,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" alt="alt text" /> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAeAAAAHgCAMAAABKCk6nAAAAtFBMVEUAAAAAADoAAGYAOjoAOmYAOpAAZpAAZrY6AAA6ADo6AGY6OgA6OmY6OpA6ZmY6ZpA6ZrY6kNtmAABmADpmAGZmOgBmOjpmOpBmZjpmZmZmZrZmkJBmtrZmtv+QOgCQOjqQOmaQZgCQZpCQkDqQkGaQtpCQ27aQ29uQ2/+2ZgC2Zjq2tma225C2/7a2/9u2///bkDrbkGbbtmbb25Db/7bb/9vb////tmb/25D//7b//9v///9N7V/hAAAO6klEQVR4nO2djZrithlGPUmnkE23LeymTdrCpm3SQrPJuE2yBnz/91VLlrEZDFiWMeLlnGd2WBj0Yx1/kmyDleQgTXLrCsB1QbA4CBYHweIgWBwEi4NgcRAsDoLFQbA4CBYHweIgWBwEi4NgcRAsDoLFQbA4CBYHweIgWBwEi4NgcRAsDoLFuYLg7fyzlzzPkmRhn+6WSTIrHtMkef7UPf3FFzfT5Gll813YQiavy2rNJ18vOpV3pnaJKaMoyWSUldtkX6w2uKXE3dIVkZbv2T9vYP9kMmprpfRE3pe5luCi+V2VdsunL4s6m7bvJvh0pgesXQF224vizN8PymoVtz5uKS/BmTVZ7E2p3aPWdn+qBJdPWkrsKrjMZ3KcSXSCi5pWNSoa/etic7bz30+d4MKG0WG3cjt//mTekTx96VpsYtKvqye2RYtIrS2kVQS5HcZue5p8UwZyo6wDcWWZNtWkLG/lcrJZlwGZvo5C944qge0iZublp9Vmagsqi6g6LfO7yqSseFXiZx/tLlgL/sFU3zZBVu4X5k+bfbVdLqYUU7fYBP+0rCtUtM7300WxGX91gsvd1G1dKdg8/5/xtZ0/rcwWZvWT8s17W+sygmrBWdHytgEnr8pqCnbZ/LpspHU5WTu2Adevo7B6R13Yxm7DbmmCsih3M51Um/ySl8FaZXJcoskps7tJ7p4/fzLlrsvXMpufa7d9VYosszpdD64j+J+NfqZoiX/NZ3laKCgFb9xjU3ApZ2XHtDKi3BOX4UtlazO14Vz8ana2RUPb3A7KagquynQdpilvn1Pxvo/TmXtPs/Pcv8ON8HleRZshLf5bBZYrqnh6kIl92ZU4q+vgOgKTc1Xx+nXbudW5bOefT32mCEdcRXBSNLMbGc0+/LRaF7+ff25G8KsuupwtzWxr2GapnpRvrwVntqntjt8QbJ6nSRlW+7KOItg8Xbt3NXIqGvpLk5cbXutY2b/DVTA/EFzU/NfKTS24kUlZ8bpEs6kubSl1bXJ+/mXeHHPXtp6NXLJTc7eOXEWwHd+KrdkLTj/7cT7bNMdgOzwdCi7++8u8GtiqJ/a9lwTve8Bds6yjMThxcX8kuJTfRXDdRRcuiuFgVm1y1UXvM6kqXk+y2gTnaZ1JXdPmbpK2T906c61ZdDkbMZjW2Uy/Mb8as2i799q42wsuWuy7atKzf5Lavu1CF102ZlL27PuyjmbHa7dblOU1u+iX9LALrbLdd9GV4GJncJMsG1v1y9Uka59JVfETgl0XvT/Yy12iia1mXZXN9LfL3uOv4YrHwa5epnWKdqm3vbFvV7Ot8q1uY8v07kmWHEbwfuLTFJzanWldhtq+rMOhuy5z4sprTrLcaNk+octrwfVhkpVdaWgcJlWZVBV3JR4JLt9l/tfYrVqb5mjH8+JqgvcTE9s65oDnoIuuBqm/1V10eVjU6O8m5WvJzPajh4dJTcHupEPq1FVlNQXvyywe7aDRyMm+J6vk2Nn7q7IagqsTHWXVZs0X3WDpMqkq7ko86qJ/cPPy9cFhb1XNKhcX0gGdtPqpys3bHnt/r0Q96X+E2w1xwdt3PcavXol60nZOa1DEBcdOGngQdBkEi4NgcRAsDoLFQbA4CBYHweIgWBwEi4NgcRAsDoLFQbA4CBYHweIgWBwEi4NgcRAsDoLFCRGcQAxcUXBAWhgKBIuDYHEQLE6w4P13M3ukhesTKrj8snOeZ8ffYURwDIQK3r5/OXj0SQsjQASLEzwGuy83MwZHCrNocRAszlCCG5Os12dCL58Qhetx1Qg+ewa85TGgMDjBDbrokxc8TnkvHwNq8sjEMAZ3urR1Ou7dY0BNlYlBcJ2i40XME2lz4v2Y4DNZ7iZuLQfCAY3sedW6PYOcOM8HiODd8tR91gZszNOzNU/55/t5RcK76JP3BRupyYbw3sjp8HHoyo5PVGPwkATKrjLJT8f7fcS9rOAm4cF9KfPWx0GL6ctDCH7F1VwfFZPfPt4fUXCDQcZu7wLzEcf3Bxd8zGi6RxrfEXyWMYL6UvGBWQT9+Wppo2K8DvxcBfJ+LYpgL24b0X3GbwT7c+N4zr0OwRAcwE1Nd5yXIXgIbjkRuwCCh2HEQ2k/EDw8o545uViZoD9fLa0QY58re1180J+vllaZcR0j+BYcR/XVwhvBcTG4ZgTHyICSERwrA8UyguMm2DCCIyd09oXgO6GvYgTfDf0OphB8j3hYRvDd0u0kCYJ1QLA4CBYHweK0jsQIFgfB4iBYHASLg2BxECwOgsVBsDgIFgfB4iBYHASLg2BxECwOgsVBsDgIFgfB4iBYHASLg2BxggVvpskkZXHKaAkVvPuwytNJ4fkty8tGSahgs2ZhOmOB6GghgsUZYgyeMQbHC7NocRAszlCC2xaI7l8rGAwiWBwEizPELNrALDpSgo+Dlwv7mD1zHBwlQ5zJaj76pIURIILFCR6D3RrvjMGRwixaHASLg2BxECwOgsVBsDgIFgfB4iBYHASLg2BxECwOgsVBsDgIFgfB4iBYHASLg2BxECwOgsVBsDgIFgfB4iBYHASLg2BxECwOgsVBsDgIFgfB4iBYHASLg2BxECwOgsVBsDgIFgfB4iBYHASLg2BxECwOgsVBsDgIFgfB4iBYnGDBm+lit0yS4zv6IzgKQgWbNRvWC1YfjZZQwdv3L2aFWVZdiZXgLroI32yW59mkR1q4PuGTrLVddeXYL4KjgFm0OAgWZyjBrB8cKUSwOAgWZ4AzWaxdGDNDnMkysPpopAxwJuvg0SctjAARLE7wGMz6wXHDLFocBIuDYHEQLE4HwW4a1TqRCsgaRoEIFgfB4nQTnNJF3yudBG/frbJJnrZ8LCcgaxiFboLfv5Q/Q2YNo9BJ8O7DqvjZvEHw/dFtDC7cZkkyGzRrGAVm0eIgWJxuk6x5y3fLQrOGUegYweaTV55HSQiOAo8uOuNExx1CBIvDGCwOs2hxulwPfv/jyQ/WBWQNo0AEi4NgcZhkicNhkjic6BCHCBaHMVicrh/ZGT5rGIWuH9kZPmsYhY5dNGey7hVOdIiDYHHoosXxiOCUj83eIR6C+WbDPcKpSnF8xuDFoFnDKDCLFgfB4nT8Avjzp5Qu+i7p+gXw4oevj94jXa8mFTGM4Huk6z06nlYZXfQ9wiRLHASLg2BxECwOgsUZRnDrERSCYyBU8Jlb0SI4BoIjeDsv1BLB0TJAF72dP/+M4FgZZAzeTNs+C4DgGGAWLQ6CxRlKMOsHRwoRLA6CxQkWzPrBcRMqmNVHIyf4VCXrB8cNESzOAOeiGYNjhlm0OAgWB8HiIFgcBIuDYHEQLA6CxUGwOAgWB8HiIFgcBIuDYHEQLA6CxUGwOAgWB8HiIFgcBIuDYHEQLA6CxUGwOAgWB8HiIFgcBIuDYHEQLA6CxUGwOAgWB8HiIFgcBIuDYHEQLA6CxUGwOAgWB8HiIFgcBIuDYHEQLA6CxUGwOAgWJ1jwZpo8rViUI1pCBZtFOXbLGYJjJVRwKXY9QXCkDBHBBennx0tEIzgGgsfg7XxmHtLjdXUQHAPMosVBsDhDCWaB6EghgsVBsDhDnMliccqIGeg4mOVlY2WYM1mci44WIlicAc5kMQbHDLNocRAsDoLFQbA4CBYHweIgWBwEi4NgcRAsDoLFQbA4CBYHweIgWBwEi4NgcRAsDoLFQbA4CBYHweIgWBwEi4NgcRAszjUFX4+AWj0adxnBCO4OgsVBsDgIFgfB4iBYHASLg2BxECwOgsWJQ/BmOil+r/e36tkc3168Z84PTySCv/jDp3z7pzcIHpxIBL/5epVvvim0mltfLqzg7bzt5lvBtXo0RhF88ZrQ5s0Pi/y/37952b5bGbtG8HqWp5Pha/VoxBLBH/+4+/Zj2TFv3xvBRnXLDTCDa/VoxCL4p3/88hc78q7NbRGNYHOLRLPk1sC1ejRiEfzyn+9mVuvCddGnoje0Vo9GNIKzp5UbfDdfrNwY3HIL2+BaPRrRCHZ20yT5zVcLN4s+0UMj2IM4BEeTsx4IFgfB4gQLvsWqKwjuTqjgm6zZgODuhAq+yaorCO5OHBFc9vOz038/vLqE4O4Ej8GDrLpy4fIggvsTxyy6ElheItx9+K4I58yGdOvlQwR3Z7zLhS2PeyrB5SXC3XJiP+OxOXX5EMHdGUpw2PrBdgye5O4S4e7DKjf/zNO87fIhgrsTVRftLhEeCG67fIjg7sQluIzQhuD2y4cI7k4cZ7IaY3BxvNUQ3H75EMHdieQ4uJ5FP62aEdx++RDB3eFMljhxRLAnCO5OHGeyPEFwd+KYRUeTsx4IFgfB4iBYHASLc03BEANXFDxaojFTiVUQwTcsCsG3SCVWQQTfsCgE3yKVWAURfMOiEHyLVGIV5JSCOAgWB8HiIFgcBIuDYHEQLA6CxUGwOAgWp7fg7Tw5cR/Cs1z6qn9rGvsdcV+y1s9yX6T6oL8PadKnrN3y5J3+zpbk1xh9BZt2OHW35zNkPRrCfkf8C9+msLdN9K9g0YT+gtf+ScpUp+7VeRa/RH0Fm68q+Ufj+ul7/wjO7HIPfdqwR3ex+d1X3iWZ79H5c+5uu2fTvfMqra/gzdtPvkWV6Xp00bn3Vjn8I3j34d/+XbT9co93qs3bv/t30bn3RvUVbPqJ8QTvlqfvwHS6qKl/+6WzHmOwGT/8o3gzXdgw8cS30e8igrfzHn7zHnFfbFWfSZbBewzp2YK+w/a4Y3DfWXS/Nvdv9XKS2mtv8ha8/XMvwWvP2vWfRZ9eM+UcfeY9vfz2HUN6RLApavet93at+3TR3kPBHRwH+x/7Vcn6zGF6Hgf3KOrMulFnEvnus5zJEgfB4iBYHASLg2BxECwOgsVBsDgIFgfB4iBYHASLg2BxECwOgsVBsDgIFgfB4iBYHASL84CC3VqYD8JjCr51FUbk8QSbT6t+fPPSXMO41wdY74THE+y66MYaxs2Vi+V4XMGNFVAbKxfLgWCzxG3S71sQ9wCCC8Gq0WtAcNE/N1YuluMBBe+W5Sy6FtxYuViOBxT8WCBYHASLg2BxECwOgsVBsDgIFgfB4iBYHASLg2BxECwOgsVBsDgIFgfB4iBYnP8DObeLWwNKbGMAAAAASUVORK5CYII=" alt="alt text" /></p>
 <p style="margin-top:50px">
 </p>
@@ -1003,10 +1029,11 @@ res</code></pre></div>
 <div id="createtable" class="section level2">
 <h2><code>createTable</code></h2>
 <p><code>createTable</code> function, applied to an object of <code>compareGroups</code> class, returns tables with descriptives that can be displayed on-screen or exported to CSV, LaTeX, HTML, Word or Excel.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res&lt;-<span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>smoke +<span class="st"> </span>waist +<span class="st"> </span>hormo, <span class="dt">data=</span>predimed, <span class="dt">selec =</span> <span class="kw">list</span>(<span class="dt">hormo=</span>sex==<span class="st">&quot;Female&quot;</span>))
-restab&lt;-<span class="kw">createTable</span>(res)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res &lt;-<span class="st"> </span><span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>smoke +<span class="st"> </span>waist +<span class="st"> </span>hormo, 
+    <span class="dt">data =</span> predimed, <span class="dt">selec =</span> <span class="kw">list</span>(<span class="dt">hormo =</span> sex ==<span class="st"> &quot;Female&quot;</span>))
+restab &lt;-<span class="st"> </span><span class="kw">createTable</span>(res)</code></pre></div>
 <p>Two tables are created with the <code>createTable</code> function: one with the descriptives and the other with the available data. The <code>print</code> method applied to an object of class <code>createTable</code> prints one or both tables on the <strong><code>R</code></strong> console:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(restab,<span class="dt">which.table=</span><span class="st">'descr'</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(restab, <span class="dt">which.table =</span> <span class="st">&quot;descr&quot;</span>)</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'Intervention group'---------
 
@@ -1028,7 +1055,7 @@ Hormone-replacement therapy:                                             0.898
     Yes                       31 (2.64%)    30 (2.81%)    36 (2.95%)             
 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯ </code></pre>
 <p>Note that the option “descr” prints descriptive tables.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(restab,<span class="dt">which.table=</span><span class="st">'avail'</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(restab, <span class="dt">which.table =</span> <span class="st">&quot;avail&quot;</span>)</code></pre></div>
 <pre><code>
 
 
@@ -1052,7 +1079,7 @@ Hormone-replacement therapy 3459   1174        1066          1219         catego
 <ul>
 <li><strong><code>hide</code>:</strong> If the explanatory variable is dichotomous, one of the categories often is hidden in the results displayed (i.e., if 42.4% are male, obviously 57.6% are female). To hide some category, e.g., “Male”:</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">update</span>(restab, <span class="dt">hide =</span> <span class="kw">c</span>(<span class="dt">sex=</span><span class="st">&quot;Male&quot;</span>))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">update</span>(restab, <span class="dt">hide =</span> <span class="kw">c</span>(<span class="dt">sex =</span> <span class="st">&quot;Male&quot;</span>))</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'Intervention group'---------
 
@@ -1075,8 +1102,8 @@ Hormone-replacement therapy:                                             0.898
 <ul>
 <li><strong><code>hide.no</code>:</strong> Similarly, as explained above, if the category “no” is to be hidden for all variables:</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res&lt;-<span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>htn +<span class="st"> </span>diab, <span class="dt">data=</span>predimed)
-<span class="kw">createTable</span>(res, <span class="dt">hide.no=</span><span class="st">'no'</span>, <span class="dt">hide =</span> <span class="kw">c</span>(<span class="dt">sex=</span><span class="st">&quot;Male&quot;</span>))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res &lt;-<span class="st"> </span><span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>htn +<span class="st"> </span>diab, <span class="dt">data =</span> predimed)
+<span class="kw">createTable</span>(res, <span class="dt">hide.no =</span> <span class="st">&quot;no&quot;</span>, <span class="dt">hide =</span> <span class="kw">c</span>(<span class="dt">sex =</span> <span class="st">&quot;Male&quot;</span>))</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'Intervention group'---------
 
@@ -1093,7 +1120,7 @@ Type-2 diabetes 970 (47.5%)   950 (45.2%)   1082 (49.6%)    0.017
 <ul>
 <li><strong><code>digits</code>:</strong> The number of digits that appear in the results can be changed, e.g:</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">createTable</span>(res, <span class="dt">digits=</span> <span class="kw">c</span>(<span class="dt">age=</span><span class="dv">2</span>, <span class="dt">sex =</span> <span class="dv">3</span>))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">createTable</span>(res, <span class="dt">digits =</span> <span class="kw">c</span>(<span class="dt">age =</span> <span class="dv">2</span>, <span class="dt">sex =</span> <span class="dv">3</span>))</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'Intervention group'---------
 
@@ -1116,7 +1143,7 @@ Type-2 diabetes:                                                0.017
 <ul>
 <li><strong><code>type</code>:</strong> By default categorical variables are summarized by frequencies and percentages. This can be changed by the <code>type</code> argument:</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">createTable</span>(res, <span class="dt">type=</span><span class="dv">1</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">createTable</span>(res, <span class="dt">type =</span> <span class="dv">1</span>)</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'Intervention group'---------
 
@@ -1136,7 +1163,7 @@ Type-2 diabetes:                                            0.017
     Yes             47.5%        45.2%          49.6%               
 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯ </code></pre>
 <p>Note that only percentages are displayed.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">createTable</span>(res, <span class="dt">type=</span><span class="dv">3</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">createTable</span>(res, <span class="dt">type =</span> <span class="dv">3</span>)</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'Intervention group'---------
 
@@ -1160,7 +1187,7 @@ Type-2 diabetes:                                            0.017
 <ul>
 <li><strong><code>show.n</code>:</strong> If option <code>show.n</code> is set to <code>TRUE</code> a column with available data for each variable appears in the results:</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">createTable</span>(res, <span class="dt">show.n=</span><span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">createTable</span>(res, <span class="dt">show.n =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'Intervention group'---------
 
@@ -1182,7 +1209,7 @@ Type-2 diabetes:                                             0.017   6324
 <ul>
 <li><strong><code>show.descr</code>:</strong> If argument <code>show.descr</code> is set to <code>FALSE</code> only p-values are displayed:</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">createTable</span>(res, <span class="dt">show.descr=</span><span class="ot">FALSE</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">createTable</span>(res, <span class="dt">show.descr =</span> <span class="ot">FALSE</span>)</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'Intervention group'---------
 
@@ -1203,7 +1230,7 @@ Type-2 diabetes:
 <ul>
 <li><strong><code>show.all</code>:</strong> If <code>show.all</code> argument is set to <code>TRUE</code> a column is displayed with descriptives for all data:</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">createTable</span>(res, <span class="dt">show.all=</span><span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">createTable</span>(res, <span class="dt">show.all =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'Intervention group'---------
 
@@ -1225,7 +1252,7 @@ Type-2 diabetes:                                                          0.017
 <ul>
 <li><strong><code>show.p.overall</code>:</strong> If <code>show.p.overall</code> argument is set to <code>FALSE</code> p-values are omitted from the table:</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">createTable</span>(res, <span class="dt">show.p.overall=</span><span class="ot">FALSE</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">createTable</span>(res, <span class="dt">show.p.overall =</span> <span class="ot">FALSE</span>)</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'Intervention group'---------
 
@@ -1247,7 +1274,7 @@ Type-2 diabetes:
 <ul>
 <li><strong><code>show.p.trend</code>:</strong> If the response variable has more than two categories a p-value for trend can be calculated. Results are displayed if the <code>show.p.trend</code> argument is set to <code>TRUE</code>:</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">createTable</span>(res, <span class="dt">show.p.trend=</span><span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">createTable</span>(res, <span class="dt">show.p.trend =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'Intervention group'---------
 
@@ -1270,7 +1297,7 @@ Type-2 diabetes:                                             0.017    0.160
 <ul>
 <li><strong><code>show.p.mul</code>:</strong> For a response variable with more than two categories a pairwise comparison of p-values, corrected for multiple comparisons, can be calculated. Results are displayed if the <code>show.p.mul</code> argument is set to <code>TRUE</code>:</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">createTable</span>(res, <span class="dt">show.p.mul=</span><span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">createTable</span>(res, <span class="dt">show.p.mul =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'Intervention group'---------
 
@@ -1293,7 +1320,7 @@ Type-2 diabetes:                                             0.017              
 <ul>
 <li><strong><code>show.ratio</code>:</strong> If response variable is dichotomous or has been defined as class <code>survival</code> (see Section 3.1), Odds Ratios and Hazard Ratios can be displayed in the results by stating <code>TRUE</code> at the show.ratio option:</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">createTable</span>(<span class="kw">update</span>(res, <span class="dt">subset=</span> group!=<span class="st">&quot;Control diet&quot;</span>), <span class="dt">show.ratio=</span><span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">createTable</span>(<span class="kw">update</span>(res, <span class="dt">subset =</span> group !=<span class="st"> &quot;Control diet&quot;</span>), <span class="dt">show.ratio =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'Intervention group'---------
 
@@ -1313,7 +1340,8 @@ Type-2 diabetes:                                             0.017
     Yes          970 (47.5%)   950 (45.2%)   1082 (49.6%)            
 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯ </code></pre>
 <p>Note that category “Control diet” of the response variable has been omitted in order to have only two categories (i.e., a dichotomous variable). No Odds Ratios would be calculated if response variable has more than two categories.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">createTable</span>(<span class="kw">compareGroups</span>(tmain ~<span class="st">  </span>group +<span class="st"> </span>age +<span class="st"> </span>sex, <span class="dt">data=</span>predimed), <span class="dt">show.ratio=</span><span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">createTable</span>(<span class="kw">compareGroups</span>(tmain ~<span class="st"> </span>group +<span class="st"> </span>age +<span class="st"> </span>sex, <span class="dt">data =</span> predimed), 
+    <span class="dt">show.ratio =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'AMI, stroke, or CV Death'---------
 
@@ -1334,7 +1362,8 @@ Sex:                                                                   &lt;0.001
 <ul>
 <li><strong><code>digits.ratio</code>:</strong> The number of decimal places for Odds/Hazard ratios can be changed by the <code>digits.ratio</code> argument:</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">createTable</span>(<span class="kw">compareGroups</span>(tmain ~<span class="st">  </span>group +<span class="st"> </span>age +<span class="st"> </span>sex, <span class="dt">data=</span>predimed), <span class="dt">show.ratio=</span><span class="ot">TRUE</span>, <span class="dt">digits.ratio=</span> <span class="dv">3</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">createTable</span>(<span class="kw">compareGroups</span>(tmain ~<span class="st"> </span>group +<span class="st"> </span>age +<span class="st"> </span>sex, <span class="dt">data =</span> predimed), 
+    <span class="dt">show.ratio =</span> <span class="ot">TRUE</span>, <span class="dt">digits.ratio =</span> <span class="dv">3</span>)</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'AMI, stroke, or CV Death'---------
 
@@ -1354,8 +1383,9 @@ Sex:                                                                      &lt;0.
 <ul>
 <li><strong><code>header.labels</code>:</strong> Change some key table header, such as the p.overall, etc. Note that this is done when printing the table changing the argument in the <code>print</code> function and not in the <code>createTable</code> function. This argument is also present in other function that exports the table to pdf, plain text, etc.</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tab&lt;-<span class="kw">createTable</span>(<span class="kw">compareGroups</span>(tmain ~<span class="st">  </span>group +<span class="st"> </span>age +<span class="st"> </span>sex, <span class="dt">data=</span>predimed), <span class="dt">show.all =</span> <span class="ot">TRUE</span>)
-<span class="kw">print</span>(tab, <span class="dt">header.labels =</span> <span class="kw">c</span>(<span class="st">&quot;p.overall&quot;</span> =<span class="st"> &quot;p-value&quot;</span>, <span class="st">&quot;all&quot;</span> =<span class="st"> &quot;All&quot;</span>))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tab &lt;-<span class="st"> </span><span class="kw">createTable</span>(<span class="kw">compareGroups</span>(tmain ~<span class="st"> </span>group +<span class="st"> </span>age +<span class="st"> </span>sex, <span class="dt">data =</span> predimed), 
+    <span class="dt">show.all =</span> <span class="ot">TRUE</span>)
+<span class="kw">print</span>(tab, <span class="dt">header.labels =</span> <span class="kw">c</span>(<span class="dt">p.overall =</span> <span class="st">&quot;p-value&quot;</span>, <span class="dt">all =</span> <span class="st">&quot;All&quot;</span>))</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'AMI, stroke, or CV Death'---------
 
@@ -1378,9 +1408,9 @@ Sex:                                                      &lt;0.001
 <div id="combining-tables-by-row" class="section level3">
 <h3>Combining tables by row</h3>
 <p>Tables made with the same response variable can be combined by row:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">restab1 &lt;-<span class="st"> </span><span class="kw">createTable</span>(<span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>sex, <span class="dt">data=</span>predimed))
-restab2 &lt;-<span class="st"> </span><span class="kw">createTable</span>(<span class="kw">compareGroups</span>(group ~<span class="st"> </span>bmi +<span class="st"> </span>smoke, <span class="dt">data=</span>predimed))
-<span class="kw">rbind</span>(<span class="st">&quot;Non-modifiable risk factors&quot;</span>=restab1, <span class="st">&quot;Modifiable risk factors&quot;</span>=restab2)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">restab1 &lt;-<span class="st"> </span><span class="kw">createTable</span>(<span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>sex, <span class="dt">data =</span> predimed))
+restab2 &lt;-<span class="st"> </span><span class="kw">createTable</span>(<span class="kw">compareGroups</span>(group ~<span class="st"> </span>bmi +<span class="st"> </span>smoke, <span class="dt">data =</span> predimed))
+<span class="kw">rbind</span>(<span class="st">`</span><span class="dt">Non-modifiable risk factors</span><span class="st">`</span> =<span class="st"> </span>restab1, <span class="st">`</span><span class="dt">Modifiable risk factors</span><span class="st">`</span> =<span class="st"> </span>restab2)</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'Intervention group'---------
 
@@ -1403,7 +1433,8 @@ Modifiable risk factors:
 <p>Note how variables are grouped under “Non-modifiable” and “Modifiable”&quot; risk factors because of an epigraph defined in the <code>rbind</code> command in the example.</p>
 <p>The resulting object is of class <code>rbind.createTable</code>, which can be subset but not updated. It inherits the class <code>createTable</code>. Therefore, columns and other arguments from the <code>createTable</code> function cannot be modified:</p>
 <p>To select only Age and Smoking:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rbind</span>(<span class="st">&quot;Non-modifiable&quot;</span>=restab1,<span class="st">&quot;Modifiable&quot;</span>=restab2)[<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">4</span>)]</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rbind</span>(<span class="st">`</span><span class="dt">Non-modifiable</span><span class="st">`</span> =<span class="st"> </span>restab1, <span class="dt">Modifiable =</span> restab2)[<span class="kw">c</span>(<span class="dv">1</span>, 
+    <span class="dv">4</span>)]</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'Intervention group'---------
 
@@ -1420,7 +1451,8 @@ Modifiable:
         Former  490 (24.0%)   545 (26.0%)    539 (24.7%)            
 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯ </code></pre>
 <p>To change the order:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rbind</span>(<span class="st">&quot;Modifiable&quot;</span>=restab1,<span class="st">&quot;Non-modifiable&quot;</span>=restab2)[<span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">1</span>)]</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rbind</span>(<span class="dt">Modifiable =</span> restab1, <span class="st">`</span><span class="dt">Non-modifiable</span><span class="st">`</span> =<span class="st"> </span>restab2)[<span class="kw">c</span>(<span class="dv">4</span>, 
+    <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">1</span>)]</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'Intervention group'---------
 
@@ -1446,11 +1478,12 @@ Modifiable:
 <div id="combining-tables-by-column" class="section level3">
 <h3>Combining tables by column</h3>
 <p>Columns from tables built with the same explanatory and response variables but done with a different subset (i.e. “ALL”, “Male” and “Female”) can be combined:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res&lt;-<span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st">  </span>smoke +<span class="st"> </span>bmi +<span class="st"> </span>htn , <span class="dt">data=</span>predimed)
-alltab &lt;-<span class="st"> </span><span class="kw">createTable</span>(res,  <span class="dt">show.p.overall =</span> <span class="ot">FALSE</span>)
-femaletab &lt;-<span class="st"> </span><span class="kw">createTable</span>(<span class="kw">update</span>(res,<span class="dt">subset=</span>sex==<span class="st">'Female'</span>), <span class="dt">show.p.overall =</span> <span class="ot">FALSE</span>)
-maletab &lt;-<span class="st"> </span><span class="kw">createTable</span>(<span class="kw">update</span>(res,<span class="dt">subset=</span>sex==<span class="st">'Male'</span>), <span class="dt">show.p.overall =</span> <span class="ot">FALSE</span>)
-<span class="kw">cbind</span>(<span class="st">&quot;ALL&quot;</span>=alltab,<span class="st">&quot;FEMALE&quot;</span>=femaletab,<span class="st">&quot;MALE&quot;</span>=maletab)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res &lt;-<span class="st"> </span><span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>smoke +<span class="st"> </span>bmi +<span class="st"> </span>htn, <span class="dt">data =</span> predimed)
+alltab &lt;-<span class="st"> </span><span class="kw">createTable</span>(res, <span class="dt">show.p.overall =</span> <span class="ot">FALSE</span>)
+femaletab &lt;-<span class="st"> </span><span class="kw">createTable</span>(<span class="kw">update</span>(res, <span class="dt">subset =</span> sex ==<span class="st"> &quot;Female&quot;</span>), 
+    <span class="dt">show.p.overall =</span> <span class="ot">FALSE</span>)
+maletab &lt;-<span class="st"> </span><span class="kw">createTable</span>(<span class="kw">update</span>(res, <span class="dt">subset =</span> sex ==<span class="st"> &quot;Male&quot;</span>), <span class="dt">show.p.overall =</span> <span class="ot">FALSE</span>)
+<span class="kw">cbind</span>(<span class="dt">ALL =</span> alltab, <span class="dt">FEMALE =</span> femaletab, <span class="dt">MALE =</span> maletab)</code></pre></div>
 <pre><code>
 --------Summary descriptives table ---------
 
@@ -1471,7 +1504,7 @@ Hypertension:
     Yes         1711 (83.8%)  1738 (82.8%)  1786 (81.9%)   1062 (86.3%)  985 (87.0%)   1104 (86.0%)   649 (79.9%)  753 (77.8%)    682 (75.9%)  
 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯</code></pre>
 <p>With the argument <code>caption</code> set to <code>NULL</code> no name is displayed for columns.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cbind</span>(alltab,femaletab,maletab,<span class="dt">caption=</span><span class="ot">NULL</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cbind</span>(alltab, femaletab, maletab, <span class="dt">caption =</span> <span class="ot">NULL</span>)</code></pre></div>
 <pre><code>
 --------Summary descriptives table ---------
 
@@ -1492,7 +1525,7 @@ Hypertension:
     Yes         1711 (83.8%)  1738 (82.8%)  1786 (81.9%)   1062 (86.3%)  985 (87.0%)   1104 (86.0%)   649 (79.9%)  753 (77.8%)    682 (75.9%)  
 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯</code></pre>
 <p>By default the name of the table is displayed for each set of columns.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cbind</span>(alltab,femaletab,maletab)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cbind</span>(alltab, femaletab, maletab)</code></pre></div>
 <pre><code>
 --------Summary descriptives table ---------
 
@@ -1519,7 +1552,8 @@ Hypertension:
 <ul>
 <li><strong><code>print</code>:</strong> By default only the table with the descriptives is printed. With <code>which.table</code> argument it can be changed: “avail” returns data available and “both” returns both tables:</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">createTable</span>(<span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>smoke +<span class="st"> </span>waist +<span class="st"> </span>hormo, <span class="dt">data=</span>predimed)), <span class="dt">which.table=</span><span class="st">'both'</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">createTable</span>(<span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>smoke +<span class="st"> </span>waist +<span class="st"> </span>
+<span class="st">    </span>hormo, <span class="dt">data =</span> predimed)), <span class="dt">which.table =</span> <span class="st">&quot;both&quot;</span>)</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'Intervention group'---------
 
@@ -1555,7 +1589,8 @@ Waist circumference         6324   2042        2100          2182      continuou
 Hormone-replacement therapy 5661   1842        1865          1954         categorical     ALL   
 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯ </code></pre>
 <p>With the <code>print</code> method setting <code>nmax</code> argument to <code>FALSE</code>, the total maximum “n” in the available data is omitted in the first row.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">createTable</span>(<span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>smoke +<span class="st"> </span>waist +<span class="st"> </span>hormo, <span class="dt">data=</span>predimed)),  <span class="dt">nmax=</span><span class="ot">FALSE</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">createTable</span>(<span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>smoke +<span class="st"> </span>waist +<span class="st"> </span>
+<span class="st">    </span>hormo, <span class="dt">data =</span> predimed)), <span class="dt">nmax =</span> <span class="ot">FALSE</span>)</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'Intervention group'---------
 
@@ -1578,7 +1613,8 @@ Hormone-replacement therapy:                                             0.850
 <ul>
 <li><strong><code>summary</code>:</strong> returns the same table as that generated with <code>print</code> method setting <code>which.table='avail'</code>:</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(<span class="kw">createTable</span>(<span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>smoke +<span class="st"> </span>waist +<span class="st"> </span>hormo, <span class="dt">data=</span>predimed)))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(<span class="kw">createTable</span>(<span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>smoke +<span class="st"> </span>
+<span class="st">    </span>waist +<span class="st"> </span>hormo, <span class="dt">data =</span> predimed)))</code></pre></div>
 <pre><code>
 
 
@@ -1596,8 +1632,9 @@ Hormone-replacement therapy 5661   1842        1865          1954         catego
 <ul>
 <li><strong><code>update</code>:</strong> An object of class <code>createTable</code> can be updated:</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res&lt;-<span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>smoke +<span class="st"> </span>waist +<span class="st"> </span>hormo, <span class="dt">data=</span>predimed)
-restab&lt;-<span class="kw">createTable</span>(res, <span class="dt">type=</span><span class="dv">1</span>, <span class="dt">show.ratio=</span><span class="ot">TRUE</span> )
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res &lt;-<span class="st"> </span><span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>smoke +<span class="st"> </span>waist +<span class="st"> </span>hormo, 
+    <span class="dt">data =</span> predimed)
+restab &lt;-<span class="st"> </span><span class="kw">createTable</span>(res, <span class="dt">type =</span> <span class="dv">1</span>, <span class="dt">show.ratio =</span> <span class="ot">TRUE</span>)
 restab</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'Intervention group'---------
@@ -1619,7 +1656,7 @@ Hormone-replacement therapy:                                            0.850
     No                          98.3%        98.4%          98.2%               
     Yes                         1.68%        1.61%          1.84%               
 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯ </code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">update</span>(restab, <span class="dt">show.n=</span><span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">update</span>(restab, <span class="dt">show.n =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'Intervention group'---------
 
@@ -1641,7 +1678,8 @@ Hormone-replacement therapy:                                            0.850   
     Yes                         1.68%        1.61%          1.84%                    
 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯ </code></pre>
 <p>In just one statement it is possible to update an object of class <code>compareGroups</code> and <code>createTable</code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">update</span>(restab, <span class="dt">x =</span> <span class="kw">update</span>(res, <span class="dt">subset=</span><span class="kw">c</span>(sex==<span class="st">'Female'</span>)), <span class="dt">show.n=</span><span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">update</span>(restab, <span class="dt">x =</span> <span class="kw">update</span>(res, <span class="dt">subset =</span> <span class="kw">c</span>(sex ==<span class="st"> &quot;Female&quot;</span>)), 
+    <span class="dt">show.n =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'Intervention group'---------
 
@@ -1664,7 +1702,8 @@ Hormone-replacement therapy:                                            0.898   
 <ul>
 <li><strong><code>subsetting</code>:</strong> Objects from <code>createTable</code> function can also be subsetted using “[”:</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">createTable</span>(<span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>smoke +<span class="st"> </span>waist +<span class="st"> </span>hormo, <span class="dt">data=</span>predimed))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">createTable</span>(<span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>smoke +<span class="st"> </span>waist +<span class="st"> </span>
+<span class="st">    </span>hormo, <span class="dt">data =</span> predimed))</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'Intervention group'---------
 
@@ -1685,7 +1724,8 @@ Hormone-replacement therapy:                                             0.850
     No                       1811 (98.3%)  1835 (98.4%)  1918 (98.2%)            
     Yes                       31 (1.68%)    30 (1.61%)    36 (1.84%)             
 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯ </code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">createTable</span>(<span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>bmi, <span class="dt">data=</span>predimed))[<span class="dv">1</span>:<span class="dv">2</span>, ]</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">createTable</span>(<span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>bmi, <span class="dt">data =</span> predimed))[<span class="dv">1</span>:<span class="dv">2</span>, 
+    ]</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'Intervention group'---------
 
@@ -1733,7 +1773,8 @@ Sex:                                                  &lt;0.001
 <ul>
 <li><strong><code>file</code>:</strong> If <code>file</code> argument in <code>export2latex</code> is missing, the code is printed in the <strong><code>R</code></strong> console. This can be useful when <strong><code>R</code></strong> code is inserted in a LaTeX document chunk to be processed with <strong><code>Sweave</code></strong> package.</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">restab&lt;-<span class="kw">createTable</span>(<span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>smoke +<span class="st"> </span>waist +<span class="st"> </span>hormo, <span class="dt">data=</span>predimed))
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">restab &lt;-<span class="st"> </span><span class="kw">createTable</span>(<span class="kw">compareGroups</span>(group ~<span class="st"> </span>age +<span class="st"> </span>sex +<span class="st"> </span>smoke +<span class="st"> </span>
+<span class="st">    </span>waist +<span class="st"> </span>hormo, <span class="dt">data =</span> predimed))
 <span class="kw">export2latex</span>(restab)</code></pre></div>
 <pre><code>    
     \begin{longtable}{lcccc}\caption{Summary descriptives table by groups of `Intervention group'}\\
@@ -1786,10 +1827,9 @@ $\qquad$Yes &amp;  31 (1.68\%)  &amp;   30 (1.61\%)   &amp;  36 (1.84\%)   &amp;
 <p>In order to make easier to navigate throught the document, an index with hyperlinks is inserted in the document.</p>
 <p>See the help file of this function where you can find an example with the REGICOR data (the other example data set contained in the <strong><code>compareGroups</code></strong> package)</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># to know more about report function</span>
-?report
-
+<span class="st">`</span><span class="dt">?</span><span class="st">`</span>(report)
 <span class="co"># info about REGICOR data set</span>
-?regicor  </code></pre></div>
+<span class="st">`</span><span class="dt">?</span><span class="st">`</span>(regicor)</code></pre></div>
 <p>Also, you can use the function <code>radiograph</code> that dumps the raw values on a plain text file. This may be usefull to identify possible wrong codes or non-valid values in the data set.</p>
 <p style="margin-top:50px">
 </p>
@@ -1800,7 +1840,7 @@ $\qquad$Yes &amp;  31 (1.68\%)  &amp;   30 (1.61\%)   &amp;  36 (1.84\%)   &amp;
 <p>Many times, it is important to be aware of the missingness contained in each variable, possibly by groups. Althought “available” table shows the number of the non-missing values for each row-variable and in each group, it would be desirable to test whether the frequency of non-available data is different between groups. For this porpose, a new function has been implemented in the <strong><code>compareGroups</code></strong> package, which is called <code>missingTable</code>. This function applies to both <code>compareGroups</code> and <code>createTable</code> class objects. This last option is useful when the table is already created. To illustrate it, we will use the REGICOR data set, comparing missing rates of all variables by year:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># from a compareGroups object</span>
 <span class="kw">data</span>(regicor)
-res &lt;-<span class="st"> </span><span class="kw">compareGroups</span>(year ~<span class="st"> </span>.-id, regicor)
+res &lt;-<span class="st"> </span><span class="kw">compareGroups</span>(year ~<span class="st"> </span>. -<span class="st"> </span>id, regicor)
 <span class="kw">missingTable</span>(res)</code></pre></div>
 <pre><code>
 --------Missingness table by 'Recruitment year'---------
@@ -1834,14 +1874,15 @@ Overall death                                    44 (10.2%) 48 (6.11%)  54 (5.01
 Days to overall death or end of follow-up        44 (10.2%) 48 (6.11%)  54 (5.01%)   0.001   
 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯ </code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># or from createTable objects</span>
-restab &lt;-<span class="st"> </span><span class="kw">createTable</span>(res, <span class="dt">hide.no =</span> <span class="st">'no'</span>)
+restab &lt;-<span class="st"> </span><span class="kw">createTable</span>(res, <span class="dt">hide.no =</span> <span class="st">&quot;no&quot;</span>)
 <span class="kw">missingTable</span>(restab)</code></pre></div>
 <p>Perhaps a NA value of a categorical variable may mean something different from just non available. For example, patients admitted for “Coronary Acute Syndrome” with <code>NA</code> in “ST elevation” may have a higher risk of in-hospital death than the ones with available data, i.e. “ST elevation” yes or not. If these kind of variables are introduced in the data set as <code>NA</code>, they are removed from the analysis. To avoid the user having to recode <code>NA</code> as a new category for all categorical variables, new argument called <code>include.miss</code> in <code>compareGroups</code> function has been implemented which does it automatically. Let’s see an example with all variables from REGICOR data set by cardiovascular event.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># first create time-to-cardiovascular event</span>
-regicor$tcv&lt;-<span class="kw">with</span>(regicor,<span class="kw">Surv</span>(tocv,cv==<span class="st">'Yes'</span>))
+regicor$tcv &lt;-<span class="st"> </span><span class="kw">with</span>(regicor, <span class="kw">Surv</span>(tocv, cv ==<span class="st"> &quot;Yes&quot;</span>))
 <span class="co"># create the table</span>
-res &lt;-<span class="st"> </span><span class="kw">compareGroups</span>(tcv ~<span class="st"> </span>. -id-tocv-cv-todeath-death, regicor, <span class="dt">include.miss =</span> <span class="ot">TRUE</span>)
-restab &lt;-<span class="st"> </span><span class="kw">createTable</span>(res, <span class="dt">hide.no =</span> <span class="st">'no'</span>)
+res &lt;-<span class="st"> </span><span class="kw">compareGroups</span>(tcv ~<span class="st"> </span>. -<span class="st"> </span>id -<span class="st"> </span>tocv -<span class="st"> </span>cv -<span class="st"> </span>todeath -<span class="st"> </span>death, 
+    regicor, <span class="dt">include.miss =</span> <span class="ot">TRUE</span>)
+restab &lt;-<span class="st"> </span><span class="kw">createTable</span>(res, <span class="dt">hide.no =</span> <span class="st">&quot;no&quot;</span>)
 restab</code></pre></div>
 <pre><code>
 --------Summary descriptives table by 'tcv'---------
@@ -1945,7 +1986,7 @@ Mental component              48.1 (10.9)  46.3 (12.2)   0.122
 5        AG        TT        TT
 6        AA        TT      &lt;NA&gt;</code></pre>
 <p>In this data frame there are some genetic and non-genetic data. Genetic variables are those whose names begin with “snp”. If we want to summarize the first three SNPs by case control status:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res&lt;-<span class="kw">compareSNPs</span>(casco ~<span class="st"> </span>snp10001 +<span class="st"> </span>snp10002 +<span class="st"> </span>snp10003, <span class="dt">data=</span>SNPs)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res &lt;-<span class="st"> </span><span class="kw">compareSNPs</span>(casco ~<span class="st"> </span>snp10001 +<span class="st"> </span>snp10002 +<span class="st"> </span>snp10003, <span class="dt">data =</span> SNPs)
 res</code></pre></div>
 <pre><code>*********** Summary of genetic data (SNPs) by groups ***********
 
@@ -1983,7 +2024,7 @@ snp10003   0.756
 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯ </code></pre>
 <p>Note that all variables specified in the right hand side of the formula must be SNPs, i.e. variables whose levels or codes can be interpreted as genotypes (see <code>setupSNPs</code> function from <strong><code>SNPassoc</code></strong> package for more information). Separated summary tables by groups of cases and controls are displayed, and the last table corresponds to missingness test comparing non-available rates among groups.</p>
 <p>If summarizing SNPs in the whole data set is desired, without separating by groups, leave the left side of formula in blank, as in <code>compareGroups</code> function. In this case, a single table is displayed and no missingness test is performed.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res&lt;-<span class="kw">compareSNPs</span>(~<span class="st"> </span>snp10001 +<span class="st"> </span>snp10002 +<span class="st"> </span>snp10003, <span class="dt">data=</span>SNPs)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res &lt;-<span class="st"> </span><span class="kw">compareSNPs</span>(~snp10001 +<span class="st"> </span>snp10002 +<span class="st"> </span>snp10003, <span class="dt">data =</span> SNPs)
 res</code></pre></div>
 <pre><code>*********** Summary of genetic data (SNPs) ***********
 _____________________________________________________ 
