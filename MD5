@@ -1,4 +1,4 @@
-81d31073511e5cc91979025b381800cd *DESCRIPTION
+358fe868495ce7669383deb8d3708308 *DESCRIPTION
 0462fb8234ca932f6ca575631bf079eb *NAMESPACE
 d91b80ce71becac0c532dcf4b3633c69 *R/Cox.plot.R
 8e95fa0180a5b05533ffe8aec2d66104 *R/KM.plot.R
@@ -9,12 +9,12 @@ d91b80ce71becac0c532dcf4b3633c69 *R/Cox.plot.R
 33ed50bf6af0de1d655a09008021d425 *R/cGroupsGUI.R
 84687d1d71d6ed2180be2ae4656b018f *R/cGroupsWUI.R
 73baabb0bf7d6c6c4de122b033afef36 *R/cbind.createTable.R
-d0d8d9db5c050867bca55e45b157a321 *R/chisq.test2.R
+d372aede6378b721cdf610517642824e *R/chisq.test2.R
 403d19c7a09cd16ec52de7cd7889ab03 *R/combn2.R
-0b59343326eeeb35644501944c2875e1 *R/compare.i.R
+2c82ef4d92caa96045daeb09fbd10f47 *R/compare.i.R
 3ecbe0ca736aa94a1bacda7612c9e728 *R/compareGroups-internal.R
 5ddbe68f7625df51ea5e8e62d100324e *R/compareGroups.R
-3e25240a143cf0bf8fdf4154efa8d7b5 *R/compareGroups.default.R
+4e54bc2a325855d19bdb73e586289fb5 *R/compareGroups.default.R
 d9bb250ad248e0db97365d4429636c8d *R/compareGroups.formula.R
 2963d6c47246df2e92951bdfdec2627f *R/compareSNPs.R
 7aa7b6bbb242b22954e7a90f73d96212 *R/createTable.R
@@ -102,10 +102,10 @@ fb041378f8b2469e968838040fda91a8 *inst/app/www/examples/example6.png
 25ffa029e484eb71cb5f9311cd7cf9a1 *inst/app/www/examples/example7.png
 7b0935b69a5d4f04400080ada2939ce4 *inst/app/www/images/loading.gif
 844400474dc0535f91b51a0013de5673 *inst/app/www/tablePDF6755.pdf
-d9ed55782f2a31d0e41153f0930e221a *inst/doc/changelog
+42ae3841102394bd2853979d319f5f94 *inst/doc/changelog
 dabdc9f1458c532d13ce01ca59f70dbb *inst/doc/compareGroups_vignette.R
 d79320f11e57e2eb68939e90a4f68352 *inst/doc/compareGroups_vignette.Rmd
-9365395a9476fae68d62aafee851e667 *inst/doc/compareGroups_vignette.html
+4c6106ac957b532a3be7d4ab41db8117 *inst/doc/compareGroups_vignette.html
 7b934713810b5eb7f75f20944b8ac2f7 *inst/exdata/predimed.csv
 c515d3119bc0c3bb3557a4f5b3ecf371 *inst/exdata/predimed.dat
 e21549f7c744f3e530faf9ada653acaf *inst/exdata/predimed.sav
@@ -116,9 +116,9 @@ c765cb2b0130c44b0d5a42f9a9a4a4a9 *inst/exdata/regicor.dat
 b12132538971f6f87c7dc44d90018f26 *inst/exdata/regicor.sav
 97da19e7d2c7141a70204a3ee1a8cea3 *man/cGroupsGUI.Rd
 53fbf30e5d0d474e7218aaf5326cc9de *man/cGroupsWUI.Rd
-cac4dd447b10d9b3b8feaee3d946238b *man/compareGroups-internal.Rd
-d7559da4291eed866d9b254bec634eae *man/compareGroups-package.Rd
-8e383d2e7b07001515ea41089e918d65 *man/compareGroups.Rd
+407f234f5e5fdc323f0d4a720449124b *man/compareGroups-internal.Rd
+52cabf198bdbb64fd5a35cac1d54c986 *man/compareGroups-package.Rd
+d7a4c08bc7a5fe34830500ab20fb745a *man/compareGroups.Rd
 6ed017fbdebca9f6857cf331bf8e0ad0 *man/compareSNPs.Rd
 8d75d58015bfbfcc923b930da29f02d1 *man/createTable.Rd
 b47b40f8e3ddd0b7743a7dc02939e4bd *man/export2csv.Rd

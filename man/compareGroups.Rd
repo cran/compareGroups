@@ -23,7 +23,7 @@ compareGroups(X, ...)
 alpha = 0.05, min.dis = 5, max.ylev = 5, max.xlev = 10, include.label = TRUE, 
 Q1 = 0.25, Q3 = 0.75, simplify = TRUE, ref = 1, ref.no = NA, fact.ratio = 1, 
 ref.y = 1, p.corrected = TRUE, compute.ratio = TRUE, include.miss = FALSE, 
-oddsratio.method = "midp", ...)
+oddsratio.method = "midp", chisq.test.perm = FALSE, ...)
 \method{compareGroups}{formula}(X, data, subset, na.action=NULL, include.label=TRUE, ...)
 \method{plot}{compareGroups}(x, file, type = "pdf", bivar = FALSE, z=1.5, n.breaks = "Sturges", ...)
 }
@@ -92,6 +92,8 @@ oddsratio.method = "midp", ...)
   \item{z}{double. Indicates threshold limits to be placed in the deviation from normality plot. It is considered that too many points beyond this threshold indicates that current variable is far to be normal-distributed. Default value is 1.5.}
 
   \item{n.breaks}{same as argument 'breaks' of \code{\link[graphics]{hist}}.} 
+
+  \item{chisq.test.perm}{logical. It applies a permutation chi squared test (\code{\link[stats]{chisq.test}}) instead of an exact Fisher test (\code{\link[stats]{fisher.test}}).}
   
   \item{\dots}{further arguments passed to 'compareGroups.default' or other methods. For 'plot' method, '...' arguments are passed to \code{\link[grDevices]{pdf}}, \code{\link[grDevices]{bmp}}, \code{\link[grDevices]{jpeg}}, \code{\link[grDevices]{png}} or \code{\link[grDevices]{tiff}} if 'type' argument equals to 'pdf', 'bmp', 'jpg', 'png' or 'tif', respectively.}
 

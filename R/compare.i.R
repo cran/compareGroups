@@ -1,5 +1,5 @@
 compare.i <-
-function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, Q1, Q3, groups, simplify, Xext, ref, fact.ratio, ref.y, p.corrected, compute.ratio, include.miss, oddsratio.method) {
+function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, Q1, Q3, groups, simplify, Xext, ref, fact.ratio, ref.y, p.corrected, compute.ratio, include.miss, oddsratio.method, chisq.test.perm) {
 
   x.orig <- x
   y.orig <- y
@@ -138,7 +138,7 @@ function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, 
         if (inherits(y,"Surv"))
           p.overall <- try(logrank.pval(x,y),silent=TRUE)
         else
-          p.overall <- chisq.test2(t(tt))
+          p.overall <- chisq.test2(t(tt), chisq.test.perm)
         if (inherits(p.overall,"try-error"))
           p.overall<-NaN
       } else
@@ -163,7 +163,7 @@ function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, 
         for (i in 1:(ny-1))
           for (j in (i+1):ny) {
             np<-c(np,paste(levels(y)[i],levels(y)[j],sep=" vs "))
-            p.ij<-try(chisq.test2(t(tt[c(i,j),])),silent=TRUE)
+            p.ij<-try(chisq.test2(t(tt[c(i,j),]),chisq.test.perm),silent=TRUE)
             if (inherits(p.ij,"try-error"))
               p.ij<-NaN
             pp<-c(pp,p.ij)
