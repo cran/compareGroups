@@ -1,5 +1,29 @@
-createTable <- function(x, hide = NA, digits = NA, type = NA, show.p.overall = TRUE, show.all, show.p.trend, show.p.mul = FALSE, show.n, show.ratio = FALSE, show.descr = TRUE, hide.no = NA, digits.ratio = NA, show.p.ratio = show.ratio, digits.p = 3, sd.type = 1, q.type = c(1,1))
+createTable <- function(x, hide = NA, digits = NA, type = NA, show.p.overall = TRUE, show.all, show.p.trend, show.p.mul = FALSE, show.n, show.ratio = FALSE, show.descr = TRUE, hide.no = NA, digits.ratio = NA, show.p.ratio = show.ratio, digits.p = 3, sd.type = 1, q.type = c(1,1), extra.labels = NULL)
 {
+  
+  if (!is.null(extra.labels)){ 
+    method <- sapply(x, function(x.i) paste(attr(x.i, "method"),collapse="-"))
+    method <- ifelse(method=="continuous-normal", 1, ifelse(method=="continuous-non-normal", 2, 3))
+    print(method)
+    Q1 <- attr(x,"Q1")
+    Q3 <- attr(x,"Q3")
+    if (extra.labels[1]=="")
+      extra.labels[1] <- if (sd.type==1) "Mean (SD)" else "Mean\u00B1SD"
+    if (extra.labels[2]=="")
+      extra.labels[2] <- paste0("Median ",ifelse(q.type[1]==1,"[","("),Q1*100,"th",ifelse(q.type[2]==1,";",ifelse(q.type[2]==2,",","-")),Q3*100,"th",ifelse(q.type[1]==1,"]",")"))
+    if (extra.labels[3]==""){
+      if (is.na(type) || type==2)
+        extra.labels[3] <- "N (%)"
+      else {
+        if (type==1) extra.labels[3] <- "%"
+        if (type==3) extra.labels[3] <- "N"
+      }
+    }
+    names(x) <- paste(names(x), 
+                      ifelse(method==1, extra.labels[1],
+                      ifelse(method==2, extra.labels[2],
+                      ifelse(method==3, extra.labels[3], ""))), sep=", ")
+  }
 
   if (!inherits(x,"compareGroups"))
     stop("x must be of class 'compareGroups'")

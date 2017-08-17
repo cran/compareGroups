@@ -34,13 +34,15 @@ export2html<-function(x, file, which.table="descr", nmax=TRUE, header.labels=c()
             table1 <- table1[-2, ]
         }
         align <- c("l", "l", rep("c", ncol(table1) - 1))
-        table1[1, 1] <- "Var"
+        table1[1, 1] <- " "
         colnames(table1) <- table1[1, ]
         table1 <- table1[-1, ,drop=FALSE]
         if (!missing(file) && is.character(file))
           print(xtable(table1, align = align), type = "html", file = file, include.rownames = FALSE, sanitize.text.function = function(x) x)
-        else
-          print(xtable(table1, align = align), type = "html", include.rownames = FALSE, sanitize.text.function = function(x) x)
+        else{
+          xcode <- print(xtable(table1, align = align), type = "html", include.rownames = FALSE, sanitize.text.function = function(x) x)
+          return(invisible(xcode))
+        }
     }
     if (ww %in% c(2, 3)) {
         table2 <- prepare(x, nmax = nmax, c())[[2]]
@@ -63,15 +65,17 @@ export2html<-function(x, file, which.table="descr", nmax=TRUE, header.labels=c()
         table2 <- rbind(table2[1, ], aux)
         table2[, 1] <- sub("^    ", "&nbsp;&nbsp;&nbsp;&nbsp;", table2[, 1])
         table2[, 1] <- sub("^\\&nbsp;\\&nbsp;\\&nbsp;\\&nbsp;    ", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", table2[, 1])
-        table2[1, 1] <- "Var"
+        table2[1, 1] <- " "
         align <- c("l", "l", rep("c", ncol(table2) - 1))
         colnames(table2) <- table2[1, ]
         table2 <- table2[-1, ,drop=FALSE]
         if (!missing(file) && is.character(file)){
           file.save<-paste(sub("\\.html$","",file),"_appendix.html",sep="")
           print(xtable(table2, align = align), type = "html", file = file.save, include.rownames = FALSE, sanitize.text.function = function(x) x)
-        } else
-          print(xtable(table2, align = align), type = "html", include.rownames = FALSE, sanitize.text.function = function(x) x)        
+        } else{
+          xcode <- print(xtable(table2, align = align), type = "html", include.rownames = FALSE, sanitize.text.function = function(x) x)        
+          return(invisible(xcode))
+        }
     }
 }
 

@@ -63,7 +63,7 @@ export2md<-function(x, which.table="descr", nmax=TRUE, header.labels=c(), captio
       table1 <- table1[-2, ]
     }
     align <- c("l", rep("c", ncol(table1)))
-    table1[1, 1] <- "Var"
+    table1[1, 1] <- " "
     colnames(table1) <- table1[1, ]
     table1 <- table1[-1, , drop = FALSE]
     return(knitr::kable(table1, align = align, row.names = FALSE, caption=caption[1]))
@@ -87,7 +87,7 @@ export2md<-function(x, which.table="descr", nmax=TRUE, header.labels=c(), captio
     table2 <- rbind(table2[1, ], aux)
     table2[, 1] <- sub("^    ", "&nbsp;&nbsp;&nbsp;&nbsp;", table2[, 1])
     table2[, 1] <- sub("^\\&nbsp;\\&nbsp;\\&nbsp;\\&nbsp;    ", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", table2[, 1])
-    table2[1, 1] <- "Var"
+    table2[1, 1] <- " "
     align <- c("l", rep("c", ncol(table2)))
     colnames(table2) <- table2[1, ]
     table2 <- table2[-1, ,drop=FALSE]

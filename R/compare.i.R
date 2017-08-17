@@ -1,5 +1,5 @@
 compare.i <-
-function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, Q1, Q3, groups, simplify, Xext, ref, fact.ratio, ref.y, p.corrected, compute.ratio, include.miss, oddsratio.method, chisq.test.perm) {
+function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, Q1, Q3, groups, simplify, Xext, ref, fact.ratio, ref.y, p.corrected, compute.ratio, include.miss, oddsratio.method, chisq.test.perm, byrow) {
 
   x.orig <- x
   y.orig <- y
@@ -130,7 +130,7 @@ function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, 
       else
         tt <- table(y,x) 
       nn <- rbind(table(x), tt)
-      prop <- rbind(prop.table(table(x)),prop.table(tt,margin=1))
+      prop <- rbind(prop.table(table(x)),prop.table(tt,margin=if (byrow) 2 else 1))
       colnames(prop)<-paste(colnames(prop),"%",sep="")
       rownames(nn)[1]<-rownames(prop)[1]<-"[ALL]"
       prop<-prop*100

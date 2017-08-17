@@ -1,4 +1,8 @@
 shinyServer(function(input, output, session) {
+  
+  
+  write(paste0("enter: ",as.character(Sys.time()),"\n"), file="log", append=TRUE)
+  on.exit(write(paste0("exit: ",as.character(Sys.time()),"\n\n"), file="log", append=TRUE)) 
 
   output$loadpanel<-renderUI({
     if (is.null(input$files)) return(invisible(NULL))

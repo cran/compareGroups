@@ -1,3 +1,8 @@
+v3.3
+-. createTable: new "extra.labels" argument indicating the key to normal, non-normal or categorical variables.
+-. compareGroups: new "byrow" argument to report percentages by rows or by columns.
+v3.2.5
+-. export2md, export2html: Var removed from descriptive table header.
 v3.2.4
 -. compareGroups.default: new argument chisq.test.perm to perform simulation chisq test instead of fisher test
 v3.2.3
