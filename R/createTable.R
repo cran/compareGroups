@@ -1,10 +1,9 @@
-createTable <- function(x, hide = NA, digits = NA, type = NA, show.p.overall = TRUE, show.all, show.p.trend, show.p.mul = FALSE, show.n, show.ratio = FALSE, show.descr = TRUE, hide.no = NA, digits.ratio = NA, show.p.ratio = show.ratio, digits.p = 3, sd.type = 1, q.type = c(1,1), extra.labels = NULL)
+createTable <- function(x, hide = NA, digits = NA, type = NA, show.p.overall = TRUE, show.all, show.p.trend, show.p.mul = FALSE, show.n, show.ratio = FALSE, show.descr = TRUE, hide.no = NA, digits.ratio = NA, show.p.ratio = show.ratio, digits.p = 3, sd.type = 1, q.type = c(1,1), extra.labels = NA)
 {
   
-  if (!is.null(extra.labels)){ 
+  if (!is.na(extra.labels[1])){ 
     method <- sapply(x, function(x.i) paste(attr(x.i, "method"),collapse="-"))
     method <- ifelse(method=="continuous-normal", 1, ifelse(method=="continuous-non-normal", 2, 3))
-    print(method)
     Q1 <- attr(x,"Q1")
     Q3 <- attr(x,"Q3")
     if (extra.labels[1]=="")

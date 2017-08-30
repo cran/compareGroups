@@ -1,3 +1,5 @@
+v3.3.1
+-. createTable: bug fixed related to extra.labels argument
 v3.3
 -. createTable: new "extra.labels" argument indicating the key to normal, non-normal or categorical variables.
 -. compareGroups: new "byrow" argument to report percentages by rows or by columns.

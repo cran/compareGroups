@@ -1,4 +1,4 @@
-144a23d4b3eb5b03a78d2e02081ea739 *DESCRIPTION
+e0333ed24c62ef671cc178898671d7ad *DESCRIPTION
 0462fb8234ca932f6ca575631bf079eb *NAMESPACE
 d91b80ce71becac0c532dcf4b3633c69 *R/Cox.plot.R
 8e95fa0180a5b05533ffe8aec2d66104 *R/KM.plot.R
@@ -17,7 +17,7 @@ d372aede6378b721cdf610517642824e *R/chisq.test2.R
 59aa089c64b10f0d49a8eab447f4fc67 *R/compareGroups.default.R
 d9bb250ad248e0db97365d4429636c8d *R/compareGroups.formula.R
 2963d6c47246df2e92951bdfdec2627f *R/compareSNPs.R
-0980a88caf17bfffee4c7cfa25442cb1 *R/createTable.R
+39d9eebb5bdb913cd9d5990b954f458e *R/createTable.R
 8056668fbc9fa5ca5ee75687e2952f5f *R/descrip.R
 bae6a83fbd8d384daab5ecc65cf8a93b *R/descripSurv.R
 41a11e755402935d4a6accfca422f71a *R/export2csv.R
@@ -103,10 +103,10 @@ fb041378f8b2469e968838040fda91a8 *inst/app/www/examples/example6.png
 25ffa029e484eb71cb5f9311cd7cf9a1 *inst/app/www/examples/example7.png
 7b0935b69a5d4f04400080ada2939ce4 *inst/app/www/images/loading.gif
 844400474dc0535f91b51a0013de5673 *inst/app/www/tablePDF6755.pdf
-370fd8e9b598df94a065e7ab0dcf2c4b *inst/doc/changelog
+c383ab07c7b472f0de2fd7d233bd343b *inst/doc/changelog
 dabdc9f1458c532d13ce01ca59f70dbb *inst/doc/compareGroups_vignette.R
 d79320f11e57e2eb68939e90a4f68352 *inst/doc/compareGroups_vignette.Rmd
-422f2303d86e70b3d45e810bc03f7324 *inst/doc/compareGroups_vignette.html
+afa9ffcbfbe8f2fec3acd5e128d0c59b *inst/doc/compareGroups_vignette.html
 7b934713810b5eb7f75f20944b8ac2f7 *inst/exdata/predimed.csv
 c515d3119bc0c3bb3557a4f5b3ecf371 *inst/exdata/predimed.dat
 e21549f7c744f3e530faf9ada653acaf *inst/exdata/predimed.sav
@@ -118,10 +118,10 @@ b12132538971f6f87c7dc44d90018f26 *inst/exdata/regicor.sav
 97da19e7d2c7141a70204a3ee1a8cea3 *man/cGroupsGUI.Rd
 53fbf30e5d0d474e7218aaf5326cc9de *man/cGroupsWUI.Rd
 b3586fb5acb9586fa665ad357abb01df *man/compareGroups-internal.Rd
-b098ac7fc9f5402f58533572d6dbf788 *man/compareGroups-package.Rd
+ed32f3b48797ba8d79bff2c9db95733a *man/compareGroups-package.Rd
 a12539c28810db73b910735842068bbe *man/compareGroups.Rd
 6ed017fbdebca9f6857cf331bf8e0ad0 *man/compareSNPs.Rd
-a8d7301acde2936df08e1e285162fc29 *man/createTable.Rd
+bd59d17caf70d5123d9af0e829b26cfd *man/createTable.Rd
 b47b40f8e3ddd0b7743a7dc02939e4bd *man/export2csv.Rd
 3ee46af4d027e4254873b209aa4fbb47 *man/export2html.Rd
 ddc3db36f26dabbf80b33a7511322b82 *man/export2latex.Rd

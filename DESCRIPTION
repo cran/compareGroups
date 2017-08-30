@@ -1,8 +1,8 @@
 Package: compareGroups
 Type: Package
 Title: Descriptive Analysis by Groups
-Version: 3.3
-Date: 2017-08-17
+Version: 3.3.1
+Date: 2017-08-30
 Depends: R (>= 2.13.1), Hmisc, gdata, xtable, SNPassoc
 Imports: survival, epitools, tools, HardyWeinberg, rmarkdown, knitr
 Suggests: tcltk2, car, shiny, shinyBS, shinyjs, DT, xlsx
@@ -16,6 +16,6 @@ Encoding: latin1
 BuildVignettes: True
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2017-08-17 21:05:34 UTC; Isaac
+Packaged: 2017-08-30 10:05:34 UTC; Isaac
 Repository: CRAN
-Date/Publication: 2017-08-17 23:19:51 UTC
+Date/Publication: 2017-08-30 12:32:46 UTC
