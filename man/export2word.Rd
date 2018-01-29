@@ -51,7 +51,7 @@ data(regicor)
 
  # example on an ordinary table
 res <- createTable(compareGroups(year ~ . -id, regicor), hide = c(sex=1), hide.no = 'no')
-export2word(res, file = "table.docx")
+export2word(res, file = tempfile(fileext=".docx"))
 
 }
 

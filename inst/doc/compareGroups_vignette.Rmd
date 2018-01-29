@@ -1,6 +1,6 @@
 ---
 title: "compareGroups 3.0: Descriptives by groups"
-author: "Isaac Subirana, Joan Vila and HÃ©ctor Sanz"
+author: "Isaac Subirana, Joan Vila and Héctor Sanz"
 bibliography: compareGroups_vignette.bib
 output: rmarkdown::html_vignette
 vignette: >
@@ -148,12 +148,12 @@ data(predimed)
 Variables and labels in this data frame are:
 
 ```{r,echo=FALSE,results="asis"}
-dicc<-data.frame(
+dicc <- data.frame(
 "Name"=I(names(predimed)),
-"Label"=I(unlist(lapply(predimed,label))),
-"Codes"=I(unlist(lapply(predimed,function(x) paste(levels(x),collapse="; "))))
+"Label"=I(unlist(lapply(predimed, Hmisc::label))),
+"Codes"=I(unlist(lapply(predimed, function(x) paste(levels(x),collapse="; "))))
 )
-dicc$Codes<-sub(">=","$\\\\geq$",dicc$Codes)  
+dicc$Codes <- sub(">=","$\\\\geq$",dicc$Codes)
 print(xtable(dicc,align=rep("l",4)),include.rownames=FALSE,type="html")
 ```
 
@@ -179,7 +179,7 @@ A variable of class `Surv` must be created to deal with time-to-event variables 
 
 ```{r}
 predimed$tmain <- with(predimed, Surv(toevent, event == 'Yes'))
-label(predimed$tmain) <- "AMI, stroke, or CV Death"
+Hmisc::label(predimed$tmain) <- "AMI, stroke, or CV Death"
 ```
 
 Note that variables _tmain_ and _tcv_ are created as time-to-death and time-to-cardiovascular event, respectively, both taking into account censoring (i.e. they are of class Surv).
@@ -388,7 +388,7 @@ compareGroups(group ~ age + smoke + waist + hormo, data=predimed, method = c(wai
 ```{r, echo=TRUE}
 predimed$smk<-predimed$smoke
 levels(predimed$smk)<- c("Never smoker", "Current or former < 1y", "Never or former >= 1y", "Unknown")
-label(predimed$smk)<-"Smoking 4 cat."
+Hmisc::label(predimed$smk)<-"Smoking 4 cat."
 cbind(table(predimed$smk))
 ```
 
@@ -1276,7 +1276,7 @@ If PDF format is selected, size can be specified as well as landscape format. Th
 ### Results panels (right side)}
 
 * <font style="color:blue">ABOUT:</font> 
-  Explanation about both the **`compareGroups`** **`R`**-package and its Web User Interface (WUI) version. Also, it contains the security rules of the data sent by the user when using WUI remotely (from [**`compareGroups`** website](http://www.comparegroups.eu/)). 
+  Explanation about both the **`compareGroups`** **`R`**-package and its Web User Interface (WUI) version. Also, it contains the security rules of the data sent by the user when using WUI remotely from [**`compareGroups`** website](http://www.comparegroups.eu/). 
 
 
 * <font style="color:blue">VALUES</font>

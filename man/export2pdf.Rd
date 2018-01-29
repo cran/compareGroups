@@ -58,7 +58,7 @@ data(regicor)
 
  # example on an ordinary table
 res <- createTable(compareGroups(year ~ . -id, regicor), hide = c(sex=1), hide.no = 'no')
-export2pdf(res, "table.pdf", size="small")
+export2pdf(res, file=tempfile(fileext=".pdf"), size="small")
 
 }
 

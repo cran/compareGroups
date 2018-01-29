@@ -91,7 +91,7 @@ function(x, hide.i, digits, digits.ratio, type, varname, hide.i.no, digits.p, sd
       if (!is.na(hide.i.no[1])){
         simp.hide<-TRUE
         hide.i<-which(tolower(ll)%in%tolower(hide.i.no))
-        if (length(hide.i)>1 | length(hide.i)==0 | ncol(ans)>2){
+        if (length(hide.i)>1 | length(hide.i)==0 | ncol(ans)!=2){
           hide.i<-NA
           simp.hide<-FALSE
         }

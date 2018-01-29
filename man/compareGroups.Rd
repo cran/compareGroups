@@ -177,11 +177,11 @@ data(regicor)
 
 # compute a time-to-cardiovascular event variable
 regicor$tcv <- with(regicor, Surv(tocv, as.integer(cv=='Yes')))
-label(regicor$tcv)<-"Cardiovascular"
+Hmisc::label(regicor$tcv)<-"Cardiovascular"
 
 # compute a time-to-overall death variable
 regicor$tdeath <- with(regicor, Surv(todeath, as.integer(death=='Yes')))
-label(regicor$tdeath) <- "Mortality"
+Hmisc::label(regicor$tdeath) <- "Mortality"
 
 # descriptives by sex
 res <- compareGroups(sex ~ .-id-tocv-cv-todeath-death, data = regicor)
@@ -203,9 +203,10 @@ plot(res, bivar = TRUE)
 # update changing the response: time-to-cardiovascular event.
 # note that time-to-death must be removed since it is not possible 
 # not compute descriptives of a 'Surv' class object by another 'Surv' class object.
+
+\dontrun{
 update(res, tcv ~ . + sex - tdeath - tcv)
-
-
+}
 
 }
 

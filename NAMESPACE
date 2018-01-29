@@ -13,7 +13,6 @@ importFrom(stats, TukeyHSD, anova, aov, as.formula, chisq.test, coef, confint, c
 importFrom(utils, combn, read.csv, read.csv2, read.table, sessionInfo, write.table)
 import(SNPassoc)
 
-
 export(
 compareGroups,
 compareGroups.default,

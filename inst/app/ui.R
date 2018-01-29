@@ -2,8 +2,8 @@ shinyUI(
   
   fluidPage(
   
-    #theme = uiOutput("shinytheme"),
-   
+    # theme = shinytheme("cerulean"),
+
     shinyjs::useShinyjs(), # Set up shinyjs
      
     headerPanel("",windowTitle="compareGroups | Explore and Summarise Epidemiological Data in R"),

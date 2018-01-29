@@ -1,6 +1,7 @@
 library(shiny, quietly=TRUE)
 library(shinyBS, quietly=TRUE)
 library(shinyjs, quietly=TRUE)
+library(shinythemes, quietly=TRUE)
 library(DT, quietly=TRUE)
 
 
@@ -18,9 +19,13 @@ loadhelp <- function(){
 }
 hlp <- loadhelp()
 
-
 require(compareGroups)
 require(foreign)
+
+
+sapply(list.files("./www/", "\\.css$",full=TRUE), file.remove)
+
+unzip("./www/bootstrap.zip",exdir="./www")
 
 source("spss_varlist.R")
 

@@ -9,17 +9,17 @@ library(compareGroups)
 data(predimed)
 
 ## ----echo=FALSE,results="asis"-------------------------------------------
-dicc<-data.frame(
+dicc <- data.frame(
 "Name"=I(names(predimed)),
-"Label"=I(unlist(lapply(predimed,label))),
-"Codes"=I(unlist(lapply(predimed,function(x) paste(levels(x),collapse="; "))))
+"Label"=I(unlist(lapply(predimed, Hmisc::label))),
+"Codes"=I(unlist(lapply(predimed, function(x) paste(levels(x),collapse="; "))))
 )
-dicc$Codes<-sub(">=","$\\\\geq$",dicc$Codes)  
+dicc$Codes <- sub(">=","$\\\\geq$",dicc$Codes)
 print(xtable(dicc,align=rep("l",4)),include.rownames=FALSE,type="html")
 
 ## ------------------------------------------------------------------------
 predimed$tmain <- with(predimed, Surv(toevent, event == 'Yes'))
-label(predimed$tmain) <- "AMI, stroke, or CV Death"
+Hmisc::label(predimed$tmain) <- "AMI, stroke, or CV Death"
 
 ## ---- results='hide'-----------------------------------------------------
 compareGroups(group ~ . , data=predimed)
@@ -91,7 +91,7 @@ compareGroups(group ~ age + smoke + waist + hormo, data=predimed, method = c(wai
 ## ---- echo=TRUE----------------------------------------------------------
 predimed$smk<-predimed$smoke
 levels(predimed$smk)<- c("Never smoker", "Current or former < 1y", "Never or former >= 1y", "Unknown")
-label(predimed$smk)<-"Smoking 4 cat."
+Hmisc::label(predimed$smk)<-"Smoking 4 cat."
 cbind(table(predimed$smk))
 
 ## ---- eval=FALSE---------------------------------------------------------

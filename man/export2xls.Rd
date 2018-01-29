@@ -47,7 +47,7 @@ To use this function you must have the \pkg{xlsx} package installed, which depen
 require(compareGroups)
 data(regicor)
 res <- compareGroups(sex ~. -id-todeath-death-tocv-cv, regicor)
-export2xls(createTable(res, hide.no = 'n'), file="table1.xlsx")
+export2xls(createTable(res, hide.no = 'n'), file=tempfile(fileext=".xlsx"))
 }
 
 }

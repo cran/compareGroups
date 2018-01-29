@@ -79,7 +79,7 @@ export2latex(x, ...)
 require(compareGroups)
 data(regicor)
 res <- compareGroups(sex ~. -id-todeath-death-tocv-cv, regicor)
-export2latex(createTable(res, hide.no = 'n'), file="table1.tex")
+export2latex(createTable(res, hide.no = 'n'), file=tempfile(fileext=".tex"))
 }
 
 }

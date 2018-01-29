@@ -44,7 +44,7 @@ The way to compute the 'N' shown in the bivariate table header, controlled by 'n
 require(compareGroups)
 data(regicor)
 res <- compareGroups(sex ~. -id-todeath-death-tocv-cv, regicor)
-export2html(createTable(res, hide.no = 'n'), file="table1.html")
+export2html(createTable(res, hide.no = 'n'), file=tempfile(fileext=".html"))
 }
 
 }

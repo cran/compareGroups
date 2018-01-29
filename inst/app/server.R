@@ -34,9 +34,19 @@ shinyServer(function(input, output, session) {
   ## shinythemes
   
   output$shinythemesout <- renderUI({
-    HTML(paste("<link rel=\"stylesheet\" href=\"bootstrap.",input$shinythemes,".min.css\" type=\"text/css\" />",sep=""))
+    # HTML(paste("theme = shinytheme(",input$shinythemes,")"))
+    # td <- paste0("https://bootswatch.com/4/",input$shinythemes,"/bootstrap.min.css")
+    # download.file(url=td, destfile="./www/bootstrap.min.css")
+    HTML(paste0("<link rel=\"stylesheet\" href=\"bootstrap.",input$shinythemes,".min.css\" type=\"text/css\" />"))
+    # HTML(paste0("<link rel=\"stylesheet\" href=\"https://bootswatch.com/4/",input$shinythemes,"/bootstrap.min.css\" type=\"text/css\" />"))
   })
+
+  # observeEvent(input$shinythemes,{
+  #   td <- paste0("https://bootswatch.com/4/",input$shinythemes,"/bootstrap.min.css")
+  #   download.file(url=td, destfile="C:/programs/Dropbox/bootstrap.min.css.css")
+  # })  
   
+    
   ## input and output panels width
   
   output$panelwidthout <- renderUI({
@@ -761,7 +771,7 @@ shinyServer(function(input, output, session) {
   })
   
   ## values extended
-  output$valuesexttable <- renderDataTable({
+  output$valuesexttable <- DT::renderDataTable({
     datatable(dataset(), 
               options=list(lengthMenu = list(c(10, 20, -1), list('10', '20', 'All')), pageLength = 10, scrollCollapse = TRUE, scrollX = TRUE),
               rownames = FALSE, 
@@ -778,7 +788,7 @@ shinyServer(function(input, output, session) {
       }    
       #valueextsize <- if (is.null(input$valueextsize)) 100 else input$valueextsize#@@
       div(
-        dataTableOutput("valuesexttable"),style=paste("font-size:",input$valueextsize,"%",sep="")
+        DT::dataTableOutput("valuesexttable"),style=paste("font-size:",input$valueextsize,"%",sep="")
       )
   })
   
