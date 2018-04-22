@@ -1,3 +1,5 @@
+v3.3.4
+-. bug fixed when checking vignette
 v3.3.3
 -. bug fixed for Hmisc::label in examples and vignette
 v3.3.2

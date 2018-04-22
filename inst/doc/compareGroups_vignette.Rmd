@@ -1,6 +1,6 @@
 ---
 title: "compareGroups 3.0: Descriptives by groups"
-author: "Isaac Subirana, Joan Vila and Héctor Sanz"
+author: "Isaac Subirana, Joan Vila and HÃ©ctor Sanz"
 bibliography: compareGroups_vignette.bib
 output: rmarkdown::html_vignette
 vignette: >
@@ -76,6 +76,7 @@ pre {
 
 ```{r,echo=FALSE,results='hide',warning=FALSE,message=FALSE}
 library(knitr)
+library(formatR)
 knitr::opts_chunk$set(comment="", message=FALSE, warning=FALSE,fig.align="center",fig.height=10,fig.width=10,tidy=TRUE,tidy.opts=list(blank=FALSE, width.cutoff=900))
 ```
 
@@ -304,8 +305,7 @@ According to Shapiro-Wilk test, stating the cutpoint at 0.01 level, "Hormone-rep
 All non factor variables are considered as continuous. Exception is made (by default) for those that have fewer than 5 different values. This threshold can be changed in the **min.dis** statement:
 
 ```{r, echo=TRUE}
-cuts<-"lo:55=1; 56:60=2; 61:65=3; 66:70=4; 71:75=5; 76:80=6; 81:hi=7"
-predimed$age7gr<-car::recode(predimed$age, cuts)
+predimed$age7gr<-as.integer(cut(predimed$age, breaks=c(-Inf,55,60,65,70,75,80,Inf), right=TRUE))
 compareGroups(group ~ age7gr, data=predimed, method = c(age7gr=NA))
 compareGroups(group ~ age7gr, data=predimed, method = c(age7gr=NA), min.dis=8)
 ```
@@ -313,7 +313,7 @@ compareGroups(group ~ age7gr, data=predimed, method = c(age7gr=NA), min.dis=8)
 To avoid errors the maximum categories for the response variable is set at 5 in this example (default value). If this variable has more than 5 different values, the function `compareGroups` returns an error message. For example:
 
 ```{r,eval=FALSE}
-compareGroups(age7gr ~ sex + bmi + waist , data=predimed))
+compareGroups(age7gr ~ sex + bmi + waist , data=predimed)
 ```
 
 <div style="color:red">
@@ -1276,7 +1276,7 @@ If PDF format is selected, size can be specified as well as landscape format. Th
 ### Results panels (right side)}
 
 * <font style="color:blue">ABOUT:</font> 
-  Explanation about both the **`compareGroups`** **`R`**-package and its Web User Interface (WUI) version. Also, it contains the security rules of the data sent by the user when using WUI remotely from [**`compareGroups`** website](http://www.comparegroups.eu/). 
+  Explanation about both the **`compareGroups`** **`R`**-package and its Web User Interface (WUI) version. Also, it contains the security rules of the data sent by the user when using WUI remotely (from [**`compareGroups`** website](http://www.comparegroups.eu/)). 
 
 
 * <font style="color:blue">VALUES</font>

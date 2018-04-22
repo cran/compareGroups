@@ -1,5 +1,6 @@
 ## ----echo=FALSE,results='hide',warning=FALSE,message=FALSE---------------
 library(knitr)
+library(formatR)
 knitr::opts_chunk$set(comment="", message=FALSE, warning=FALSE,fig.align="center",fig.height=10,fig.width=10,tidy=TRUE,tidy.opts=list(blank=FALSE, width.cutoff=900))
 
 ## ---- echo=TRUE----------------------------------------------------------
@@ -50,13 +51,12 @@ compareGroups(group ~ age + smoke + waist + hormo, data=predimed, method = c(wai
 compareGroups(group ~ age + smoke + waist + hormo, data=predimed, method = c(waist=NA), alpha= 0.01)
 
 ## ---- echo=TRUE----------------------------------------------------------
-cuts<-"lo:55=1; 56:60=2; 61:65=3; 66:70=4; 71:75=5; 76:80=6; 81:hi=7"
-predimed$age7gr<-car::recode(predimed$age, cuts)
+predimed$age7gr<-as.integer(cut(predimed$age, breaks=c(-Inf,55,60,65,70,75,80,Inf), right=TRUE))
 compareGroups(group ~ age7gr, data=predimed, method = c(age7gr=NA))
 compareGroups(group ~ age7gr, data=predimed, method = c(age7gr=NA), min.dis=8)
 
 ## ----eval=FALSE----------------------------------------------------------
-#  compareGroups(age7gr ~ sex + bmi + waist , data=predimed))
+#  compareGroups(age7gr ~ sex + bmi + waist , data=predimed)
 
 ## ----echo=FALSE----------------------------------------------------------
 cat("Error en compareGroups.default(X = X, y = y, include.label = include.label,  :

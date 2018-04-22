@@ -1,4 +1,4 @@
-8aafdce1e74eedc26c4efb404fa6f784 *DESCRIPTION
+5ae1f57e37c2b795d6a760ae370e0d15 *DESCRIPTION
 edc6887f47c1dc658402bf9827c4646f *NAMESPACE
 d91b80ce71becac0c532dcf4b3633c69 *R/Cox.plot.R
 8e95fa0180a5b05533ffe8aec2d66104 *R/KM.plot.R
@@ -69,7 +69,7 @@ f94d7529050b2eff32ec3ac0549ed1b3 *R/z[.createTable.R
 1944f79e86c7f66fcb150aaf5e48ce39 *R/z[.rbind.compareGroups.R
 dbf65a7bb7c499775e44dd4c684d9aa5 *R/z[.rbind.createTable.R
 d5ae1dca995f5fbad7f6684cdfa847e8 *README.md
-c89022f0dbfe84ecf235e51f7f8eb9fd *build/vignette.rds
+e0f76232f1ce5e482f76ec91e23208ec *build/vignette.rds
 dace48f74274c661456324e13ba6857c *data/predimed.rda
 2522743e76ae259a047ab61dcf250a8e *data/regicor.rda
 c4eb63c3117f187b1e7fd536907d8629 *inst/CITATION
@@ -88,10 +88,10 @@ d21a74ccb8b9ce6176d0f82413eb448b *inst/app/www/examples/example5.png
 fb041378f8b2469e968838040fda91a8 *inst/app/www/examples/example6.png
 25ffa029e484eb71cb5f9311cd7cf9a1 *inst/app/www/examples/example7.png
 7b0935b69a5d4f04400080ada2939ce4 *inst/app/www/images/loading.gif
-86832c1c141a7fee2b11935c17445b4e *inst/doc/changelog
-7408535e313f44727e30bc3d113e3323 *inst/doc/compareGroups_vignette.R
-b7b1248ae1eb1f7028e2bc6d41df2da9 *inst/doc/compareGroups_vignette.Rmd
-b925af1376f7c7f468fc5b3bb55dd2f1 *inst/doc/compareGroups_vignette.html
+6385be742b553121c356a2b77e18615a *inst/doc/changelog
+a01da7564f5d28330def6266d3b1a43d *inst/doc/compareGroups_vignette.R
+7f31f2c1a1d16c2d82621492512b5003 *inst/doc/compareGroups_vignette.Rmd
+befbeebb6b83833048534d9d5e659cff *inst/doc/compareGroups_vignette.html
 7b934713810b5eb7f75f20944b8ac2f7 *inst/exdata/predimed.csv
 c515d3119bc0c3bb3557a4f5b3ecf371 *inst/exdata/predimed.dat
 e21549f7c744f3e530faf9ada653acaf *inst/exdata/predimed.sav
@@ -103,7 +103,7 @@ b12132538971f6f87c7dc44d90018f26 *inst/exdata/regicor.sav
 97da19e7d2c7141a70204a3ee1a8cea3 *man/cGroupsGUI.Rd
 53fbf30e5d0d474e7218aaf5326cc9de *man/cGroupsWUI.Rd
 b3586fb5acb9586fa665ad357abb01df *man/compareGroups-internal.Rd
-0f70967ca83d4e21f57415a6201a7f47 *man/compareGroups-package.Rd
+abcb171f1c375f896aee48ca2dcbfecd *man/compareGroups-package.Rd
 aac625355002516c5c4d0f9d1707023e *man/compareGroups.Rd
 6ed017fbdebca9f6857cf331bf8e0ad0 *man/compareSNPs.Rd
 0e5d5af64a46acef87816774dcc8014d *man/createTable.Rd
@@ -122,7 +122,7 @@ ff14a949c039ca4863ce201afc1bbbe3 *man/export2xls.Rd
 ae0df057b9170d4c69c90c29b926d2b2 *man/regicor.Rd
 e58f127ba0ab60d033cfea681023cbb2 *man/report.Rd
 17395ff1501a718defc7cfd3deb62925 *man/varinfo.Rd
-b7b1248ae1eb1f7028e2bc6d41df2da9 *vignettes/compareGroups_vignette.Rmd
+7f31f2c1a1d16c2d82621492512b5003 *vignettes/compareGroups_vignette.Rmd
 b9ea1a1dff516ee054a72bbefc8b540c *vignettes/compareGroups_vignette.bib
 4c4534a10160b2e5495f14786aef749e *vignettes/figures/GUI/or_rr.png
 cff54a72e1705d344d5f770adcc0e3ab *vignettes/figures/GUI/step1_load_data.JPG
