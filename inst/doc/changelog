@@ -1,3 +1,5 @@
+v3.4.0
+-. compareGroups now handles tibble objects
 v3.3.4
 -. bug fixed when checking vignette
 v3.3.3

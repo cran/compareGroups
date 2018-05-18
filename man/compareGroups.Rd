@@ -156,7 +156,11 @@ Finally, when the response is binary and the row variable is categorical, the p-
 
 Subjects selection criteria specified in 'selec' and 'subset' arguments are combined using '&' to be applied to every row-variable.\cr
 
-Through '...' argument of 'plot' method, some parameters such as figure size, multiple figures in a unique file (only for 'pdf' files), resolution, etc. are controlled. For more information about which arguments can be passed depending on the format type, see \code{\link[grDevices]{pdf}}, \code{\link[grDevices]{bmp}}, \code{\link[grDevices]{jpeg}}, \code{\link[grDevices]{png}} or \code{\link[grDevices]{tiff}}.
+Through '...' argument of 'plot' method, some parameters such as figure size, multiple figures in a unique file (only for 'pdf' files), resolution, etc. are controlled. For more information about which arguments can be passed depending on the format type, see \code{\link[grDevices]{pdf}}, \code{\link[grDevices]{bmp}}, \code{\link[grDevices]{jpeg}}, \code{\link[grDevices]{png}} or \code{\link[grDevices]{tiff}}.\cr
+
+
+Since version 3.4.0, compareGroups can handle \code{\link[tibble]{tibble}} data.
+
 
 }
 

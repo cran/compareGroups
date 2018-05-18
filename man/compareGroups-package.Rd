@@ -22,8 +22,8 @@ Summarize genetic data (Single Nucleotide Polymorphisms) data displaying Allele 
 \tabular{ll}{
 Package: \tab compareGroups\cr
 Type: \tab Package\cr
-Version: \tab 3.3.4\cr
-Date: \tab 2018-04-22\cr
+Version: \tab 3.4.0\cr
+Date: \tab 2018-05-18\cr
 License: \tab GPL version 2 or newer\cr
 LazyLoad: \tab yes\cr
 }

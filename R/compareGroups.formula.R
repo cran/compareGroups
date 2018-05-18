@@ -6,6 +6,13 @@ function (X, data, subset, na.action = NULL, include.label = TRUE,
     call <- match.call()
     if (missing(data))
         data <- environment(formula)
+    else{   # needed to handle tibbles
+      if (!inherits(data, "data.frame"))
+        stop("data must be a data.frame")
+      if (inherits(data, "tbl_df")){ # can handle tibble data.frames
+        data <- as.data.frame(unclass(data))
+      }
+    }
     frame.call <- call("model.frame", formula = X)
     k = length(frame.call)
     for (i in c("data", "subset", "na.action", "drop.unused.levels")) {
@@ -20,6 +27,7 @@ function (X, data, subset, na.action = NULL, include.label = TRUE,
         frame.call$drop.unused.levels <- TRUE
     if (is.null(frame.call$na.action)) 
         frame.call$na.action = na.pass
+    frame.call[["data"]] <- data # in data, non standard characters in names are replaced by . (tibbles)
     m <- eval(frame.call, sys.parent())
     if (is.environment(data))
       data <- m
