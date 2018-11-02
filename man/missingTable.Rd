@@ -47,7 +47,6 @@ An object of class 'createTable'. For further details, see 'value' section of \c
 }
 \examples{
 
-\dontrun{
 
 require(compareGroups)
 
@@ -61,6 +60,9 @@ restab <- createTable(res, hide.no = "no")
 
 # missingness table
 missingTable(restab,type=1)
+
+
+\dontrun{
 
 # also create the missing table from a compareGroups object
 miss <- missingTable(res)

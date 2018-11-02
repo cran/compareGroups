@@ -15,37 +15,26 @@
           stop("some specified variables in subsetting don't exist")
       }
     }
+    
     vars.orig <- attr(x, "varnames.orig")[i]
-    X<-attr(x,"call")$call$X
+    X<-attr(x,"call")$call$formula
     Xext<-attr(x,"Xext")
-    if (inherits(eval(X),"formula")){
-        dd<-data.frame(attr(x[[1]],"x.orig"))
-        for (ii in 2:length(x))
-          dd[[ii]]<-attr(x[[ii]],"x.orig")
-        dd<-dd[i]
-        names(dd)<-vars.orig
-        if (!is.null(Xext)){
-          ww<-which(!names(Xext)%in%names(dd))
-          if (length(ww)>0)  
-            dd<-cbind(dd,Xext[,ww])
-        }
-        if (attr(x,"groups")){
-          resp.value<-attr(x[[1]],"y.orig")
-          resp<-X[[2]]
-          dd[[ncol(dd)+1]]<-resp.value
-          names(dd)[ncol(dd)]<-as.character(resp)
-        }else{
-          resp<-resp.value<-NULL
-        }
-        pred<-paste(vars.orig,collapse="+")
-        formul<-as.formula(paste(resp,pred,sep="~"))
-        y<-update(x,X=formul,data=dd)
+    X.eval <- eval(X)
+    
+    if (inherits(X.eval, "formula")){
+      if (length(X.eval)<3)
+        formul <- paste("~ ", paste(vars.orig, collapse=" + "))
+      else
+        formul <- paste(all.vars(X.eval)[1],"~",paste(vars.orig, collapse=" + "))
+      cmd <- paste0("update(x,formula=",formul,")")
     } else {
-      X <- eval(X)
-      y <- update(x,X=X[,vars.orig,drop=FALSE])
+      formul <- paste("~ ", paste(vars.orig, collapse="+"))
+      data.name <- attr(x,"call")$call$formula
+      cmd <- paste0("update(x,formula=",formul,", data=",data.name,")")
     }
-    class(y) <- "compareGroups"
+    
+    y <- eval(parse(text=cmd))
+    
     y
 
 }
-     

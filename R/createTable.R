@@ -1,16 +1,48 @@
 createTable <- function(x, hide = NA, digits = NA, type = NA, show.p.overall = TRUE, show.all, show.p.trend, show.p.mul = FALSE, show.n, show.ratio = FALSE, show.descr = TRUE, hide.no = NA, digits.ratio = NA, show.p.ratio = show.ratio, digits.p = 3, sd.type = 1, q.type = c(1,1), extra.labels = NA)
 {
   
-  if (!is.na(extra.labels[1])){ 
+  os<-sessionInfo()$platform
+  locale<-sessionInfo()$locale
+  locale<-strsplit(locale,";")[[1]]
+  locale<-locale[grep("^LC_CTYPE",locale)]
+  locale<-sub("LC_CTYPE=","",locale)
+
+  spchar<-if (length(grep("linux",os))==0 || length(grep("UTF-8",locale))>0) TRUE else FALSE
+
+  # if (!is.na(extra.labels[1])){ 
+  #   method <- sapply(x, function(x.i) paste(attr(x.i, "method"),collapse="-"))
+  #   method <- ifelse(method=="continuous-normal", 1, ifelse(method=="continuous-non-normal", 2, 3))
+  #   Q1 <- attr(x,"Q1")
+  #   Q3 <- attr(x,"Q3")
+  #   if (extra.labels[1]=="")
+  #     extra.labels[1] <- if (sd.type==1) "Mean (SD)" else "Mean\u00B1SD"
+  #   if (extra.labels[2]=="")
+  #     extra.labels[2] <- paste0("Median ",ifelse(q.type[1]==1,"[","("),Q1*100,"th",ifelse(q.type[2]==1,";",ifelse(q.type[2]==2,",","-")),Q3*100,"th",ifelse(q.type[1]==1,"]",")"))
+  #   if (extra.labels[3]==""){
+  #     if (is.na(type) || type==2)
+  #       extra.labels[3] <- "N (%)"
+  #     else {
+  #       if (type==1) extra.labels[3] <- "%"
+  #       if (type==3) extra.labels[3] <- "N"
+  #     }
+  #   }
+  #   names(x) <- paste(names(x), 
+  #                     ifelse(method==1, extra.labels[1],
+  #                     ifelse(method==2, extra.labels[2],
+  #                     ifelse(method==3, extra.labels[3], ""))), sep=", ")
+  # }
+  
+  
+  if (any(!is.na(extra.labels))){ 
     method <- sapply(x, function(x.i) paste(attr(x.i, "method"),collapse="-"))
     method <- ifelse(method=="continuous-normal", 1, ifelse(method=="continuous-non-normal", 2, 3))
     Q1 <- attr(x,"Q1")
     Q3 <- attr(x,"Q3")
-    if (extra.labels[1]=="")
+    if (!is.na(extra.labels[1]) && extra.labels[1]=="")
       extra.labels[1] <- if (sd.type==1) "Mean (SD)" else "Mean\u00B1SD"
-    if (extra.labels[2]=="")
+    if (!is.na(extra.labels[2]) && extra.labels[2]=="")
       extra.labels[2] <- paste0("Median ",ifelse(q.type[1]==1,"[","("),Q1*100,"th",ifelse(q.type[2]==1,";",ifelse(q.type[2]==2,",","-")),Q3*100,"th",ifelse(q.type[1]==1,"]",")"))
-    if (extra.labels[3]==""){
+    if (!is.na(extra.labels[3]) && extra.labels[3]==""){
       if (is.na(type) || type==2)
         extra.labels[3] <- "N (%)"
       else {
@@ -18,11 +50,13 @@ createTable <- function(x, hide = NA, digits = NA, type = NA, show.p.overall = T
         if (type==3) extra.labels[3] <- "N"
       }
     }
-    names(x) <- paste(names(x), 
-                      ifelse(method==1, extra.labels[1],
-                      ifelse(method==2, extra.labels[2],
-                      ifelse(method==3, extra.labels[3], ""))), sep=", ")
+    names(x) <- paste0(names(x), 
+                      ifelse(method==1 & !is.na(extra.labels[1]), paste0(", ", extra.labels[1]),
+                      ifelse(method==2 & !is.na(extra.labels[2]), paste0(", ", extra.labels[2]),
+                      ifelse(method==3 & !is.na(extra.labels[3]), paste0(", ", extra.labels[3]), ""))))
   }
+  
+
 
   if (!inherits(x,"compareGroups"))
     stop("x must be of class 'compareGroups'")
@@ -66,7 +100,6 @@ createTable <- function(x, hide = NA, digits = NA, type = NA, show.p.overall = T
   } else 
     if (length(digits.ratio)==1)
       digits.ratio<-rep(digits.ratio,length(x))      
-      
 
   hide<-as.list(hide)
   if (!is.null(attr(hide,"names"))){
@@ -95,14 +128,14 @@ createTable <- function(x, hide = NA, digits = NA, type = NA, show.p.overall = T
   nr<-NULL
   k<-1
   for (i in 1:length(x)){
-    t.i<-t(table.i(x[[i]],hide.i=hide[[i]],digits=digits[i],digits.ratio=digits.ratio[i],type=type,varname=varnames[i],hide.no,digits.p=digits.p,sd.type=sd.type,q.type=q.type))
+    t.i<-t(table.i(x[[i]],hide.i=hide[[i]],digits=digits[i],digits.ratio=digits.ratio[i],type=type,varname=varnames[i],hide.no,digits.p=digits.p,sd.type=sd.type,q.type=q.type,spchar=spchar))
     nr<-c(nr,nrow(t.i))
     ans$descr<-rbind(ans$descr,t.i)
     s.i<-attr(x[[i]],"selec")
     s.i<-ifelse(is.na(s.i),"ALL",s.i)
     ans$avail<-rbind(ans$avail,c(x[[i]]$sam,paste(attr(x[[i]],"method"),collapse="-"),s.i,attr(x[[i]],"fact.ratio")))
   }
-  
+
   rownames(ans$avail)<-varnames
   nc<-ncol(ans$avail)
   colnames(ans$avail)[(nc-2):nc]<-c("method","select","Fact OR/HR")
