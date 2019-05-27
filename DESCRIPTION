@@ -1,23 +1,24 @@
 Package: compareGroups
 Type: Package
 Title: Descriptive Analysis by Groups
-Version: 4.0.0
-Date: 2018-11-02
-Depends: R (>= 2.13.1), Hmisc, gdata, xtable, SNPassoc
+Version: 4.1.0
+Date: 2019-05-27
+Depends: R (>= 2.13.1), SNPassoc
 Imports: survival, epitools, tools, HardyWeinberg, rmarkdown, knitr,
-        kableExtra, methods, chron, stats
-Suggests: tcltk2, shiny, shinyBS, shinyjs, DT, xlsx
+        kableExtra, methods, chron, stats, writexl
+Suggests: tcltk2, shiny, shinyBS, shinyjs, shinyjqui, shinythemes,
+        shinyWidgets, DT, readxl, haven
 Author: Isaac Subirana, Joan Vila, Hector Sanz, Gavin Lucas, Judith Penafiel and David Gimenez
 Maintainer: Isaac Subirana <isubirana@imim.es>
 Description: Create data summaries for quality control, extensive reports for exploring data, as well as publication-ready univariate or bivariate tables in several formats (plain text, HTML,LaTeX, PDF, Word or Excel. Create figures to quickly visualise the distribution of your data (boxplots, barplots, normality-plots, etc.). Display statistics (mean, median, frequencies, incidences, etc.). Perform the appropriate tests (t-test, Analysis of variance, Kruskal-Wallis, Fisher, log-rank, ...) depending on the nature of the described variable (normal, non-normal or qualitative). Summarize genetic data (Single Nucleotide Polymorphisms) data displaying Allele Frequencies and performing Hardy-Weinberg Equilibrium tests among other typical statistics and tests for these kind of data.
 License: GPL (>= 2)
-URL: http://www.comparegroups.eu
+URL: www.comparegroups.eu
 LazyLoad: yes
 Encoding: latin1
 BuildVignettes: true
 VignetteBuilder: knitr
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 NeedsCompilation: no
-Packaged: 2018-11-02 13:08:18 UTC; isubirana
+Packaged: 2019-05-27 09:09:07 UTC; isubirana
 Repository: CRAN
-Date/Publication: 2018-11-02 14:50:06 UTC
+Date/Publication: 2019-05-27 10:00:04 UTC

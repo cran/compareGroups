@@ -3,7 +3,7 @@ function (formula, data, subset, na.action = NULL, y = NULL, Xext = NULL, selec 
           timemax = NA, alpha = 0.05, min.dis = 5, max.ylev = 5, max.xlev = 10, include.label = TRUE, Q1 = 0.25, Q3 = 0.75, 
           simplify = TRUE, ref = 1, ref.no = NA, fact.ratio = 1, ref.y = 1, p.corrected = TRUE, compute.ratio = TRUE, 
           include.miss = FALSE, oddsratio.method = "midp", chisq.test.perm = FALSE, byrow = FALSE, chisq.test.B = 2000, 
-          chisq.test.seed = NULL, Date.format = "d-mon-Y", var.equal = TRUE) 
+          chisq.test.seed = NULL, Date.format = "d-mon-Y", var.equal = TRUE, conf.level = 0.95) 
 {
     tibble <- FALSE
     if (missing(formula)) 
@@ -25,7 +25,7 @@ function (formula, data, subset, na.action = NULL, y = NULL, Xext = NULL, selec 
         }
       }
     }
-
+    
     call <- match.call()
     if (missing(data))
         data <- environment(formula)
@@ -73,18 +73,59 @@ function (formula, data, subset, na.action = NULL, y = NULL, Xext = NULL, selec 
     frame.call[["data"]] <- data # in data, non standard characters in names are replaced by . (tibbles)
 
     m <- eval(frame.call, sys.parent())
-
+    
     if (is.environment(data))
       data <- m
+    
     if (!all(names(m) %in% names(data)))
       stop("Invalid formula terms")
-    
+
     mt <- attr(m, "terms")
-    pn <- attr(mt, "term.labels")
-    if (!all(pn %in% names(data))) 
+    # pn <- attr(mt, "term.labels")
+    
+    av <- all.vars(mt, unique=FALSE)
+    if (attr(mt, "response")==1)
+      av <- av[-1]
+
+    at <- attr(mt,"term.labels")
+    at <- sub("^`","", at)
+    at <- sub("`$","",at)
+    pn <- av[av%in%at]
+    
+    # cat("all.vars(mt, unique=FALSE)\n")
+    # print(all.vars(mt, unique=FALSE))
+    # cat("\n\nattr(mt,'term.labels')\n")
+    # print(attr(mt,"term.labels"))
+    # cat("\n\npn\n")
+    # print(pn)
+    
+    
+    # if (attr(mt, "response")==1){
+    #   pn <- c(all.vars(mt, unique=FALSE)[1], pn)
+    # }
+
+    # pn <- all.vars(mt, unique=FALSE)
+    
+
+    # if (attr(mt, "response")==1)
+    #   pn <- pn[-1]
+    # allv <- all.vars(mt, unique=FALSE)
+    # print(mt)
+    # print(allv)
+    # print(pn)
+    # pn <- allv[allv%in%pn]
+
+    
+    
+    
+    if (!all(pn %in% names(data))){
+      pn <- sub("^`","",pn) # maybe there are some `name` in the formula terms to accomodate non standard characters
+      pn <- sub("`$","",pn)  
+    } 
+
+    if (!all(pn %in% names(data)))
       stop("Invalid formula terms")
-    
-    
+
     if (is.null(y)){
       if (attr(mt, "response") == 0) 
         y <- NULL
@@ -95,44 +136,22 @@ function (formula, data, subset, na.action = NULL, y = NULL, Xext = NULL, selec 
       y <- y[rownames(m)]
       attr(y, "label") <- lab.y      
     }
-    
-    rv <- paste(deparse(mt), collapse = "")
-    rv <- strsplit(rv, "~")[[1]]
-    rv <- rv[length(rv)]
-    rv <- trim(rv)
-    rv <- strsplit(rv, " ")[[1]]
-    rv <- rv[rv != ""]
-    rv <- gsub("\\(", "", rv)
-    rv <- gsub("\\)", "", rv)
-    if (rv[1] %in% names(data)) {
-        rv <- c("+", rv)
-    }
-    else {
-        rv[1] <- trim(sub("^-", "", rv[1]))
-        rv <- c("-", rv)
-    }
 
-    pos <- neg <- integer()
-    for (i in 1:(length(rv)/2)) {
-        if (rv[i * 2 - 1] == "+") 
-            pos <- c(pos, which(names(data) == rv[i * 2]))
-        if (rv[i * 2 - 1] == "-") 
-            neg <- c(neg, which(names(data) == rv[i * 2]))
-    }
-    if (length(neg) > 0) {
-        kk <- match(neg, pos)
-        kk <- kk[!is.na(kk)]
-        if (length(kk) > 0) 
-            pos <- pos[-kk]
-    }
-    if (!length(pos) > 0) 
+    # rv <- attr(mt,"term.labels")
+    rv <- pn
+    rv <- sub("^`","",rv)
+    rv <- sub("`$","",rv)
+    pos <- which(names(data)%in%rv)
+
+    if (!length(pos) > 0)
         stop("no row-variables selected")
-    
-    
+
     Xext <- data[rownames(m), ]
 
+    names(pos) <- names(data)[pos]
+    pos <- pos[rv]
     X <- Xext[, pos, drop = FALSE]
-    
+
     # put labels
     for (i in 1:length(pos)){
       # value labels
@@ -149,13 +168,14 @@ function (formula, data, subset, na.action = NULL, y = NULL, Xext = NULL, selec 
       else
         attr(X[,i], "label") <- names(data)[pos[i]]
     }
-    
-    cmd <- paste0("compareGroups.fit(X = X, y = y, include.label = include.label, Xext = Xext, selec = ", deparse(substitute(selec)), ", 
+
+    cmd <- paste(c("compareGroups.fit(X = X, y = y, include.label = include.label, Xext = Xext, selec = ", deparse(substitute(selec)), ", 
                   method = method, timemax = timemax, alpha = alpha, min.dis = min.dis, max.ylev = max.ylev, 
                   max.xlev = max.xlev, Q1 = Q1, Q3 = Q3, simplify = simplify, ref = ref, ref.no = ref.no, 
                   fact.ratio = fact.ratio, ref.y = ref.y, p.corrected = p.corrected, compute.ratio = compute.ratio, 
                   include.miss = include.miss, oddsratio.method = oddsratio.method, chisq.test.perm = chisq.test.perm, byrow = byrow, 
-                  chisq.test.B = chisq.test.B, chisq.test.seed = chisq.test.seed, Date.format = Date.format, var.equal=var.equal)")
+                  chisq.test.B = chisq.test.B, chisq.test.seed = chisq.test.seed, Date.format = Date.format, var.equal=var.equal, 
+                  conf.level=conf.level)"), collapse="")
 
     ans <- eval(parse(text=cmd))
     
@@ -184,6 +204,7 @@ function (formula, data, subset, na.action = NULL, y = NULL, Xext = NULL, selec 
     attr(ans, "form") <- list()
     attr(ans, "form")$formula <- formula
     attr(ans, "form")$terms <- mt
+    attr(ans,"varnames.orig")<-names(X)  #pn ###@@@@@
 
     ans
 }

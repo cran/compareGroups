@@ -33,14 +33,19 @@ cbind.createTable <- function(..., caption)
         stop("length of caption must be the number of 'createTable' objects to be combined")
   }
 
-  cc<-unlist(lapply(args, function(x) !class(x)[1]%in%c("rbind.createTable","createTable","missingTable")))
+  # cc<-unlist(lapply(args, function(x) !class(x)[1]%in%c("rbind.createTable","createTable","missingTable")))
+  # if (any(cc))
+  #   stop("arguments must be of class 'createTable' and cannot be of class 'cbind.createTable'")
+  
+  cc<-unlist(lapply(args, function(x) inherits(x, "cbind.createTable")))
   if (any(cc))
-    stop("arguments must be of class 'createTable' and cannot be of class 'cbind.createTable'")
+    stop("arguments cannot be of class 'cbind.createTable'")
+  
     
   out<-args
 
   if (is.null(caption) || all(caption=='')) 
-    caption=unlist(lapply(args,function(vv) ifelse(is.null(attr(vv,"yname")),"[No groups]",paste("By",attr(vv,"yname")))))
+    caption <- unlist(lapply(args,function(vv) ifelse(is.null(attr(vv,"yname")),"[No groups]",paste("By",attr(vv,"yname")))))
   
   attr(out,"caption")<-caption
 

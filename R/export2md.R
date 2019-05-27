@@ -1,19 +1,19 @@
 export2md<-function(x, which.table="descr", nmax=TRUE, header.labels=c(), caption=NULL, format="html", width=Inf, 
                     strip=FALSE, first.strip=FALSE, background="#D2D2D2", size=NULL, landscape=FALSE, 
-                    header.background=NULL, header.color=NULL, ...){
+                    header.background=NULL, header.color=NULL, position="center", ...){
 
   compiled.format <- try(rmarkdown::all_output_formats(knitr::current_input())[1],silent=TRUE)
   if (inherits(compiled.format, "try-error")){
     warning("error")
   } else {
-    if (compiled.format=="html_document") format <- "html"
-    if (compiled.format=="pdf_document") format <- "latex"
+    if (compiled.format%in%c("html_document","ioslides_presentation","slidy_presentation")) format <- "html"
+    if (compiled.format%in%c("pdf_document","beamer_presentation")) format <- "latex"
     if (compiled.format=="word_document") format <- "markdown"
   }
   
   if (format == "markdown") return(export2mdword(x, which.table, nmax, header.labels, caption))
   
-  if (inherits(x, "cbind.createTable")) return(export2mdcbind(x, which.table, nmax, header.labels, caption, strip, first.strip, background, width, size, landscape, format, header.background, header.color, ...))
+  if (inherits(x, "cbind.createTable")) return(export2mdcbind(x, which.table, nmax, header.labels, caption, strip, first.strip, background, width, size, landscape, format, header.background, header.color, position,...))
 
   extras <- list(...)
   if (!inherits(x, "createTable")) 
@@ -70,7 +70,7 @@ export2md<-function(x, which.table="descr", nmax=TRUE, header.labels=c(), captio
       table1[((1+n.exists):nrow(table1)),ncol(table1)] <- ifelse(table1[((1+n.exists):nrow(table1)),ncol(table1)]=="", "\\vphantom{}", table1[((1+n.exists):nrow(table1)),ncol(table1)])
     if (format=="latex") caption <- gsub("%","\\\\%",caption)
     ans <- knitr::kable(table1, align = align, row.names = FALSE, caption=caption[1], format=format, 
-                        booktabs=format=="latex", longtable=TRUE, linesep="", ...)
+                        booktabs=format=="latex", longtable=FALSE, linesep="", ...)
     ans <- add_indent(ans, grep("^ ",table1[,1]))
     if (width!=Inf) ans <- column_spec(ans, 1, width = width)
     # groups    
@@ -97,14 +97,18 @@ export2md<-function(x, which.table="descr", nmax=TRUE, header.labels=c(), captio
     if (n.exists){
       ans <- row_spec(ans, 1, hline_after=TRUE)
     }
-    if (!is.null(size)) ans <- kable_styling(ans, font_size = size)
-    if (format=="latex") ans <- kable_styling(ans, latex_options = c("repeat_header"))
-    if (format=="latex" & n.exists) ans <- gsub("\\\\midrule", "", ans) # remove lines after N
-    if (format=="latex" & strip) ans <- gsub("\\textbackslash{}vphantom\\{\\}", "\\vphantom{}", ans, fixed=TRUE)
+
     if (landscape) ans <- landscape(ans)
-    if (format=="html") ans <- kable_styling(ans, bootstrap_options=c("striped", "condensed"), full_width = FALSE)
-    if (format=="html") ans <- row_spec(ans, 0, background=header.background, color=header.color)
-    if (format=="html" & nmax) ans <- row_spec(ans, 1, italic=TRUE, extra_css = "border-bottom: 1px solid grey")
+    if (format=="latex"){
+      ans <- kable_styling(ans, latex_options = c("repeat_header"), font_size=size, position=position)
+      if (n.exists) ans <- gsub("\\\\midrule", "", ans) # remove lines after N
+      if (strip) ans <- gsub("\\textbackslash{}vphantom\\{\\}", "\\vphantom{}", ans, fixed=TRUE)
+    }
+    if (format=="html"){
+      ans <- kable_styling(ans, bootstrap_options=c("striped", "condensed"), full_width = FALSE, font_size=size, position=position)  
+      ans <- row_spec(ans, 0, background=header.background, color=header.color)
+      ans <- row_spec(ans, if (sum(unlist(attr(x, "nmax.pos")))>0) 1 else 0, italic=sum(unlist(attr(x, "nmax.pos")))>0, extra_css = "border-bottom: 1px solid grey")      
+    }
     return(ans)
   }      
   if (ww %in% c(2)){
@@ -119,7 +123,7 @@ export2md<-function(x, which.table="descr", nmax=TRUE, header.labels=c(), captio
     align <- c("l", rep("c", ncol(table2)))
     colnames(table2)[-1] <- trim(table2[1, -1])
     table2 <- table2[-1, ,drop=FALSE]
-    ans <- knitr::kable(table2, align = align, row.names = FALSE, caption=caption[1], format=format, booktabs=format=="latex", longtable=TRUE, ...)
+    ans <- knitr::kable(table2, align = align, row.names = FALSE, caption=caption[1], format=format, booktabs=format=="latex", longtable=FALSE, ...)
     # ans <- knitr::kable(table2, align = align, row.names = FALSE, caption=caption[1], format=format, booktabs=format=="latex")
     # groups    
     if (!is.null(cc)){
@@ -140,13 +144,17 @@ export2md<-function(x, which.table="descr", nmax=TRUE, header.labels=c(), captio
     }
     ans <- add_indent(ans, integer())
     if (strip) ans <- row_spec(ans, which(rep(0:1, nrow(table2))[1:nrow(table2)]==!first.strip), background = background) 
-    if (format=="latex") ans <- kable_styling(ans, latex_options = c("repeat_header"))
     if (width!=Inf) ans <- column_spec(ans, 1, width = width)
-    if (!is.null(size)) ans <- kable_styling(ans, font_size = size)
-    if (format=="html") ans <- kable_styling(ans, bootstrap_options=c("striped", "condensed"), full_width = FALSE)
-    if (format=="html") ans <- row_spec(ans, 0, background=header.background, color=header.color)
-    if (format=="html" & nmax) ans <- row_spec(ans, 1, italic=TRUE, extra_css = "border-bottom: 1px solid grey")
     if (landscape) ans <- landscape(ans)
+    if (format=="latex"){
+      ans <- kable_styling(ans, latex_options = c("repeat_header"), font_size = size, position=position)
+    }
+    if (format=="html"){
+      ans <- kable_styling(ans, bootstrap_options=c("striped", "condensed"), full_width = FALSE, font_size = size, position=position)
+      ans <- row_spec(ans, 0, background=header.background, color=header.color)
+      ans <- row_spec(ans, 0, italic=FALSE, extra_css = "border-bottom: 1px solid grey")
+    }
+    
     return(ans)
   }    
 }

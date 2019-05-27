@@ -10,13 +10,11 @@
 \alias{flip}
 \alias{format2}
 \alias{logrank.pval}
-\alias{rcorr.cens.pval}
 \alias{signifdec.i}
 \alias{signifdec}
 \alias{summ.i}
 \alias{table.i}
 \alias{udpate.formula2}
-\alias{simplify.formula}
 \alias{KMg.plot}
 \alias{Cox.plot}
 \alias{bar2.plot}
@@ -25,6 +23,7 @@
 \alias{bar.plot}
 \alias{norm.plot}
 \alias{prepare}
+\alias{trim}
 
 
 \title{Internal compareGroups functions}
@@ -35,13 +34,14 @@ combn2(x)
 compareGroups.fit(X, y, Xext, selec, method, timemax, alpha, min.dis, max.ylev, max.xlev, 
          include.label, Q1, Q3, simplify, ref, ref.no, fact.ratio, ref.y, p.corrected, 
          compute.ratio, include.miss, oddsratio.method, chisq.test.perm, byrow, 
-         chisq.test.B, chisq.test.seed, Date.format, var.equal)
+         chisq.test.B, chisq.test.seed, Date.format, var.equal, conf.level)
 compare.i(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, Q1, Q3, 
           groups, simplify, Xext, ref, fact.ratio, ref.y, p.corrected, compute.ratio, 
           include.miss, oddsratio.method, chisq.test.perm, byrow,chisq.test.B, 
-          chisq.test.seed, Date.format, var.equal)
+          chisq.test.seed, Date.format, var.equal, conf.level)
 descripSurv(x, y, timemax)
-descrip(x, y, method, Q1, Q3)
+descrip(x, y, method, Q1, Q3, conf.level)
+confinterval(x, method, conf.level)
 flip(x)
 format2(x, digits = NULL, ...)
 formula.compareGroups(x, ...) 
@@ -50,9 +50,8 @@ signifdec.i(x, digits)
 signifdec(x, digits)
 summ.i(x)
 table.i(x, hide.i, digits, digits.ratio, type, varname, hide.i.no, digits.p, sd.type, 
-        q.type, spchar)
+        q.type, spchar, show.ci)
 update.formula2(old, new) 
-simplify.formula(form)
 KMg.plot(x, y, file, var.label.x, var.label.y, ...)
 Cox.plot(x, y, file, var.label.x, var.label.y, ...)
 bar2.plot(x, y, file, var.label.x, var.label.y, perc, byrow, ...)
@@ -63,8 +62,11 @@ norm.plot(x, file, var.label.x, z, n.breaks, ...)
 prepare(x, nmax, header.labels)
 snpQC(X, sep, verbose)
 export2mdcbind(x, which.table, nmax, header.labels, caption, strip, first.strip, 
-      background, width, size, landscape, format, header.background, header.color, ...)   
+      background, width, size, landscape, format, header.background, header.color, 
+      position, ...)   
+trim(x)
 }
+
 
 \details{These are not to be called by the user}
 \keyword{internal}

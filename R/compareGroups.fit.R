@@ -1,7 +1,7 @@
 compareGroups.fit <-
 function(X, y, Xext, selec, method, timemax, alpha, min.dis, max.ylev, max.xlev, include.label, Q1, Q3, 
          simplify, ref, ref.no, fact.ratio, ref.y, p.corrected, compute.ratio, include.miss, oddsratio.method, 
-         chisq.test.perm, byrow, chisq.test.B, chisq.test.seed, Date.format, var.equal) {
+         chisq.test.perm, byrow, chisq.test.B, chisq.test.seed, Date.format, var.equal, conf.level) {
 
    if (!is.null(Xext)){
     if (!is.matrix(Xext) & !is.data.frame(Xext))
@@ -74,7 +74,7 @@ function(X, y, Xext, selec, method, timemax, alpha, min.dis, max.ylev, max.xlev,
     selec<-temp
    } else
      if (length(selec)==1) 
-      selec=rep(selec,nvars)
+      selec <- rep(selec,nvars)
 
    if (!is.null(attr(method,"names"))){
     temp<-rep(1,ncol(X))
@@ -90,7 +90,7 @@ function(X, y, Xext, selec, method, timemax, alpha, min.dis, max.ylev, max.xlev,
     method<-temp
    } else 
      if (length(method)==1) 
-       method=rep(method,nvars)
+       method <- rep(method,nvars)
 
    if (!is.null(attr(timemax,"names"))){
     temp<-rep(NA,ncol(X))
@@ -217,8 +217,9 @@ function(X, y, Xext, selec, method, timemax, alpha, min.dis, max.ylev, max.xlev,
                             fact.ratio=fact.ratio[i], ref.y=ref.y, p.corrected=p.corrected, 
                             compute.ratio=compute.ratio, include.miss=include.miss, oddsratio.method=oddsratio.method, 
                             chisq.test.perm=chisq.test.perm, byrow=byrow, chisq.test.B=chisq.test.B, 
-                            chisq.test.seed=chisq.test.seed, Date.format=Date.format, var.equal=var.equal),
+                            chisq.test.seed=chisq.test.seed, Date.format=Date.format, var.equal=var.equal, conf.level=conf.level),
                   silent=TRUE)
+     # if (inherits(ans.i, "try-error")) print(ans.i)
      ans.i
    })
    

@@ -27,7 +27,7 @@ SELECT
 <cghelptext>
 <div style="font-size=25px; text-align:justify">                            
 <p><br>Once your data are loaded satisfactory, this panel will be opened automatically.</p>
-<p>A list of all variables will apear on the left side list. Use the &quot;<>&quot; button to move the variables from the left side to the right side list and viceversa. Once you have chosen which ones are analysed and which are discarded, press on &quot;Update&quot; button. The remaining variables in the left side will be the ones analysed, i.e. by rows in the descriptive tables.</p>
+<p>A list of all variables from the data set will apear on the left side list. Click on the "x" beside each variable to remove them from the table. Or drag a variable to place it in a different order in the descripive table. If you click on the list window, non selected variables will appear which can be browsed and selected to be incorporated again in the selected variables. Once you have chosen which variables are displayed in the table and their order, press on &quot;Update&quot; button.</p>
 </div>
 </cghelptext>
 
@@ -58,6 +58,18 @@ Response
 <li><p><strong>None:</strong> Descriptives are performed for the entire data set with no groups.</p></li>
 <li><p><strong>Group:</strong> A variable must be selected. By default, only factors variables with five or less categories can be selected. The descriptives will be performed by the groups defined by this variable.</p></li> 
 <li><p><strong>Survival:</strong> Use this options to perform survival analysis where the response is a right censored variable, i.e., with time variable and a variable indicating the censoring status (i.e., whether or not the individual suffered the disease). Also, the disease or case status (category) must be indicated.</p></li> 
+</ul>
+</div>
+</cghelptext>
+
+Stratas
+<cghelptext>
+<div style="font-size=25px; text-align:justify">
+<p><br>Select which variable indicates strata.</p> 
+<p><Three choices are possible:</p>
+<ul>
+<li><p><strong>None:</strong> No strata are considered.</p></li>
+<li><p><strong>Strata:</strong> A variable must be selected. Only factors variables can be selected. The descriptives tables will be biuld within stratas defined by this variable.</p></li>
 </ul>
 </div>
 </cghelptext>
@@ -107,6 +119,7 @@ Show
 <li><p><strong>NA category:</strong> For categorical variables, the non-available data is considered as a new category.</p></li>
 <li><p><strong>Pairwise p-value:</strong> When more than two groups are considered, p-values corresponding to 2 by 2 comparisons are performed taking into account multiple testing.</p></li>
 <li><p><strong>Simplify:</strong> Empty categories (with no available data) are removed from the analyses.</p></li>
+<li><p><strong>Confidence interval:</strong> Show confidence interval of means, medians, proporcions or incidences.</p></li>
 </ul>
 </div>
 </cghelptext>
@@ -168,9 +181,10 @@ VALUES
 TABLE
 <cghelptext>
 <div style="font-size=25px; text-align:justify"> 
-<p><br>In this tab the bivariate table is shown.</p>
+<p><br>In this tab the descriptive table is shown.</p>
 <p>use the slider input to make it smaller or bigger.</p>
-<p>Press the &quot; info &quot; button to display the &quot; info table &quot; containing, for each descripted variable, how many observations are available for each group, whether it is treated as normal, non-normal or categorical, which criteria, if any, has been used to select a subset of individuals and if, the Odds Ratio or Hazard Ratio is computed, the factor for which the variable has been multiplied.</p>
+<p>Press the &quot; Info Table &quot; button to display the &quot; info table &quot; containing, for each descripted variable, how many observations are available for each group, whether it is treated as normal, non-normal or categorical, which criteria, if any, has been used to select a subset of individuals and if, the Odds Ratio or Hazard Ratio is computed, the factor for which the variable has been multiplied.</p>
+<p>Press the &quot; Names/labels &quot; button to display correpondence of names and labels of the described.</p>
 </div>
 </cghelptext>
 
@@ -178,7 +192,8 @@ PLOT
 <cghelptext>
 <div style="font-size=25px; text-align:justify"> 
 <p><br>In this tab univariate or bivariate (taking into account the groups if proceeds) plots of selected variable are displayed</p>
-<p>Click on the plot to save it in different formats: <strong>PDF</strong>, <strong>bmp</strong>, <strong>jpg</strong>, <strong>png</strong> and <strong>tiff</strong>.</p>
+<p>Select which variable from the descriptive table you can to plot. Choose between percentages or absolute frequencies (only for categorical variables).</p>
+<p></p>You can also save the plot in different formats: <strong>PDF</strong>, <strong>bmp</strong>, <strong>jpg</strong>, <strong>png</strong> and <strong>tiff</strong>.</p>
 </div>
 </cghelptext>
 
