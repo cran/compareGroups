@@ -1,3 +1,15 @@
+# compareGroups 4.2.0
+- flextable package dependency
+- export2md supports tables to export to word in nicer format using flextable
+- export2md supports stratified tables when exporting to word (new export2mdwordcbind internal function)
+- new argument perc in report function (same as plot)
+- export2word bug fixed
+
+# compareGroups 4.1.1
+- bug fixed in export2md when exportd in a Rmd notebook.
+- norm.plot: par(mfrow=c(1,1)) added at the end, to restore mutiplots device.
+- export2md: more understandable warning message when used outside the Rmarkdown chunk.
+
 # compareGroups 4.1.0
 
 - new argument show.ci and conf.level in createTable and compareGroups, respectively, to compute confidence intervals of means, medians, proportions and incidences.
