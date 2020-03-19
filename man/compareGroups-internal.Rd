@@ -34,11 +34,13 @@ combn2(x)
 compareGroups.fit(X, y, Xext, selec, method, timemax, alpha, min.dis, max.ylev, max.xlev, 
          include.label, Q1, Q3, simplify, ref, ref.no, fact.ratio, ref.y, p.corrected, 
          compute.ratio, include.miss, oddsratio.method, chisq.test.perm, byrow, 
-         chisq.test.B, chisq.test.seed, Date.format, var.equal, conf.level, surv)
+         chisq.test.B, chisq.test.seed, Date.format, var.equal, conf.level, surv, 
+         riskratio, riskratio.method, compute.prop)
 compare.i(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, Q1, Q3, 
           groups, simplify, Xext, ref, fact.ratio, ref.y, p.corrected, compute.ratio, 
           include.miss, oddsratio.method, chisq.test.perm, byrow,chisq.test.B, 
-          chisq.test.seed, Date.format, var.equal, conf.level, surv)
+          chisq.test.seed, Date.format, var.equal, conf.level, surv, riskratio, 
+          riskratio.method, compute.prop)
 descripSurv(x, y, timemax, surv)
 descrip(x, y, method, Q1, Q3, conf.level)
 confinterval(x, method, conf.level)
@@ -70,6 +72,22 @@ export2mdwordcbind(x, which.table, nmax, header.labels, caption, strip,
       first.strip, background, size, header.background, header.color)         
         
 trim(x)
+
+oddsratio(x, method = c("midp", "fisher", "wald", "small"), conf.level = 0.95)
+riskratio(x, method = c("wald", "small", "boot"), conf.level = 0.95)
+epitable(..., ncol = 2, byrow = TRUE, rev = c("neither", "rows", "columns", "both"))
+table.margins(x)
+or.midp(x, conf.level = 0.95, byrow = TRUE, interval = c(0,1000))
+tab2by2.test(x)
+ormidp.test(a1, a0, b1, b0, or = 1)
+oddsratio.midp(x, conf.level = 0.95)
+oddsratio.fisher(x, conf.level = 0.95)
+oddsratio.wald(x, conf.level = 0.95)
+oddsratio.small(x, conf.level = 0.95)
+riskratio.small(x, conf.level = 0.95)
+riskratio.wald(x, conf.level = 0.95)
+riskratio.boot(x, conf.level = 0.95)
+
 }
 
 

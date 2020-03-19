@@ -15,11 +15,12 @@ descrTable(formula, data, subset, na.action = NULL, y = NULL, Xext = NULL,
   compute.ratio = TRUE, include.miss = FALSE, oddsratio.method = "midp", 
   chisq.test.perm = FALSE, byrow = FALSE, chisq.test.B = 2000, chisq.test.seed = NULL,
   Date.format = "d-mon-Y", var.equal = TRUE, conf.level = 0.95, surv = FALSE,
+  riskratio = FALSE, riskratio.method = "wald", compute.prop = FALSE, 
   hide = NA, digits = NA, type = NA, show.p.overall = TRUE,
   show.all, show.p.trend, show.p.mul = FALSE, show.n, show.ratio =
   FALSE, show.descr = TRUE, show.ci = FALSE, hide.no = NA, digits.ratio = NA,
   show.p.ratio = show.ratio, digits.p = 3, sd.type = 1, q.type = c(1, 1),
-  extra.labels = NA)
+  extra.labels = NA, all.last = FALSE)
 }
 
 \arguments{
@@ -75,7 +76,7 @@ Arguments from \code{\link{compareGroups}} function:
   
   \item{include.miss}{logical, indicating whether to treat missing values as a new category for categorical variables. Default value is FALSE.}   
   
-  \item{oddsratio.method}{Which method to compute the Odds Ratio. See 'method' argument from \code{\link[epitools]{oddsratio}}. Default value is "midp".}    
+  \item{oddsratio.method}{Which method to compute the Odds Ratio. See 'method' argument from \code{oddsratio} (\code{epitools} package). Default value is "midp".}    
   
   \item{byrow}{logical or NA. Percentage of categorical variables must be reported by rows (TRUE), by columns (FALSE) or by columns and rows to sum up 1 (NA). Default value is FALSE, which means that percentages are reported by columns (withing groups).} 
   
@@ -89,9 +90,16 @@ Arguments from \code{\link{compareGroups}} function:
   
   \item{var.equal}{logical, indicating whether to consider equal variances when comparing means on normal distributed variables on more than two groups. If TRUE \code{\link{anova}} function is applied and \code{\link{oneway.test}} otherwise. Default value is TRUE.} 
   
-  \item{conf.level}{double. Conficende level of confidence interval for means, medians, proportions or incidence. Default value is 0.95.}   
+  \item{conf.level}{double. Conficende level of confidence interval for means, medians, proportions or incidence, and hazard, odds and risk ratios. Default value is 0.95.}   
   
-  \item{surv}{logical. Compute survival (TRUE) or incidence (FALSE) for time-to-event row-variables. Default value is FALSE.}    
+  \item{surv}{logical. Compute survival (TRUE) or incidence (FALSE) for time-to-event row-variables. Default value is FALSE.}
+  
+  \item{riskratio}{logical. Whether to compute Odds Ratio (FALSE) or Risk Ratio (TRUE). Default value is FALSE.}  
+  
+  \item{riskratio.method}{Which method to compute the Odds Ratio. See 'method' argument from \code{riskratio} (\code{epitools} package). Default value is "wald".} 
+  
+  \item{compute.prop}{logical. Compute proportions (TRUE) or percentages (FALSE) for cathegorical row-variables. Default value is FALSE.}  
+
 
 Arguments from \code{\link{createTable}} function:
 
@@ -117,7 +125,6 @@ Arguments from \code{\link{createTable}} function:
   \item{show.descr}{logical indicating whether descriptives (i.e. mean, proportions, ...) are displayed. Default value is TRUE.}
   
   \item{show.ci}{logical indicating whether to show confidence intervals of means, medians, proporcions or incidences are displayed. If so, they are displayed between squared brackets. Default value is FALSE.}  
-  
   \item{hide.no}{character specifying the name of the level to be hidden for all categorical variables with 2 categories. It is not case-sensitive. The result is one row for the variable with only the name displayed and not the category. This is especially useful for yes/no variables. It is ignored for the categorical row-variables with 'hide' argument different from NA. Default value is NA which means that no category is hidden.}
   
   \item{digits.ratio}{The same as 'digits' argument but applied for the Hazard Ratio or Odds Ratio.}
@@ -131,6 +138,8 @@ Arguments from \code{\link{createTable}} function:
   \item{q.type}{a vector with two integer components. The first component refers to the type of brackets to be displayed for non-normal row-variables (1 - rounded and 2 - squared), while the second refers to the percentile separator (1 - ';', 2 - ',' and 3 - '-'. Default value is c(1, 1).}
   
   \item{extra.labels}{character vector of 3 components corresponding to key legend to be appended to normal, non-normal and categorical row-variables labels. Default value is NA which appends no extra key. If it is set to \code{c("","","")}, "Mean (SD)", "Median [25th; 75th]" and "N (\%)" are appended.}
+  
+  \item{all.last}{logical. Descriptives of the whole sample is placed after the descriptives by groups. Default value is FALSE which places the descriptives of whole cohort at first.}  
 
 }
 

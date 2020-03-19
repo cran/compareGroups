@@ -1,11 +1,11 @@
 Package: compareGroups
 Type: Package
 Title: Descriptive Analysis by Groups
-Version: 4.2.0
-Date: 2019-09-18
+Version: 4.4.1
+Date: 2020-03-19
 Depends: R (>= 2.13.1), SNPassoc
-Imports: survival, epitools, tools, HardyWeinberg, rmarkdown, knitr,
-        kableExtra, methods, chron, stats, writexl, flextable, officer
+Imports: survival, tools, HardyWeinberg, rmarkdown, knitr, kableExtra,
+        methods, chron, stats, writexl, flextable, officer
 Suggests: tcltk2, shiny, shinyBS, shinyjs, shinyjqui, shinythemes,
         shinyWidgets, DT, readxl, haven
 Authors@R: c(
@@ -25,8 +25,8 @@ BuildVignettes: true
 VignetteBuilder: knitr
 RoxygenNote: 6.1.1
 NeedsCompilation: no
-Packaged: 2019-09-19 07:48:46 UTC; isubirana
+Packaged: 2020-03-19 19:31:30 UTC; isubi
 Author: Isaac Subirana [aut, cre] (<https://orcid.org/0000-0003-1676-0197>),
   Joan Salvador [ctb]
 Repository: CRAN
-Date/Publication: 2019-09-19 08:30:02 UTC
+Date/Publication: 2020-03-19 20:00:03 UTC

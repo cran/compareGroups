@@ -1,7 +1,8 @@
 compare.i <-
 function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, Q1, Q3, groups, 
          simplify, Xext, ref, fact.ratio, ref.y, p.corrected, compute.ratio, include.miss, oddsratio.method, 
-         chisq.test.perm, byrow, chisq.test.B, chisq.test.seed, Date.format, var.equal, conf.level, surv) {
+         chisq.test.perm, byrow, chisq.test.B, chisq.test.seed, Date.format, var.equal, conf.level, surv, 
+         riskratio, riskratio.method, compute.prop) {
 
   x.orig <- x
   y.orig <- y
@@ -153,17 +154,22 @@ function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, 
               n.ij <- sum(nn[-1,j,drop=FALSE])
             else
               n.ij <- sum(nn[i,])
-          bt.ci <- binom.test(nn[i,j], n.ij, conf.level = conf.level)$conf.int
-          lower[i,j] <- bt.ci[1]*100
-          upper[i,j] <- bt.ci[2]*100
+          bt.ci <- try(binom.test(nn[i,j], n.ij, conf.level = conf.level)$conf.int,silent=TRUE)
+          if (inherits(bt.ci, "try-error")){
+            lower[i,j] <- NA
+            upper[i,j] <- NA
+          } else {
+            lower[i,j] <- bt.ci[1]*(if (compute.prop) 1 else 100)
+            upper[i,j] <- bt.ci[2]*(if (compute.prop) 1 else 100)
+          }
         }
       }
 
-      colnames(prop)<-paste(colnames(prop),"%",sep="")
+      if (!compute.prop) colnames(prop)<-paste(colnames(prop),"%",sep="")
       rownames(nn)[1]<-rownames(prop)[1]<-"[ALL]"
       colnames(lower)<-colnames(upper)<-colnames(prop)
       rownames(lower)<-rownames(upper)<-rownames(prop)
-      prop<-prop*100
+      if (!compute.prop) prop<-prop*100
       if (groups){
         if (inherits(y,"Surv"))
           p.overall <- try(logrank.pval(x,y),silent=TRUE)
@@ -235,7 +241,7 @@ function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, 
               p.ij<-try(logrank.pval(y[ss.ij],x[ss.ij]),silent=TRUE)
               if (inherits(p.ij,"try-error"))
                 p.ij<-NaN            
-            pp<-c(pp,p.ij)
+              pp<-c(pp,p.ij)
             }
           }
           if (p.corrected)
@@ -295,7 +301,7 @@ function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, 
                 p.ij<-try(kruskal.test(x~y,subset=y%in%c(levels(y)[i],levels(y)[j]))$p.value,silent=TRUE)
                 if (inherits(p.ij,"try-error"))
                   p.ij<-NaN            
-              pp<-c(pp,p.ij)
+                pp<-c(pp,p.ij)
               }
             }
             if (p.corrected)
@@ -365,7 +371,7 @@ function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, 
                     p.ij<-try(t.test(x[ss.ij]~y[ss.ij])$p.value,silent=TRUE)
                     if (inherits(p.ij,"try-error"))
                       p.ij<-NaN            
-                  pp<-c(pp,p.ij)
+                    pp<-c(pp,p.ij)
                   }
                 }
                 p.mul <- structure(pp,names=paste("p",np,sep="."))
@@ -373,7 +379,7 @@ function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, 
             }
             ans<-list(descriptive=tt[,-1], sam=tt[,1], p.overall=p.overall, p.trend=p.trend, p.mul=p.mul)
             attr(ans, "method") <- c("continuous", "normal") 
-            # x- no normal
+          # x- no normal
           } else { 
             if (inherits(y,"Surv"))
               tt <- descrip(x, gy, method="no", Q1, Q3, conf.level)
@@ -449,7 +455,7 @@ function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, 
             p.ratio<-rep(NaN,nlevels(x))
             p.ratio[ref]<-NA
           }else{
-            ci[-ref,]<-exp(cbind(coef(fit),suppressMessages(confint(fit))))
+            ci[-ref,]<-exp(cbind(coef(fit),suppressMessages(confint(fit, level=conf.level))))
             p.ratio[-ref]<-coef(summary(fit))[,5]
           }
           rownames(ci)<-levels(x)
@@ -462,7 +468,7 @@ function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, 
               ci<-matrix(NaN,1,3)
               p.ratio<-NaN
             } else
-              ci<-rbind(exp(c(coef(fit),suppressMessages(confint(fit)))))
+              ci<-rbind(exp(c(coef(fit),suppressMessages(confint(fit, level=conf.level)))))
               p.ratio<-coef(summary(fit))[1,5]
           } else {
             ci<-matrix(NaN,1,3)
@@ -487,7 +493,10 @@ function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, 
             tb<-tb[,2:1]
           if (ref!=1)
             tb<-rbind(tb[ref,,drop=FALSE],tb[-ref,,drop=FALSE])
-          or.res<-try(oddsratio(tb,method=oddsratio.method),silent=TRUE)
+          if (riskratio)
+            or.res<-try(riskratio(tb,method=riskratio.method,conf.level=conf.level),silent=TRUE)
+          else
+            or.res<-try(oddsratio(tb,method=oddsratio.method,conf.level=conf.level),silent=TRUE)
           if (inherits(or.res,"try-error")){
             ci<-matrix(NaN,nlevels(x),3)
             ci[ref,]<-c(1,NA,NA)          
@@ -498,18 +507,22 @@ function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, 
           } else {
             ci<-or.res$measure
             ci<-ci[levels(x),]
-            p.ratio<-or.res$p.value[levels(x),1]
+            p.ratio<-or.res$p.value[levels(x),1] # returns midp p-value (p-value is the same for OR and for RR)
           }
           ci<-cbind(ci)
         } else {
+          # x- continuous
           if (!inherits(x,"Surv")){
             x <- x / fact.ratio
-            fit<-try(glm(y~x,family="binomial"),silent=TRUE)
+            if (riskratio) 
+              fit<-try(glm(y~x,family=binomial(link=log)),silent=TRUE)
+            else
+              fit<-try(glm(y~x,family=binomial()),silent=TRUE)
             if (sum(table(y)>0)<2 | inherits(fit,"try-error")){
               ci<-matrix(NaN,1,3)
               p.ratio<-NaN
             }else{
-              ci<-rbind(exp(c(coef(fit)[-1],suppressMessages(confint.default(fit)[-1,]))))
+              ci<-rbind(exp(c(coef(fit)[-1],suppressMessages(confint.default(fit, level=conf.level)[-1,]))))
               if (ref.y==2)
                 ci<-1/ci
               p.ratio<-coef(summary(fit))[2,4]
@@ -520,7 +533,10 @@ function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, 
           }
         }
       }
-      colnames(ci)<-c("OR","OR.lower","OR.upper")  
+      if (riskratio)
+        colnames(ci)<-c("RR","RR.lower","RR.upper")
+      else
+        colnames(ci)<-c("OR","OR.lower","OR.upper")
       attr(ans,"OR")<-ci
     }
     attr(ans,"p.ratio")<-p.ratio      
@@ -535,6 +551,8 @@ function(x, y, selec.i, method.i, timemax.i, alpha, min.dis, max.xlev, varname, 
   attr(ans,"groups")<-groups
   attr(ans,"xlong")<-xlong
   attr(ans,"ylong")<-ylong
+  attr(ans,"riskratio")<-riskratio
+  attr(ans,"compute.prop")<-compute.prop
   
   ans
 

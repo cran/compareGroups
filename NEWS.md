@@ -1,3 +1,26 @@
+# compareGroups 4.4.1
+- bug fixed in internal function compare.i when computing binom.test with zero freqs.
+- confinterval function to compute confidence interval of means and medians return NA and not error when it cannot compute IC for medians.
+- conf.level (confidence level) argument in compareGroups and descrTable function also applies to hazard, odds and risk ratios.
+- epitools package removed from importFrom (NAMESPACE)
+- functions qnorm, rbinom and uniroot functions from stats package added in importFrom
+
+# compareGroups 4.4.0
+- compareGroups, descrTable: new argument 'compute.prop' added (to compute proportions instead of percentages for categorical row-variables).
+- createTable, descrTable: new argument 'all.last' added (to place descriptives of the whole sample after descriptives by groups).
+
+# compareGroups 4.3.1
+- compareGroups.Rd: p.trend for categorical variables modified.
+- export2word: new arguments added (same as export2md).
+- export2md: longtable fixed.
+- bug fixed in internal table.i function when identifying reference category when NA.
+- bug fixed in cGroupsGUI: updated to new updates of compareGroups.fit function.
+- export2pdf: new arguments incorportated and makes use of export2md function.
+
+# compareGroups 4.3.0
+- export2word supports stratified tables
+- Risk Ratios are now computed. See `riskratio` argument from `compareGroups` function.
+
 # compareGroups 4.2.0
 - flextable package dependency
 - export2md supports tables to export to word in nicer format using flextable

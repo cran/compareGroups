@@ -2,6 +2,7 @@ table.i <-
 function(x, hide.i, digits, digits.ratio, type, varname, hide.i.no, digits.p, sd.type, q.type, spchar, show.ci){
 
   method<-attr(x,"method")
+  compute.prop <- attr(x, "compute.prop")
 
   if (is.na(digits))
     digits<-NULL
@@ -19,12 +20,15 @@ function(x, hide.i, digits, digits.ratio, type, varname, hide.i.no, digits.p, sd
   N<-x$sam[1]
   or<-attr(x,"OR")
   hr<-attr(x,"HR")
+  riskratio<-attr(x,"riskratio")
 
   ci <- if(!is.null(or)) or else hr
   p.ratio <- attr(x,"p.ratio")
   
   if (!is.null(ci)){
-    rr <- apply(is.na(ci) & !is.nan(ci),1,any)
+    # rr <- apply(is.na(ci) & !is.nan(ci),1,any)
+    rr <- apply(ci, 1, function(x) !is.na(x[1]) & !is.nan(x[1]) & x[1]==1 & all(is.na(x[-1])))
+    if (sum(rr)>1) stop("more than one reference category detected")    
     ci <- ifelse(is.nan(ci),".",format2(ci,digits.ratio))
     ci <- t(ci)
     ci <- apply(ci,2,function(vv) paste(vv[1]," [",vv[2],";",vv[3],"]",sep="")) 
@@ -62,13 +66,14 @@ function(x, hide.i, digits, digits.ratio, type, varname, hide.i.no, digits.p, sd
     upper<-format2(x$upper,digits)
     upper<-ifelse(is.na(upper),".",upper)    
     ans<-pp
+    symbol.perc <- if (compute.prop) "" else "%"
     if (show.ci){
-      ans<-matrix(paste0(pp,"% [",lower,"%;",upper,"%]"),nrow=nrow(ans),ncol=ncol(ans))  
+      ans<-matrix(paste0(pp,symbol.perc," [",lower,symbol.perc,";",upper,symbol.perc,"]"),nrow=nrow(ans),ncol=ncol(ans))  
     } else {
       if (type==1)
-        ans<-matrix(paste(pp,"%",sep=""),nrow=nrow(ans),ncol=ncol(ans))    
+        ans<-matrix(paste(pp,symbol.perc,sep=""),nrow=nrow(ans),ncol=ncol(ans))    
       if (type==2)
-        ans<-matrix(paste(nn," (",pp,"%)",sep=""),nrow=nrow(ans),ncol=ncol(ans))
+        ans<-matrix(paste(nn," (",pp,symbol.perc,")",sep=""),nrow=nrow(ans),ncol=ncol(ans))
       if (type==3)
         ans<-matrix(nn,nrow=nrow(ans),ncol=ncol(ans))
     }
@@ -112,9 +117,15 @@ function(x, hide.i, digits, digits.ratio, type, varname, hide.i.no, digits.p, sd
       if (inherits(attr(x,"y"),"Surv"))
         ans<-rbind(ans,HR=ci,p.ratio=p.ratio,ansp)
       else
-        ans<-rbind(ans,OR=ci,p.ratio=p.ratio,ansp)    
+        if (riskratio)
+          ans<-rbind(ans,RR=ci,p.ratio=p.ratio,ansp)    
+        else
+          ans<-rbind(ans,OR=ci,p.ratio=p.ratio,ansp)
     }else
-      ans<-rbind(ans,OR=ci,p.ratio=p.ratio,ansp)
+      if (riskratio)
+        ans<-rbind(ans,RR=ci,p.ratio=p.ratio,ansp)
+      else 
+        ans<-rbind(ans,OR=ci,p.ratio=p.ratio,ansp)
     ans<-rbind(ans,rep(NA,ncol(ans)))
     ans[nrow(ans),1]<-N
     rownames(ans)[nrow(ans)]<-"N"
@@ -134,10 +145,13 @@ function(x, hide.i, digits, digits.ratio, type, varname, hide.i.no, digits.p, sd
       inc.out <- paste0(paste0(as.vector(inc),"%"), " [",paste0(as.vector(lower),"%"), ";",paste0(as.vector(upper),"%"),"]")
     else
       inc.out <- paste0(as.vector(inc),"%")
-    ans<-cbind(c(inc.out,OR=ci,p.ratio=p.ratio,pvals,N))
+    if (riskratio)
+      ans<-cbind(c(inc.out,OR=ci,p.ratio=p.ratio,pvals,N))
+    else
+      ans<-cbind(c(inc.out,RR=ci,p.ratio=p.ratio,pvals,N))
     rownames(ans)[1:length(rn)]<-rn
     rownames(ans)[nrow(ans)]<-"N"
-    colnames(ans)<-varname 
+    colnames(ans)<-varname
   }
   if (method[1]=="continuous"){
     nn<-x$descriptive
@@ -183,9 +197,16 @@ function(x, hide.i, digits, digits.ratio, type, varname, hide.i.no, digits.p, sd
       if (inherits(attr(x,"y"),"Surv"))
         ans<-cbind(c(ans,HR=ci,p.ratio=p.ratio,pvals,N))
       else
+        if (riskratio)
+          ans<-cbind(c(ans,RR=ci,p.ratio=p.ratio,pvals,N))
+        else
+          ans<-cbind(c(ans,OR=ci,p.ratio=p.ratio,pvals,N))
+    }else {
+      if (riskratio)
+        ans<-cbind(c(ans,RR=ci,p.ratio=p.ratio,pvals,N))
+      else
         ans<-cbind(c(ans,OR=ci,p.ratio=p.ratio,pvals,N))
-    }else
-      ans<-cbind(c(ans,OR=ci,p.ratio=p.ratio,pvals,N))  
+    }
     rownames(ans)[1:length(rn)]<-rn
     rownames(ans)[nrow(ans)]<-"N"
     colnames(ans)<-varname

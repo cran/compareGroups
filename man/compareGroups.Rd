@@ -22,7 +22,8 @@ compareGroups(formula, data, subset, na.action = NULL, y = NULL, Xext = NULL,
   ref = 1, ref.no = NA, fact.ratio = 1, ref.y = 1, p.corrected = TRUE, 
   compute.ratio = TRUE, include.miss = FALSE, oddsratio.method = "midp", 
   chisq.test.perm = FALSE, byrow = FALSE, chisq.test.B = 2000, chisq.test.seed = NULL, 
-  Date.format = "d-mon-Y", var.equal = TRUE, conf.level = 0.95, surv=FALSE)
+  Date.format = "d-mon-Y", var.equal = TRUE, conf.level = 0.95, surv=FALSE,
+  riskratio = FALSE, riskratio.method = "wald", compute.prop = FALSE)
 \method{plot}{compareGroups}(x, file, type = "pdf", bivar = FALSE, z=1.5, 
   n.breaks = "Sturges", perc = FALSE, ...)
 }
@@ -79,7 +80,7 @@ compareGroups(formula, data, subset, na.action = NULL, y = NULL, Xext = NULL,
   
   \item{include.miss}{logical, indicating whether to treat missing values as a new category for categorical variables. Default value is FALSE.}   
   
-  \item{oddsratio.method}{Which method to compute the Odds Ratio. See 'method' argument from \code{\link[epitools]{oddsratio}}. Default value is "midp".}    
+  \item{oddsratio.method}{Which method to compute the Odds Ratio. See 'method' argument from \code{oddsratio} (\code{epitools} package). Default value is "midp".}    
   
   \item{byrow}{logical or NA. Percentage of categorical variables must be reported by rows (TRUE), by columns (FALSE) or by columns and rows to sum up 1 (NA). Default value is FALSE, which means that percentages are reported by columns (withing groups).}  
   
@@ -93,10 +94,14 @@ compareGroups(formula, data, subset, na.action = NULL, y = NULL, Xext = NULL,
   
   \item{var.equal}{logical, indicating whether to consider equal variances when comparing means on normal distributed variables on more than two groups. If TRUE \code{\link{anova}} function is applied and \code{\link{oneway.test}} otherwise. Default value is TRUE.}   
 
-  \item{conf.level}{double. Conficende level of confidence interval for means, medians, proportions or incidence. Default value is 0.95.}
+  \item{conf.level}{double. Conficende level of confidence interval for means, medians, proportions or incidence, and hazard, odds and risk ratios. Default value is 0.95.}
   
-  \item{surv}{logical. Compute survival (TRUE) or incidence (FALSE) for time-to-event row-variables. Default value is FALSE.}  
-    
+  \item{surv}{logical. Compute survival (TRUE) or incidence (FALSE) for time-to-event row-variables. Default value is FALSE.} 
+  \item{riskratio}{logical. Whether to compute Odds Ratio (FALSE) or Risk Ratio (TRUE). Default value is FALSE.}  
+  
+  \item{riskratio.method}{Which method to compute the Odds Ratio. See 'method' argument from \code{riskratio} (\code{epitools} package). Default value is "wald".}     
+
+  \item{compute.prop}{logical. Compute proportions (TRUE) or percentages (FALSE) for cathegorical row-variables. Default value is FALSE.}  
   
 Arguments passed to \code{plot} method.  
   
@@ -127,11 +132,11 @@ Depending whether the row-variable is considered as continuous normal-distribute
 Also, a row-variable can be of class 'Surv'. Then the probability of 'event' at a fixed time (set up with 'timemax' argument) is computed and a logrank test is performed.\cr 
 
 When there are more than 2 groups, it also performs pairwise comparisons adjusting for multiple testing (Tukey when row-variable is normal-distributed and Benjamini & Hochberg method otherwise), and computes p-value for trend. 
-The p-value for trend is computed from the Pearson test when row-variable is normal and from the Spearman test when it is continuous non normal. If row-variable is of class 'Surv', the score test is computed from a Cox model where the grouping variable is introduced as an integer variable predictor. If the row-variable is categorical, the p-value for trend is computed as \cr
-\code{1-pchisq(cor(as.integer(x),as.integer(y))^2*(length(x)-1),1)} \cr
-where 'x' is the row-variable and 'y' is the grouping variable.   \cr
+The p-value for trend is computed from the Pearson test when row-variable is normal and from the Spearman test when it is continuous non normal. If row-variable is of class 'Surv', the score test is computed from a Cox model where the grouping variable is introduced as an integer variable predictor. 
+If the row-variable is categorical, the p-value for trend is computed from Mantel-Haenszel test of trend.
 
-If there are two groups, the Odds Ratio is computed for each row-variable. While, if the response is of class 'Surv' (i.e. time to event) Hazard Ratios are computed. \cr
+If there are two groups, the Odds Ratio or Risk Ratio is computed for each row-variable. While, if the response is of class 'Surv' (i.e. time to event) Hazard Ratios are computed. 
+When x-variable is a factor, the Odds Ratio and Risk Ratio are computed using \code{oddsratio} and \code{riskratio}, respectively, from \code{epitools} package. While when x-variable is a continuous variable, the Odds Ratio and Risk Ratio are computed under a logistic regression with a canonical link and the log link, respectively. \cr
 
 The p-values for Hazard Ratios are computed using the logrank or Wald test under a Cox proportional hazard regression when row-variable is categorical or continuous, respectively. \cr
 
@@ -167,7 +172,7 @@ By default, the labels of the variables (row-variables and grouping variable) ar
 To label non-labeled variables, or to change their labels, specify its "label" atribute directly.\cr
 
 There may be no equivalence between the intervals of the OR / HR and p-values. For example, when the response variable is binary and the row-variable is continuous, p-value is based on Mann-Whitney U test or t-test depending on whether row-variable is normal distributed or not, respectively, while the confidence interval is build using the Wald method (log(OR) -/+ 1.96*se). Or when the answer is of class 'Surv', p-value is computed with the logrank test, while confidence intervals are based on the Wald method (log(HR) -/+ 1.96*se). 
-Finally, when the response is binary and the row variable is categorical, the p-value is based on the chi-squared or Fisher test when appropriate, while confidence intervals are constructed from the median-unbiased estimation method (see \code{\link[epitools]{oddsratio}}). \cr
+Finally, when the response is binary and the row variable is categorical, the p-value is based on the chi-squared or Fisher test when appropriate, while confidence intervals are constructed from the median-unbiased estimation method (see \code{oddsratio} function from \code{epitools} package). \cr
 
 Subjects selection criteria specified in 'selec' and 'subset' arguments are combined using '&' to be applied to every row-variable.\cr
 

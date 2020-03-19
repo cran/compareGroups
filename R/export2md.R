@@ -89,7 +89,7 @@ export2md<-function(x, which.table="descr", nmax=TRUE, header.labels=c(), captio
       table1[((1+n.exists):nrow(table1)),ncol(table1)] <- ifelse(table1[((1+n.exists):nrow(table1)),ncol(table1)]=="", "\\vphantom{}", table1[((1+n.exists):nrow(table1)),ncol(table1)])
     if (format=="latex") caption <- gsub("%","\\\\%",caption)
     ans <- knitr::kable(table1, align = align, row.names = FALSE, caption=caption[1], format=format, 
-                        booktabs=format=="latex", longtable=FALSE, linesep="", ...)
+                        booktabs=format=="latex", longtable=TRUE, linesep="", ...)
     ans <- add_indent(ans, grep("^ ",table1[,1]))
     if (width!=Inf) ans <- column_spec(ans, 1, width = width)
     # groups    
@@ -124,7 +124,7 @@ export2md<-function(x, which.table="descr", nmax=TRUE, header.labels=c(), captio
       if (strip) ans <- gsub("\\textbackslash{}vphantom\\{\\}", "\\vphantom{}", ans, fixed=TRUE)
     }
     if (format=="html"){
-      ans <- kable_styling(ans, bootstrap_options=c("striped", "condensed"), full_width = FALSE, font_size=size, position=position)  
+      ans <- kable_styling(ans, bootstrap_options=c(if (!strip) "striped" else NULL, "condensed"), full_width=FALSE, font_size=size, position=position)  
       ans <- row_spec(ans, 0, background=header.background, color=header.color)
       ans <- row_spec(ans, if (sum(unlist(attr(x, "nmax.pos")))>0) 1 else 0, italic=sum(unlist(attr(x, "nmax.pos")))>0, extra_css = "border-bottom: 1px solid grey")      
     }
@@ -142,7 +142,7 @@ export2md<-function(x, which.table="descr", nmax=TRUE, header.labels=c(), captio
     align <- c("l", rep("c", ncol(table2)))
     colnames(table2)[-1] <- trim(table2[1, -1])
     table2 <- table2[-1, ,drop=FALSE]
-    ans <- knitr::kable(table2, align = align, row.names = FALSE, caption=caption[1], format=format, booktabs=format=="latex", longtable=FALSE, ...)
+    ans <- knitr::kable(table2, align = align, row.names = FALSE, caption=caption[1], format=format, booktabs=format=="latex", longtable=TRUE, ...)
     # ans <- knitr::kable(table2, align = align, row.names = FALSE, caption=caption[1], format=format, booktabs=format=="latex")
     # groups    
     if (!is.null(cc)){
@@ -169,7 +169,7 @@ export2md<-function(x, which.table="descr", nmax=TRUE, header.labels=c(), captio
       ans <- kable_styling(ans, latex_options = c("repeat_header"), font_size = size, position=position)
     }
     if (format=="html"){
-      ans <- kable_styling(ans, bootstrap_options=c("striped", "condensed"), full_width = FALSE, font_size = size, position=position)
+      ans <- kable_styling(ans, bootstrap_options=c(if (!strip) "striped" else NULL, "condensed"), full_width = FALSE, font_size = size, position=position)
       ans <- row_spec(ans, 0, background=header.background, color=header.color)
       ans <- row_spec(ans, 0, italic=FALSE, extra_css = "border-bottom: 1px solid grey")
     }
