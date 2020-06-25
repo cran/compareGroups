@@ -1,3 +1,18 @@
+# compareGroups 4.4.3
+MAJOR
+- WUI (cGroupsWUI) renewed based on shinydashboardPlus layout and more options.
+MINOR
+- wrong description of file argument from export2xls function fixed.
+- bug fixed in getResults(, "ratio") when only one variable is described.
+- bug fixed in xlab and ylab in box.plot internal function.
+- new component in 'extra.labels' argument from 'createTable' function to append label for surv variables.
+- internal function snpQC syntax code: replace mclapply for lapply
+- shinydashboardPlus package added to suggested
+- compareSNPs: bug fixed when only one SNP is described
+
+# compareGroups 4.4.2
+- bug fixed when exporting tables to PDF in cGroupsWUI()
+
 # compareGroups 4.4.1
 - bug fixed in internal function compare.i when computing binom.test with zero freqs.
 - confinterval function to compute confidence interval of means and medians return NA and not error when it cannot compute IC for medians.

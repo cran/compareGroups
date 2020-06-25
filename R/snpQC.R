@@ -1,7 +1,27 @@
 snpQC <- function(X,sep,verbose)
 {
 
-    X<-setupSNP(X,1:ncol(X),sep=sep)
+    
+    setupSNP2 <- function (data, colSNPs, sep){
+        # dataSNPs <- mclapply(data[, colSNPs, drop = FALSE], snp, sep = sep)
+        dataSNPs <- lapply(data[, colSNPs, drop = FALSE], snp, sep = sep)
+        dataSNPs <- data.frame(dataSNPs)
+        datPhen <- data[, -colSNPs, drop = FALSE]
+        ans <- cbind(datPhen, dataSNPs)
+        label.SNPs <- names(dataSNPs)
+        class(ans) <- c("setupSNP", "data.frame")
+        attr(ans, "row.names") <- 1:length(ans[[1]])
+        attr(ans, "label.SNPs") <- label.SNPs
+        attr(ans, "colSNPs") <- c((length(ans) - length(label.SNPs) + 1):length(ans))
+        ans
+    }
+    
+    # X<-try(SNPassoc::setupSNP(X,1:ncol(X),sep=sep))
+    # if (inherits(X, "try-error")) stop("ha donat un error")
+    # if (inherits(X, "try-error")) stop(X)
+    # for (i in 1:ncol(X)) X[,i] <- as.character(X[,i])
+    X<-setupSNP2(X,1:ncol(X),sep=sep)
+
     snps<-attr(X,"label.SNPs")
     snp.sum<-data.frame(SNP=snps,
                         Ntotal=NA,    # Total number of samples for which genotyping was attempted
@@ -33,7 +53,7 @@ snpQC <- function(X,sep,verbose)
 
     # Compute genotyping success statistics
     snp.sum[,"Ntotal"]  <- nrow(X) 
-    snp.sum[,"Ntyped"]  <- apply(X[,snps], 2, function(i) sum(!is.na(i)))
+    snp.sum[,"Ntyped"]  <- apply(X[,snps,drop=FALSE], 2, function(i) sum(!is.na(i)))
     snp.sum[,"Typed.p"] <- round(snp.sum[,"Ntyped"]/snp.sum[,"Ntotal"],3)
     snp.sum[,"Miss.ct"] <- snp.sum[,"Ntotal"] - snp.sum[,"Ntyped"]
     snp.sum[,"Miss.p"]  <- round(snp.sum[,"Miss.ct"]/snp.sum[,"Ntotal"],3)
@@ -76,7 +96,7 @@ snpQC <- function(X,sep,verbose)
     #require(HardyWeinberg)    
     hw <- as.matrix(snp.sum[,c("Hom1.ct","Het.ct","Hom2.ct")])
     hw[is.na(hw)] <- 0; hw <- matrix(as.numeric(hw),ncol=ncol(hw))
-    snp.sum$HWE.p[rowSums(hw)>0]<-HWChisqMat(hw[rowSums(hw)>0,], verbose=verbose)$pvalvec
+    snp.sum$HWE.p[rowSums(hw)>0]<-HWChisqMat(hw[rowSums(hw)>0,,drop=FALSE], verbose=verbose)$pvalvec
 
     # Set classes and return results
     numvar <- c("Ntotal","Ntyped","Typed.p","Miss.ct","Miss.p","MAF","A1.ct","A2.ct","A1.p","A2.p","Hom1.ct","Het.ct","Hom2.ct","Hom1.p","Het.p","Hom2.p","HWE.p")

@@ -33,11 +33,11 @@ Arguments from \code{\link{compareGroups}} function:
   
   \item{subset}{an optional vector specifying a subset of individuals to be used in the computation process. It is applied to all row-variables. 'subset' and 'selec' are added in the sense of '&' to be applied in every row-variable.}
   
-  \item{na.action}{a function which indicates what should happen when the data contain NAs. The default is NULL, and that is equivalent to \code{\link[stats]{na.pass}}, which means no action. Value \code{\link[stats]{na.exclude}} can be useful if it is desired to removed all individuals with some NA in any variable.}    
+  \item{na.action}{a function which indicates what should happen when the data contain NAs. The default is NULL, and that is equivalent to \code{\link[stats:na.fail]{na.pass}}, which means no action. Value \code{\link[stats:na.fail]{na.exclude}} can be useful if it is desired to removed all individuals with some NA in any variable.}    
 
   \item{y}{a vector variable that distinguishes the groups. It must be either a numeric, character, factor or NULL. Default value is NULL which means that descriptives for whole sample are calculated and no test is performed.}
   
-  \item{Xext}{a data.frame or a matrix with the same rows / individuals contained in \code{X}, and maybe with different variables / columns than \code{X}. This argument is used by \code{compareGroups.default} in the sense that the variables specified in the argument \code{selec} are searched in \code{Xext} and/or in the \code{\link[base]{.GlobalEnv}}. If \code{Xext} is \code{NULL}, then Xext is created from variables of \code{X} plus \code{y}. Default value is \code{NULL}.} 
+  \item{Xext}{a data.frame or a matrix with the same rows / individuals contained in \code{X}, and maybe with different variables / columns than \code{X}. This argument is used by \code{compareGroups.default} in the sense that the variables specified in the argument \code{selec} are searched in \code{Xext} and/or in the \code{\link[base:environment]{.GlobalEnv}}. If \code{Xext} is \code{NULL}, then Xext is created from variables of \code{X} plus \code{y}. Default value is \code{NULL}.} 
   
   \item{selec}{a list with as many components as row-variables. If list length is 1 it is recycled for all row-variables. Every component of 'selec' is an expression that will be evaluated to select the individuals to be analyzed for every row-variable. Otherwise, a named list specifying 'selec' row-variables is applied. '.else' is a reserved name that defines the selection for the rest of the variables; if no '.else' variable is defined, default value is applied for the rest of the variables. Default value is NA; all individuals are analyzed (no subsetting).}
   
@@ -137,7 +137,7 @@ Arguments from \code{\link{createTable}} function:
   
   \item{q.type}{a vector with two integer components. The first component refers to the type of brackets to be displayed for non-normal row-variables (1 - rounded and 2 - squared), while the second refers to the percentile separator (1 - ';', 2 - ',' and 3 - '-'. Default value is c(1, 1).}
   
-  \item{extra.labels}{character vector of 3 components corresponding to key legend to be appended to normal, non-normal and categorical row-variables labels. Default value is NA which appends no extra key. If it is set to \code{c("","","")}, "Mean (SD)", "Median [25th; 75th]" and "N (\%)" are appended.}
+  \item{extra.labels}{character vector of 4 components corresponding to key legend to be appended to normal, non-normal, categorical or survival row-variables labels. Default value is NA which appends no extra key. If it is set to \code{c("","","","")}, "Mean (SD)", "Median [25th; 75th]", "N (\%)" and "Incidence at time=timemax" are appended (see argument \code{timemax} from \code{compareGroups} function.}
   
   \item{all.last}{logical. Descriptives of the whole sample is placed after the descriptives by groups. Default value is FALSE which places the descriptives of whole cohort at first.}  
 
