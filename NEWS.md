@@ -1,3 +1,6 @@
+# compareGroups 4.4.4
+- SNPassoc moved from Depends to Suggests
+
 # compareGroups 4.4.3
 MAJOR
 - WUI (cGroupsWUI) renewed based on shinydashboardPlus layout and more options.

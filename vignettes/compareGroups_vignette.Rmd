@@ -217,6 +217,7 @@ OBSERVATIONS:
 A variable of class `Surv` must be created to deal with time-to-event variables (i.e., time to Cardiovascular event/censored in our example): 
 
 ```{r}
+library(survival)
 predimed$tmain <- with(predimed, Surv(toevent, event == 'Yes'))
 attr(predimed$tmain,"label") <- "AMI, stroke, or CV Death"
 ```
@@ -562,7 +563,7 @@ Since version 3.0, there is a new function called `getResults` to retrieve some 
 For example, it may be interesting to recover the p-values for each variable as a vector to further manipulate it in **`R`**, like adjusting for multiple comparison with `p.adjust`. For example, lets take the example data from **`SNPassoc`** package that contains information of dozens of SNPs (genetic variants) from a sample of cases and controls. In this case we analize five of them:
 
 ```{r}
-library(SNPassoc)
+require(SNPassoc)
 data(SNPs)
 tab <- createTable(compareGroups(casco ~ snp10001 + snp10002 + snp10005 + snp10008 + snp10009, SNPs))
 pvals <- getResults(tab, "p.overall")
@@ -1402,7 +1403,7 @@ To return to the **`R`** console, just close the GUI window.
 
 # Using Web User Inferface (WUI) - Shiny {#wui}
 
-Since version 2.1, **`compareGropus`** package incorporates a **Web User Interface (WUI)** based on **`shiny`** **`R`** available on CRAN repository [@Shiny] [shiny website](http://shiny.rstudio.com) to facilitate the use of the package for non **`R`** users.
+Since version 2.1, **`compareGropus`** package incorporates a **Web User Interface (WUI)** based on **`shiny`** **`R`** available on CRAN repository [@Shiny] [shiny website](https://shiny.rstudio.com/) to facilitate the use of the package for non **`R`** users.
 
 This application includes almost all the options existing in "type on" version. Also, thanks to the power of **`shiny`** package, the user can see the results when setting the included variable, the groups, number of decimals, etc almost instantaneously ("reactivity" -see **`shiny`** manual and examples-). This is very useful to modify and customize the descriptive table before saving it in the desired format saving a lot of time.
 

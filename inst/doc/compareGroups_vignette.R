@@ -20,6 +20,7 @@ dicc$Codes <- sub(">=","$\\\\geq$",dicc$Codes)
 kable(dicc, align=rep("l",4), row.names=FALSE, format = "html")
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
+library(survival)
 predimed$tmain <- with(predimed, Surv(toevent, event == 'Yes'))
 attr(predimed$tmain,"label") <- "AMI, stroke, or CV Death"
 
@@ -156,7 +157,7 @@ res<-update(res, . ~. - sex +  bmi + toevent, subset = sex=='Female', method = c
 res
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
-library(SNPassoc)
+require(SNPassoc)
 data(SNPs)
 tab <- createTable(compareGroups(casco ~ snp10001 + snp10002 + snp10005 + snp10008 + snp10009, SNPs))
 pvals <- getResults(tab, "p.overall")

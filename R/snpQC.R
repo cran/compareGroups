@@ -1,21 +1,163 @@
+reorder.snp2 <- function (x, ref = "common", ...) 
+{
+    s <- x
+    if (!inherits(s, "snp")) 
+        stop("object must be of class 'snp'")
+    type <- charmatch(ref, c("common", "minor"))
+    if (is.na(type)) 
+        stop("ref must be either 'common' or 'minor'")
+    if (type == 1) {
+        class(s) <- "factor"
+        tt <- table(s)
+        if (length(tt) == 3 & min(tt) > 0) {
+            if (tt[1] < tt[3]) {
+                s <- relevel(relevel(s, 2), 3)
+            }
+        }
+        else {
+            if (length(unique(unlist(strsplit(names(tt)[1], "/")))) == 
+                2 & length(tt) > 1) {
+                s <- relevel(s, 2)
+            }
+        }
+    }
+    else {
+        class(s) <- "factor"
+        tt <- table(s)
+        if (length(tt) == 3 & min(tt) > 0) {
+            if (tt[3] < tt[1]) {
+                s <- relevel(relevel(s, 2), 3)
+            }
+        }
+        else {
+            if (length(unique(unlist(strsplit(names(tt)[1], "/")))) == 
+                2) {
+                s <- relevel(s, 2)
+            }
+        }
+    }
+    class(s) <- c("snp", "factor")
+    s
+}
+
+
+snp2 <- function (x, sep = "/", name.genotypes, reorder = "common", 
+          remove.spaces = TRUE, allow.partial.missing = FALSE) 
+{
+    # if (is.snp(x)) {
+    #     object <- x
+    # }
+    # else {
+        if (sum(is.na(x)) == length(x)) {
+            object <- rep(NA, length(x))
+            attr(object, "allele.names") <- NULL
+            class(object) <- c("snp", "logical")
+            return(object)
+        }
+        if (missing(name.genotypes)) {
+            alleles <- NULL
+            x.d <- dim(x)
+            x <- as.character(x)
+            dim(x) <- x.d
+            x[is.na(x)] <- ""
+            if (remove.spaces) {
+                xdim <- dim(x)
+                x <- gsub("[ \t]", "", x)
+                dim(x) <- xdim
+            }
+            if (!is.null(dim(x)) && ncol(x) > 1) 
+                parts <- x[, 1:2]
+            else {
+                if (sep == "") 
+                    sep <- 1
+                if (is.character(sep)) {
+                    part.list <- strsplit(x, sep)
+                    part.list[sapply(part.list, length) == 0] <- NA
+                    half.empties <- lapply(part.list, length) == 
+                        1
+                    part.list[half.empties] <- lapply(part.list[half.empties], 
+                                                      c, NA)
+                    empties <- is.na(x) | lapply(part.list, length) == 
+                        0
+                    part.list[empties] <- list(c(NA, NA))
+                    parts <- matrix(unlist(part.list), ncol = 2, 
+                                    byrow = TRUE)
+                }
+                else if (is.numeric(sep)) 
+                    parts <- cbind(substring(x, 1, sep), substring(x, 
+                                                                   sep + 1, 9999))
+                else stop(paste("I don't know how to handle sep=", 
+                                sep))
+            }
+            mode(parts) <- "character"
+            temp <- grep("^[ \t]*$", parts)
+            parts[temp] <- NA
+            if (!allow.partial.missing) 
+                parts[is.na(parts[, 1]) | is.na(parts[, 2]), 
+                ] <- c(NA, NA)
+            alleles <- unique(c(na.omit(parts)))
+            if (length(alleles) > 2) 
+                stop("SNP must have only two alleles")
+            tmp <- ifelse(is.na(parts[, 1]) & is.na(parts[, 2]), 
+                          NA, apply(parts, 1, paste, collapse = "/"))
+            object <- factor(tmp)
+            ll <- levels(object) <- na.omit(levels(object))
+            if (length(ll) == 4) {
+                object[object == ll[3]] <- ll[2]
+                object <- factor(object)
+            }
+            control <- paste(rep(alleles[1], 2), collapse = "/") %in% 
+                ll
+            if (sum(control) == 0 & length(ll) == 3) {
+                object[object == ll[2]] <- ll[1]
+                object <- factor(object)
+            }
+            control <- paste(rep(alleles[2], 2), collapse = "/") %in% 
+                ll
+            if (sum(control) == 0 & length(ll) == 3) {
+                object[object == ll[3]] <- ll[2]
+                object <- factor(object)
+            }
+            if (length(object) == sum(is.na(object))) 
+                stop("choose the correct character separator to divide alleles")
+            class(object) <- c("snp", "factor")
+            object <- reorder.snp2(object, ref = reorder)
+            attr(object, "allele.names") <- alleles
+        }
+        else {
+            if (any(is.na(match(x[!is.na(x)], name.genotypes)))) 
+                stop("'name.genotypes' must match with the observed genotypes")
+            x[x == name.genotypes[1]] <- "A/A"
+            x[x == name.genotypes[2]] <- "A/B"
+            x[x == name.genotypes[3]] <- "B/B"
+            object <- as.factor(x)
+            attr(object, "allele.names") <- c("A", 
+                                              "B")
+            class(object) <- c("snp", "factor")
+        }
+    # }
+    object
+}
+
+
+
+setupSNP2 <- function (data, colSNPs, sep){
+    # dataSNPs <- mclapply(data[, colSNPs, drop = FALSE], snp, sep = sep)
+    dataSNPs <- lapply(data[, colSNPs, drop = FALSE], snp2, sep = sep)
+    dataSNPs <- data.frame(dataSNPs)
+    datPhen <- data[, -colSNPs, drop = FALSE]
+    ans <- cbind(datPhen, dataSNPs)
+    label.SNPs <- names(dataSNPs)
+    class(ans) <- c("setupSNP", "data.frame")
+    attr(ans, "row.names") <- 1:length(ans[[1]])
+    attr(ans, "label.SNPs") <- label.SNPs
+    attr(ans, "colSNPs") <- c((length(ans) - length(label.SNPs) + 1):length(ans))
+    ans
+}
+
 snpQC <- function(X,sep,verbose)
 {
 
-    
-    setupSNP2 <- function (data, colSNPs, sep){
-        # dataSNPs <- mclapply(data[, colSNPs, drop = FALSE], snp, sep = sep)
-        dataSNPs <- lapply(data[, colSNPs, drop = FALSE], snp, sep = sep)
-        dataSNPs <- data.frame(dataSNPs)
-        datPhen <- data[, -colSNPs, drop = FALSE]
-        ans <- cbind(datPhen, dataSNPs)
-        label.SNPs <- names(dataSNPs)
-        class(ans) <- c("setupSNP", "data.frame")
-        attr(ans, "row.names") <- 1:length(ans[[1]])
-        attr(ans, "label.SNPs") <- label.SNPs
-        attr(ans, "colSNPs") <- c((length(ans) - length(label.SNPs) + 1):length(ans))
-        ans
-    }
-    
     # X<-try(SNPassoc::setupSNP(X,1:ncol(X),sep=sep))
     # if (inherits(X, "try-error")) stop("ha donat un error")
     # if (inherits(X, "try-error")) stop(X)
