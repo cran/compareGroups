@@ -157,7 +157,6 @@ res<-update(res, . ~. - sex +  bmi + toevent, subset = sex=='Female', method = c
 res
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
-require(SNPassoc)
 data(SNPs)
 tab <- createTable(compareGroups(casco ~ snp10001 + snp10002 + snp10005 + snp10008 + snp10009, SNPs))
 pvals <- getResults(tab, "p.overall")
@@ -348,8 +347,8 @@ descrTable(predimed, hide.no="no")
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
 descrTable(group ~ ., predimed, hide.no="no", show.all=TRUE)
 
-## ---- eval=FALSE------------------------------------------------------------------------------------------------------------------------------------
-#  descrTable(predimed, subset=age>65)
+## ---------------------------------------------------------------------------------------------------------------------------------------------------
+descrTable(predimed, subset=age>65)
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
 restab<-createTable(compareGroups(group ~ age + sex + smoke + waist + hormo, data=predimed))
@@ -427,8 +426,4 @@ export2md(createTable(compareGroups(htn ~  age + sex + smoke + bmi + waist + wth
 
 ## ---- echo=FALSE, results='asis'--------------------------------------------------------------------------------------------------------------------
 export2md(createTable(compareGroups(tmain ~  group + age + sex, data=predimed), show.ratio=TRUE))
-
-## ---- eval=FALSE------------------------------------------------------------------------------------------------------------------------------------
-#  library(compareGroups)
-#  cGroupsWUI()
 

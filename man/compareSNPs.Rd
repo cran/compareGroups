@@ -94,9 +94,8 @@ Isaac Subirana (isubirana<at>imim.es)
 \examples{
 
 require(compareGroups) 
-require(SNPassoc)
 
-# load example data (taken from SNPassoc)
+# load example data
 data(SNPs)
 
 # visualize first rows

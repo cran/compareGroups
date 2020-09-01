@@ -94,6 +94,10 @@ snp2(x, sep = "/", name.genotypes, reorder = "common",
 
 reorder.snp2(x, ref = "common", ...)
 
+summary.snp2(object, ...)
+
+SNPHWE2(x)
+
 }
 
 

@@ -1,3 +1,106 @@
+SNPHWE2 <- function(x) {
+  if (length(x) < 3) {
+    p <- NA
+  }
+  else {
+    obs_hom1 <- x[1]
+    obs_hets <- x[2]
+    obs_hom2 <- x[3]
+    if (obs_hom1 < 0 || obs_hom2 < 0 || obs_hets < 0) 
+      return(-1)
+    N <- obs_hom1 + obs_hom2 + obs_hets
+    obs_homr <- min(obs_hom1, obs_hom2)
+    obs_homc <- max(obs_hom1, obs_hom2)
+    rare <- obs_homr * 2 + obs_hets
+    probs <- rep(0, 1 + rare)
+    mid <- floor(rare * (2 * N - rare)/(2 * N))
+    if ((mid%%2) != (rare%%2)) 
+      mid <- mid + 1
+    probs[mid + 1] <- 1
+    mysum <- 1
+    curr_hets <- mid
+    curr_homr <- (rare - mid)/2
+    curr_homc <- N - curr_hets - curr_homr
+    while (curr_hets >= 2) {
+      probs[curr_hets - 1] <- probs[curr_hets + 1] * curr_hets * 
+        (curr_hets - 1)/(4 * (curr_homr + 1) * (curr_homc + 
+                                                  1))
+      mysum <- mysum + probs[curr_hets - 1]
+      curr_hets <- curr_hets - 2
+      curr_homr <- curr_homr + 1
+      curr_homc <- curr_homc + 1
+    }
+    curr_hets <- mid
+    curr_homr <- (rare - mid)/2
+    curr_homc <- N - curr_hets - curr_homr
+    while (curr_hets <= rare - 2) {
+      probs[curr_hets + 3] <- probs[curr_hets + 1] * 4 * 
+        curr_homr * curr_homc/((curr_hets + 2) * (curr_hets + 
+                                                    1))
+      mysum <- mysum + probs[curr_hets + 3]
+      curr_hets <- curr_hets + 2
+      curr_homr <- curr_homr - 1
+      curr_homc <- curr_homc - 1
+    }
+    target <- probs[obs_hets + 1]
+    p <- min(1, sum(probs[probs <= target])/mysum)
+  }
+  return(p)
+}
+
+summary.snp2 <- function (object, ...) {
+  n <- length(object)
+  nas <- is.na(object)
+  n.typed <- n - sum(nas)
+  ll <- levels(object)
+  tbl <- table(object)
+  tt <- c(tbl)
+  names(tt) <- dimnames(tbl)[[1]]
+  if (any(nas)) {
+    tt.g <- c(tt, `NA's` = sum(nas))
+    missing.allele <- sum(nas)/(sum(tt) + sum(nas))
+  }
+  else {
+    tt.g <- tt
+    missing.allele <- 0
+  }
+  tt.g.prop <- prop.table(tbl)
+  if (any(nas)) 
+    tt.g.prop <- c(tt.g.prop, NA)
+  ans.g <- cbind(frequency = tt.g, percentage = tt.g.prop * 
+                   100)
+  alle <- attr(object, "allele.names")
+  alle1 <- length(grep(paste(alle[1], "/", sep = ""), 
+                       as.character(object))) + length(grep(paste("/", 
+                                                                  alle[1], sep = ""), as.character(object)))
+  if (length(alle) > 1) {
+    alle2 <- length(grep(paste(alle[2], "/", sep = ""), 
+                         as.character(object))) + length(grep(paste("/", 
+                                                                    alle[2], sep = ""), as.character(object)))
+    tt.a <- c(alle1, alle2)
+    tt.a.prop <- prop.table(tt.a)
+    ans.a <- cbind(frequency = tt.a, percentage = tt.a.prop * 
+                     100)
+    pvalueHWE <- SNPHWE2(c(tbl, 0, 0)[1:3])
+    dimnames(ans.a)[[1]] <- alle
+  }
+  else {
+    tt.a <- alle1
+    tt.a.prop <- prop.table(tt.a)
+    ans.a <- t(c(frequency = tt.a, percentage = tt.a.prop * 
+                   100))
+    rownames(ans.a) <- alle
+    pvalueHWE <- NA
+  }
+  if (any(nas)) 
+    ans.a <- rbind(ans.a, `NA's` = c(2 * sum(nas), 
+                                     NA))
+  ans <- list(allele.names = alle, allele.freq = ans.a, genotype.freq = ans.g, 
+              n = n, n.typed = n.typed, HWE = pvalueHWE, missing.allele = missing.allele)
+  class(ans) <- "summary.snp"
+  ans
+}
+
 reorder.snp2 <- function (x, ref = "common", ...) 
 {
     s <- x
@@ -207,7 +310,10 @@ snpQC <- function(X,sep,verbose)
     snp.sum[,names(tm)] <- t(sapply(snps, function(snp.i){
         if (all(is.na(X[,snp.i])))  # no data
           return(tm)
-        sm<-summary(X[!is.na(X[,snp.i]),snp.i])
+        allele.names <- attr(X[,snp.i], "allele.names")
+        vv <- X[!is.na(X[,snp.i]),snp.i]
+        attr(vv,"allele.names") <- allele.names
+        sm<-summary.snp2(vv)
         if(length(sm$allele.names)>2){
           snp.sum[snp.i,] <-NA
         } else {
