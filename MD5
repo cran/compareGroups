@@ -1,6 +1,6 @@
-7d7cf5648a3190c337898dae3e579050 *DESCRIPTION
-6b2652061cde9e27f35021840fb1b81c *NAMESPACE
-ca2601f6f932a2317f44b2a9f3703964 *NEWS.md
+3072242ff5501d8359d9a8d4642605a6 *DESCRIPTION
+8523609688ceae17731341b20be38611 *NAMESPACE
+d5d2b7e3de66038014202efadee73995 *NEWS.md
 d91b80ce71becac0c532dcf4b3633c69 *R/Cox.plot.R
 8e95fa0180a5b05533ffe8aec2d66104 *R/KM.plot.R
 7096b94072aac1b6a690614b5dfb2c4e *R/KMg.plot.R
@@ -108,10 +108,10 @@ d80c4d1e53c176fe9c33c7010277662a *inst/app/helpfiles/subsethelp.md
 d7147c551185b7705b225b3645210580 *inst/app/helpfiles/typehelp.md
 7bdfae0d9b895e1b3a0e3d13b9dfe055 *inst/app/home.md
 fbbff1dfb4842d0f954d6da9d1268fb5 *inst/app/makeExamples.R
-41707df4940f7e321ac3fe83edebe5b7 *inst/app/rsconnect/shinyapps.io/isubirana/compareGroups.dcf
+741240fc22771f21b457f0b1df1b4b33 *inst/app/rsconnect/shinyapps.io/isubirana/compareGroups.dcf
 1dcee7b87453ee23de3ec35f3a9285c6 *inst/app/server.R
 5cdd0cdb8226f6354f60c13bddc0a937 *inst/app/tableTemp.Rmd
-1a834ff6c68b128ef0e705b270b6f752 *inst/app/ui.R
+02cdd54ce26efc60129941ecc14cc69c *inst/app/ui.R
 1272b3dd5d9850e1133d455906e0a428 *inst/app/www/blank.png
 e2514ab0046ff9b5192740f4e254604f *inst/app/www/examples/example1.png
 355aa80a4599d25d53673b7022d9d466 *inst/app/www/examples/example2.png
@@ -123,10 +123,13 @@ e296a8fde184d15ef9fb06813e5b8451 *inst/app/www/examples/example6.png
 cdcfa187c43d27cffc305df0cf982013 *inst/app/www/examples/example8.png
 be48988f54e617925a9e32f5150ee8cf *inst/app/www/examples/example8.txt
 7b0935b69a5d4f04400080ada2939ce4 *inst/app/www/images/loading.gif
+738c3c839b0cca2e17a8ec206b36b100 *inst/app/www/logo-ciberesp.png
 b9fceceed68cdaeb372fca6870e65c5d *inst/app/www/logo.png
+d7a2ca687b4dee2844cd4323c507c1e1 *inst/app/www/logo_imim_capsalera.gif
+2af6f4833dedf50c5db0ce11dfdbcef8 *inst/app/www/regicor_logo125.png
 0853186eaec0b9d2787526857e8a6e13 *inst/doc/compareGroups_vignette.R
 de56a8bb188263fdb4c06a2af543d719 *inst/doc/compareGroups_vignette.Rmd
-34a2f0f45afa0d632f436a9ec7b68767 *inst/doc/compareGroups_vignette.html
+d211144b9784f6263946afe383694adb *inst/doc/compareGroups_vignette.html
 7b934713810b5eb7f75f20944b8ac2f7 *inst/exdata/predimed.csv
 c515d3119bc0c3bb3557a4f5b3ecf371 *inst/exdata/predimed.dat
 e21549f7c744f3e530faf9ada653acaf *inst/exdata/predimed.sav
@@ -139,7 +142,7 @@ b12132538971f6f87c7dc44d90018f26 *inst/exdata/regicor.sav
 e61c2530268fa7016ff3c20f9f4c0d78 *man/cGroupsGUI.Rd
 725f026259fc736ca92369c5eb195723 *man/cGroupsWUI.Rd
 f2aee3d86c99e5182a6c178747b6719c *man/compareGroups-internal.Rd
-b62d9da9372eb26f3fcade80ec458ade *man/compareGroups-package.Rd
+88377bfd1b2ce90e893af711d2cced01 *man/compareGroups-package.Rd
 d7b4ffb84c5a18643d472c1608421de1 *man/compareGroups.Rd
 3ca76e9501594847bdcd5a3f8458b9d8 *man/compareSNPs.Rd
 3f93641331e5c70351c3d45584c6eabd *man/createTable.Rd
