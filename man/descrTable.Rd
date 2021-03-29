@@ -16,6 +16,7 @@ descrTable(formula, data, subset, na.action = NULL, y = NULL, Xext = NULL,
   chisq.test.perm = FALSE, byrow = FALSE, chisq.test.B = 2000, chisq.test.seed = NULL,
   Date.format = "d-mon-Y", var.equal = TRUE, conf.level = 0.95, surv = FALSE,
   riskratio = FALSE, riskratio.method = "wald", compute.prop = FALSE, 
+  lab.missing = "'Missing'",
   hide = NA, digits = NA, type = NA, show.p.overall = TRUE,
   show.all, show.p.trend, show.p.mul = FALSE, show.n, show.ratio =
   FALSE, show.descr = TRUE, show.ci = FALSE, hide.no = NA, digits.ratio = NA,
@@ -99,6 +100,8 @@ Arguments from \code{\link{compareGroups}} function:
   \item{riskratio.method}{Which method to compute the Odds Ratio. See 'method' argument from \code{riskratio} (\code{epitools} package). Default value is "wald".} 
   
   \item{compute.prop}{logical. Compute proportions (TRUE) or percentages (FALSE) for cathegorical row-variables. Default value is FALSE.}  
+  
+  \item{lab.missing}{character. Label for missing cathegory. Only applied when \code{include.missing = TRUE}. Default value is 'Missing'.}   
 
 
 Arguments from \code{\link{createTable}} function:
@@ -135,7 +138,7 @@ Arguments from \code{\link{createTable}} function:
   
   \item{sd.type}{an integer that indicates how standard deviation is shown: 1 - mean (SD), 2 -  mean ? SD.}
   
-  \item{q.type}{a vector with two integer components. The first component refers to the type of brackets to be displayed for non-normal row-variables (1 - rounded and 2 - squared), while the second refers to the percentile separator (1 - ';', 2 - ',' and 3 - '-'. Default value is c(1, 1).}
+  \item{q.type}{a vector with two integer components. The first component refers to the type of brackets to be displayed for non-normal row-variables (1 - squared and 2 - rounded), while the second refers to the percentile separator (1 - ';', 2 - ',' and 3 - '-'. Default value is c(1, 1).}
   
   \item{extra.labels}{character vector of 4 components corresponding to key legend to be appended to normal, non-normal, categorical or survival row-variables labels. Default value is NA which appends no extra key. If it is set to \code{c("","","","")}, "Mean (SD)", "Median [25th; 75th]", "N (\%)" and "Incidence at time=timemax" are appended (see argument \code{timemax} from \code{compareGroups} function.}
   
