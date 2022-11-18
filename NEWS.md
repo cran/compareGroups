@@ -1,3 +1,16 @@
+# compareGroups 4.6.0
+- new function padjustCompareGroups to adjust p-values for multiple testing
+- predimed example data has been removed from the package
+- export2pdf: new arguments header.background and header.color
+- z[.compareGroups function: bug fixed when subsetting compareGroups object by variable names
+
+# compareGroups 4.5.3
+- compareGroups: bug fixed in Xext when data contains a single variable
+
+# compareGroups 4.5.2
+- missingTable: bug fixed when applying this function to a descriptive table obtained by descrTable function.
+- export2latex: it can handle more than one '&' or '%' characters.
+
 # compareGroups 4.5.1
 - export2md: add bottom header line when compiling to PDF.
 

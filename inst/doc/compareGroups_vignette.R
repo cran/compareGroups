@@ -8,139 +8,106 @@ library(kableExtra)
 library(compareGroups)
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
-data(predimed)
+data(regicor)
 
 ## ----echo=FALSE,results="asis"----------------------------------------------------------------------------------------------------------------------
 dicc <- data.frame(
-"Name"=I(names(predimed)),
-"Label"=I(unlist(lapply(predimed, attr, which="label", exact=TRUE))),
-"Codes"=I(unlist(lapply(predimed, function(x) paste(levels(x),collapse="; "))))
+"Name"=I(names(regicor)),
+"Label"=I(unlist(lapply(regicor, attr, which="label", exact=TRUE))),
+"Codes"=I(unlist(lapply(regicor, function(x) paste(levels(x),collapse="; "))))
 )
 dicc$Codes <- sub(">=","$\\\\geq$",dicc$Codes)
 kable(dicc, align=rep("l",4), row.names=FALSE, format = "html")
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
 library(survival)
-predimed$tmain <- with(predimed, Surv(toevent, event == 'Yes'))
-attr(predimed$tmain,"label") <- "AMI, stroke, or CV Death"
+regicor$tmain <- with(regicor, Surv(tocv, cv == 'Yes'))
+attr(regicor$tmain,"label") <- "Time to CV event or censoring"
 
 ## ---- results='hide'--------------------------------------------------------------------------------------------------------------------------------
-compareGroups(group ~ . , data=predimed)
+compareGroups(year ~ . , data=regicor)
 
 ## ---- results='hide'--------------------------------------------------------------------------------------------------------------------------------
-compareGroups(group ~ . -toevent - event, data=predimed)
+compareGroups(year ~ . - id, data=regicor)
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
-res<-compareGroups(group ~ age + sex + smoke + waist + hormo, data=predimed)
+res<-compareGroups(year ~ age + sex + bmi, data=regicor)
 res
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
-compareGroups(group ~ age + smoke + waist + hormo, data=predimed, subset = sex=='Female')
+compareGroups(year ~ age + smoker + bmi, data=regicor, subset = sex=='Female')
 
 ## ---- echo=TRUE-------------------------------------------------------------------------------------------------------------------------------------
-compareGroups(group ~ age + sex + smoke + waist + hormo, data=predimed, selec = list(hormo= sex=="Female", waist = waist>20 ))
+compareGroups(year ~ age + bmi + smoker, data=regicor, selec = list(age= sex=="Female", bmi = age>50 ))
 
 ## ---- echo=TRUE-------------------------------------------------------------------------------------------------------------------------------------
-compareGroups(group ~ age + smoke + waist + hormo, data=predimed, selec = list(waist= !is.na(hormo)), subset = sex=="Female")
+compareGroups(year ~ age + smoker + bmi, data=regicor, selec = list(bmi=age>50), subset = sex=="Female")
 
 ## ---- echo=TRUE-------------------------------------------------------------------------------------------------------------------------------------
-compareGroups(group ~ age + sex + bmi + bmi + waist + hormo, data=predimed, selec = list(bmi.1=!is.na(hormo)))
+compareGroups(year ~ age + sex + bmi + bmi, data=regicor, selec = list(bmi.1=txhtn=='Yes'))
 
 ## ---- echo=TRUE-------------------------------------------------------------------------------------------------------------------------------------
-compareGroups(group ~ age + smoke + waist + hormo, data=predimed, method = c(waist=2))
+compareGroups(year ~ age + smoker + triglyc, data=regicor, method = c(triglyc=2))
 
 ## ---- echo=TRUE-------------------------------------------------------------------------------------------------------------------------------------
-compareGroups(group ~ age + smoke + waist + hormo, data=predimed, method = c(waist=NA), alpha= 0.01)
+compareGroups(year ~ age + smoker + triglyc, data=regicor, method = c(triglyc=NA), alpha= 0.01)
 
 ## ---- echo=TRUE-------------------------------------------------------------------------------------------------------------------------------------
-predimed$age7gr<-as.integer(cut(predimed$age, breaks=c(-Inf,55,60,65,70,75,80,Inf), right=TRUE))
-compareGroups(group ~ age7gr, data=predimed, method = c(age7gr=NA))
-compareGroups(group ~ age7gr, data=predimed, method = c(age7gr=NA), min.dis=8)
+regicor$age7gr<-as.integer(cut(regicor$age, breaks=c(-Inf,40,45,50,55,65,70,Inf), right=TRUE))
+compareGroups(year ~ age7gr, data=regicor, method = c(age7gr=NA))
+compareGroups(year ~ age7gr, data=regicor, method = c(age7gr=NA), min.dis=8)
 
 ## ----eval=FALSE-------------------------------------------------------------------------------------------------------------------------------------
-#  compareGroups(age7gr ~ sex + bmi + waist , data=predimed)
+#  regicor$var6cat <- factor(sample(1:5, nrow(regicor), replace=TRUE))
+#  compareGroups(age7gr ~ sex + bmi + smoker, data=regicor)
 
 ## ----echo=FALSE-------------------------------------------------------------------------------------------------------------------------------------
-cat("Error en compareGroups.default(X = X, y = y, include.label = include.label,  :
-number of groups must be less or equal to 5
-")
+cat("Error in compareGroups.fit(X = X, y = y, include.label = include.label, : 
+number of groups must be less or equal to 5")
 
 ## ----echo=TRUE--------------------------------------------------------------------------------------------------------------------------------------
-compareGroups(age7gr ~ sex + bmi + waist, data=predimed, max.ylev=7)
+compareGroups(age7gr ~ sex + bmi + smoker, data=regicor, max.ylev=7)
 
 ## ---- echo=TRUE, eval=FALSE-------------------------------------------------------------------------------------------------------------------------
-#  compareGroups(group ~ sex + age7gr, method= (age7gr=3), data=predimed, max.xlev=5)
+#  compareGroups(year ~ sex + age7gr, method=c(age7gr=3), data=regicor, max.xlev=5)
 
 ## ----echo=FALSE-------------------------------------------------------------------------------------------------------------------------------------
-cat("Warning in compareGroups.default(X = X, y = y, include.label = include.label,  :
-Variables 'age7gr' have been removed since some errors ocurred
-")
+cat("Warning in compareGroups.fit(X = X, y = y, include.label = include.label,  :
+  Variables 'age7gr' have been removed since some errors occurred")
 
 ## ---- echo=TRUE-------------------------------------------------------------------------------------------------------------------------------------
-compareGroups(group ~ age + smoke + waist + hormo, data=predimed, include.label= FALSE)
+compareGroups(year ~ age + smoker + bmi, data=regicor, include.label= FALSE)
 
 ## ---- echo=TRUE-------------------------------------------------------------------------------------------------------------------------------------
-resu1<-compareGroups(group ~ age + waist, data=predimed, method = c(waist=2))
+resu1<-compareGroups(year ~ age + triglyc, data=regicor, method = c(triglyc=2))
 createTable(resu1)
 
 ## ---- echo=TRUE-------------------------------------------------------------------------------------------------------------------------------------
-resu2<-compareGroups(group ~ age + smoke + waist + hormo, data=predimed, method = c(waist=2), Q1=0.025, Q3=0.975)
+resu2<-compareGroups(year ~ age + triglyc, data=regicor, method = c(triglyc=2), Q1=0.025, Q3=0.975)
 createTable(resu2)
 
 ## ---- echo=TRUE, results='hide'---------------------------------------------------------------------------------------------------------------------
-compareGroups(group ~ age + smoke + waist + hormo, data=predimed, method = c(waist=2), Q1=0, Q3=1)
+compareGroups(year ~ age + triglyc, data=regicor, method = c(triglyc=2), Q1=0, Q3=1)
 
 ## ---- echo=TRUE-------------------------------------------------------------------------------------------------------------------------------------
-predimed$smk<-predimed$smoke
-levels(predimed$smk)<- c("Never smoker", "Current or former < 1y", "Never or former >= 1y", "Unknown")
-attr(predimed$smk,"label")<-"Smoking 4 cat."
-cbind(table(predimed$smk))
+regicor$smk<-regicor$smoker
+levels(regicor$smk)<- c("Never smoker", "Current or former < 1y", "Former >= 1y", "Unknown")
+attr(regicor$smk,"label")<-"Smoking 4 cat."
+cbind(table(regicor$smk))
 
-## ---- eval=FALSE------------------------------------------------------------------------------------------------------------------------------------
-#  compareGroups(group ~ age + smk + waist + hormo, data=predimed)
+## ---- echo=TRUE-------------------------------------------------------------------------------------------------------------------------------------
+compareGroups(year ~ age + smk + bmi, data=regicor)
 
 ## ----echo=FALSE-------------------------------------------------------------------------------------------------------------------------------------
-cat("
--------- Summary of results by groups of 'Intervention group'---------
-
-
-  var                         N    p.value method            selection
-1 Age                         6324 0.001** continuous normal ALL      
-2 Smoking 4 cat.              6324 0.714   categorical       ALL      
-3 Waist circumference         6324 0.019** continuous normal ALL      
-4 Hormone-replacement therapy 5650 0.859   categorical       ALL      
------
-Signif. codes:  0 '**' 0.05 '*' 0.1 ' ' 1 
-
-Warning message:
-In compare.i(X[, i], y = y, selec.i = selec[i], method.i = method[i],  :
-  Some levels of 'smk' are removed since no observation in that/those levels
-")
-
-## ---- echo=TRUE, results='hide'---------------------------------------------------------------------------------------------------------------------
-compareGroups(group ~ age + smk, data=predimed, simplify=FALSE)
-
-## ---- echo=FALSE------------------------------------------------------------------------------------------------------------------------------------
-cat("
--------- Summary of results by groups of 'Intervention group'---------
-
-
-  var            N    p.value method            selection
-1 Age            6324 0.001** continuous normal ALL      
-2 Smoking 4 cat. 6324 .       categorical       ALL      
------
-Signif. codes:  0 '**' 0.05 '*' 0.1 ' ' 1 
-
-Warning messages:
-1: In chisq.test(obj, simulate.p.value = TRUE) :
-  cannot compute simulated p-value with zero marginals
-2: In chisq.test(obj, simulate.p.value = TRUE) :
-  Chi-squared approximation may be incorrect
-")
+cat("Warning in compare.i(X[, i], y = y, selec.i = selec[i], method.i = method[i],  :
+  Some levels of 'smk' are removed since no observation in that/those levels")
 
 ## ---- echo=TRUE-------------------------------------------------------------------------------------------------------------------------------------
-res<-compareGroups(group ~ age + sex + smoke + waist + hormo, method = c(waist=2), data=predimed)
-summary(res[c(1, 2, 4)])
+compareGroups(year ~ age + smk + bmi, data=regicor, simplify=FALSE)
+
+## ---- echo=TRUE-------------------------------------------------------------------------------------------------------------------------------------
+res<-compareGroups(year ~ age + sex + smoker + bmi + triglyc, method = c(triglyc=2), data=regicor)
+summary(res[c(1, 2, 5)])
 
 ## ---- echo=TRUE-------------------------------------------------------------------------------------------------------------------------------------
 plot(res[c(1,2)], file="./figures/univar/", type="png")
@@ -149,11 +116,11 @@ plot(res[c(1,2)], file="./figures/univar/", type="png")
 plot(res[c(1,2)], bivar=TRUE, file="./figures/bivar/", type="png")
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
-res<-compareGroups(group ~ age + sex + smoke + waist + hormo, data=predimed)
+res<-compareGroups(year ~ age + sex + smoker + bmi, data=regicor)
 res
 
 ## ---- echo=TRUE, results='hide'---------------------------------------------------------------------------------------------------------------------
-res<-update(res, . ~. - sex +  bmi + toevent, subset = sex=='Female', method = c(waist=2, tovent=2), selec = list(bmi=!is.na(hormo)))
+res<-update(res, . ~. - sex + triglyc + cv + tocv, subset = sex=='Female', method = c(triglyc=2, tocv=2), selec = list(triglyc=txchol=='No'))
 res
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
@@ -162,40 +129,44 @@ tab <- createTable(compareGroups(casco ~ snp10001 + snp10002 + snp10005 + snp100
 pvals <- getResults(tab, "p.overall")
 p.adjust(pvals, method = "BH")
 
+## ---------------------------------------------------------------------------------------------------------------------------------------------------
+cg <- compareGroups(casco ~ snp10001 + snp10002 + snp10005 + snp10008 + snp10009, SNPs)
+createTable(padjustCompareGroups(cg, method="BH"))
+
 ## ---- echo=TRUE-------------------------------------------------------------------------------------------------------------------------------------
-res1<-compareGroups(htn ~ age + sex + bmi + smoke, data=predimed, ref=1)
+res1<-compareGroups(cv ~ age + sex + bmi + smoker, data=regicor, ref=1)
 createTable(res1, show.ratio=TRUE)
 
 ## ---- echo=TRUE-------------------------------------------------------------------------------------------------------------------------------------
-res2<-compareGroups(htn ~ age + sex + bmi + smoke, data=predimed, ref=c(smoke=1, sex=2))
+res2<-compareGroups(cv ~ age + sex + bmi + smoker, data=regicor, ref=c(smoker=1, sex=2))
 createTable(res2, show.ratio=TRUE)
 
 ## ---- echo=TRUE-------------------------------------------------------------------------------------------------------------------------------------
-res<-compareGroups(htn ~ age + sex + bmi + hormo + hyperchol, data=predimed, ref.no='NO')
+res<-compareGroups(cv ~ age + sex + bmi + histhtn + txhtn, data=regicor, ref.no='NO')
 createTable(res, show.ratio=TRUE)
 
 ## ---- echo=TRUE-------------------------------------------------------------------------------------------------------------------------------------
-res<-compareGroups(htn ~ age + bmi, data=predimed)
+res<-compareGroups(cv ~ age + bmi, data=regicor)
 createTable(res, show.ratio=TRUE)
 
 ## ---- echo=TRUE-------------------------------------------------------------------------------------------------------------------------------------
-res<-compareGroups(htn ~ age + bmi, data=predimed, fact.ratio= c(age=10, bmi=2))
+res<-compareGroups(cv ~ age + bmi, data=regicor, fact.ratio= c(age=10, bmi=2))
 createTable(res, show.ratio=TRUE)
 
 ## ---- echo=TRUE-------------------------------------------------------------------------------------------------------------------------------------
-res<-compareGroups(htn ~ age + sex + bmi + hyperchol, data=predimed)
+res<-compareGroups(cv ~ age + sex + bmi + txhtn, data=regicor)
 createTable(res, show.ratio=TRUE)
 
 ## ---- echo=TRUE-------------------------------------------------------------------------------------------------------------------------------------
-res<-compareGroups(htn ~ age + sex + bmi + hyperchol, data=predimed, ref.y=2)
+res<-compareGroups(cv ~ age + sex + bmi + txhtn, data=regicor, ref.y=2)
 createTable(res, show.ratio=TRUE)
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
-plot(compareGroups(tmain ~ sex, data=predimed), bivar=TRUE, file="./figures/bivarsurv/", type="png")
-plot(compareGroups(tmain ~ age, data=predimed), bivar=TRUE, file="./figures/bivarsurv/", type="png")
+plot(compareGroups(tmain ~ sex, data=regicor), bivar=TRUE, file="./figures/bivarsurv/", type="png")
+plot(compareGroups(tmain ~ age, data=regicor), bivar=TRUE, file="./figures/bivarsurv/", type="png")
 
 ## ---- echo=TRUE, results='hide'---------------------------------------------------------------------------------------------------------------------
-res<-compareGroups(sex ~  age + tmain, timemax=c(tmain=3), data=predimed)
+res<-compareGroups(sex ~  age + tmain, timemax=c(tmain=3*365.25), data=regicor)
 res
 
 ## ---- echo=TRUE-------------------------------------------------------------------------------------------------------------------------------------
@@ -203,7 +174,7 @@ plot(res[2], file="./figures/univar/", type="png")
 plot(res[2], bivar=TRUE, file="./figures/bivar/", type="png")
 
 ## ----echo=TRUE--------------------------------------------------------------------------------------------------------------------------------------
-res<-compareGroups(group ~ age + sex + smoke + waist + hormo, data=predimed, selec = list(hormo=sex=="Female"))
+res<-compareGroups(year ~ age + sex + smoker + bmi + sbp, data=regicor, selec = list(sbp=txhtn=="No"))
 restab<-createTable(res)
 
 ## ---- echo=TRUE-------------------------------------------------------------------------------------------------------------------------------------
@@ -219,7 +190,7 @@ print(restab,which.table='avail')
 update(restab, hide = c(sex="Male"))
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
-res<-compareGroups(group ~ age + sex + htn + diab, data=predimed)
+res<-compareGroups(year ~ age + sex + histchol + histhtn, data=regicor)
 createTable(res, hide.no='no', hide = c(sex="Male"))
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
@@ -253,21 +224,21 @@ createTable(res, show.p.trend=TRUE)
 createTable(res, show.p.mul=TRUE)
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
-createTable(update(res, subset= group!="Control"), show.ratio=TRUE)
+createTable(update(res, subset= year!=1995), show.ratio=TRUE)
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
-createTable(compareGroups(tmain ~  group + age + sex, data=predimed), show.ratio=TRUE)
+createTable(compareGroups(tmain ~  year + age + sex, data=regicor), show.ratio=TRUE)
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
-createTable(compareGroups(tmain ~  group + age + sex, data=predimed), show.ratio=TRUE, digits.ratio= 3)
+createTable(compareGroups(tmain ~  year + age + sex, data=regicor), show.ratio=TRUE, digits.ratio= 3)
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
-tab<-createTable(compareGroups(tmain ~  group + age + sex, data=predimed), show.all = TRUE)
+tab<-createTable(compareGroups(tmain ~  year + age + sex, data=regicor), show.all = TRUE)
 print(tab, header.labels = c("p.overall" = "p-value", "all" = "All"))
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
-restab1 <- createTable(compareGroups(group ~ age + sex, data=predimed))
-restab2 <- createTable(compareGroups(group ~ bmi + smoke, data=predimed))
+restab1 <- createTable(compareGroups(year ~ age + sex, data=regicor))
+restab2 <- createTable(compareGroups(year ~ bmi + smoker, data=regicor))
 rbind("Non-modifiable risk factors"=restab1, "Modifiable risk factors"=restab2)
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
@@ -278,7 +249,7 @@ rbind("Non-modifiable"=restab1,"Modifiable"=restab2)[c(1,4)]
 rbind("Modifiable"=restab1,"Non-modifiable"=restab2)[c(4,3,2,1)]
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
-res<-compareGroups(group ~ age +  smoke + bmi + htn , data=predimed)
+res<-compareGroups(year ~ age +  smoker + bmi + histhtn , data=regicor)
 alltab <- createTable(res,  show.p.overall = FALSE)
 femaletab <- createTable(update(res,subset=sex=='Female'), show.p.overall = FALSE)
 maletab <- createTable(update(res,subset=sex=='Male'), show.p.overall = FALSE)
@@ -290,19 +261,13 @@ maletab <- createTable(update(res,subset=sex=='Male'), show.p.overall = FALSE)
 cbind("ALL"=alltab,"FEMALE"=femaletab,"MALE"=maletab)
 
 ## ---- eval=FALSE------------------------------------------------------------------------------------------------------------------------------------
-#  cbind(alltab,femaletab,maletab,caption=NULL)
-
-## ---- echo=FALSE------------------------------------------------------------------------------------------------------------------------------------
-cbind(alltab,femaletab,maletab,caption=NULL)
-
-## ---- eval=FALSE------------------------------------------------------------------------------------------------------------------------------------
 #  cbind(alltab,femaletab,maletab)
 
 ## ---- echo=FALSE------------------------------------------------------------------------------------------------------------------------------------
 cbind(alltab,femaletab,maletab)
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
-res <- compareGroups(group ~ . -sex, predimed)
+res <- compareGroups(year ~ age + bmi + smoker + histchol + histhtn, regicor)
 restab <- createTable(res, hide.no="no")
 
 ## ---- eval=FALSE------------------------------------------------------------------------------------------------------------------------------------
@@ -312,17 +277,17 @@ restab <- createTable(res, hide.no="no")
 strataTable(restab, "sex")
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
-print(createTable(compareGroups(group ~ age + sex + smoke + waist + hormo, data=predimed)), which.table='both')
+print(createTable(compareGroups(year ~ age + sex + smoker + bmi, data=regicor)), which.table='both')
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
-print(createTable(compareGroups(group ~ age + sex + smoke + waist + hormo, data=predimed)),  nmax=FALSE)
+print(createTable(compareGroups(year ~ age + sex + smoker + bmi, data=regicor)),  nmax=FALSE)
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
-summary(createTable(compareGroups(group ~ age + sex + smoke + waist + hormo, data=predimed)))
+summary(createTable(compareGroups(year ~ age + sex + smoker + bmi, data=regicor)))
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
-res<-compareGroups(group ~ age + sex + smoke + waist + hormo, data=predimed)
-restab<-createTable(res, type=1, show.ratio=TRUE )
+res<-compareGroups(year ~ age + sex + smoker + bmi, data=regicor)
+restab<-createTable(res, type=1)
 restab
 update(restab, show.n=TRUE)
 
@@ -330,32 +295,32 @@ update(restab, show.n=TRUE)
 update(restab, x = update(res, subset=c(sex=='Female')), show.n=TRUE)
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
-createTable(compareGroups(group ~ age + sex + smoke + waist + hormo, data=predimed))
+createTable(compareGroups(year ~ age + sex + smoker + bmi + histhtn, data=regicor))
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
-createTable(compareGroups(group ~ age + sex + bmi, data=predimed))[1:2, ]
+createTable(compareGroups(year ~ age + sex + smoker + bmi + histhtn, data=regicor))[1:2, ]
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
-descrTable(predimed)
+descrTable(regicor)
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
-descrTable(~ age + sex, predimed)
+descrTable(~ age + sex, regicor)
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
-descrTable(predimed, hide.no="no")
+descrTable(regicor, hide.no="no")
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
-descrTable(group ~ ., predimed, hide.no="no", show.all=TRUE)
+descrTable(year ~ ., regicor, hide.no="no", show.all=TRUE)
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
-descrTable(predimed, subset=age>65)
+descrTable(regicor, subset=age>65)
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
-restab<-createTable(compareGroups(group ~ age + sex + smoke + waist + hormo, data=predimed))
+restab<-createTable(compareGroups(year ~ age + sex + smoker + bmi + histchol, data=regicor))
 export2latex(restab)
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
-res <- compareGroups(group ~ ., predimed)
+res <- compareGroups(year ~ ., regicor)
 restab <- createTable(res, hide.no="no")
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
@@ -371,11 +336,7 @@ export2md(restab, size=6)
 export2md(restab, width="400px")
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
-resMales <- compareGroups(group ~ . -sex, predimed, subset=sex=="Male", simplify=FALSE)
-resFemales <- compareGroups(group ~ . -sex, predimed, subset=sex=="Female", simplify=FALSE)
-restabMales <- createTable(resMales, hide.no="no")
-restabFemales <- createTable(resFemales, hide.no="no")
-restab <- cbind("Males"=restabMales, "Females"=restabFemales)
+restab <- strataTable(descrTable(year ~ . -id, regicor), "sex")
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
 export2md(restab, size=8)
@@ -419,11 +380,11 @@ res<-compareSNPs(~ snp10001 + snp10002 + snp10003, data=SNPs)
 res
 
 ## ---- echo=FALSE, results='asis'--------------------------------------------------------------------------------------------------------------------
-export2md(createTable(compareGroups(group ~  age + sex + smoke + bmi + waist + wth + htn + diab + hyperchol + famhist + hormo + p14 + toevent + event, data=predimed), hide.no="No",hide = c(sex="Male")))
+export2md(descrTable(year ~  age + sex + smoker + sbp + dbp + histhtn + txhtn + chol + hdl + triglyc + ldl + histchol + txchol + bmi, data=regicor, method=c(triglyc=2), hide.no="No",hide = c(sex="Male")))
 
 ## ---- echo=FALSE, results='asis'--------------------------------------------------------------------------------------------------------------------
-export2md(createTable(compareGroups(htn ~  age + sex + smoke + bmi + waist + wth + diab + hyperchol + famhist + hormo + p14 + toevent + event, data=predimed), hide.no="No",hide = c(sex="Male"), show.ratio=TRUE, show.descr=FALSE))
+export2md(descrTable(cv ~  age + sex + smoker + bmi + chol + triglyc + ldl + sbp + dbp + txhtn, data=regicor, method=c(triglyc=2), hide.no="No",hide = c(sex="Male"), show.ratio=TRUE, show.descr=FALSE))
 
 ## ---- echo=FALSE, results='asis'--------------------------------------------------------------------------------------------------------------------
-export2md(createTable(compareGroups(tmain ~  group + age + sex, data=predimed), show.ratio=TRUE))
+export2md(createTable(compareGroups(tcv ~  year + age + sex, data=regicor), show.ratio=TRUE))
 

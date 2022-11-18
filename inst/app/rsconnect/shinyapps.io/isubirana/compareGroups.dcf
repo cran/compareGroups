@@ -5,8 +5,9 @@ account: isubirana
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2196295
-bundleId: 3884561
+bundleId: 6508366
 url: https://isubirana.shinyapps.io/compareGroups/
-when: 1605871884.62009
+when: 1668335090.99039
+lastSyncTime: 1668335090.99039
 asMultiple: FALSE
 asStatic: FALSE

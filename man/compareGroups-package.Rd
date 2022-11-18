@@ -22,15 +22,17 @@ Summarize genetic data (Single Nucleotide Polymorphisms) data displaying Allele 
 \tabular{ll}{
 Package: \tab compareGroups\cr
 Type: \tab Package\cr
-Version: \tab 4.5.1\cr
-Date: \tab 2021-03-29\cr
+Version: \tab 4.6.1\cr
+Date: \tab 2022-10-19\cr
 License: \tab GPL version 2 or newer\cr
 LazyLoad: \tab yes\cr
 }
 Main functions: 
 \code{\link{compareGroups}}, 
 \code{\link{compareSNPs}}, 
-\code{\link{createTable}}, 
+\code{\link{createTable}},
+\code{\link{descrTable}},
+\code{\link{strataTable}},
 \code{\link{missingTable}}, 
 \code{\link{export2latex}},
 \code{\link{export2html}}, 
@@ -42,14 +44,15 @@ Main functions:
 \code{\link{report}}, 
 \code{\link{radiograph}}, 
 \code{\link{cGroupsGUI}}, 
-\code{\link{cGroupsWUI}}     
+\code{\link{cGroupsWUI}}
 }
 
 
-\author{
-Main functions: Isaac Subirana <isubirana<at>imim.es>, Joan Vila <jvila<at>imim.es>, H\'ector Sanz <hsrodenas<at>gmail.com>, Gavin Lucas <gavin.lucas<at>cleargenetics.com> and David Gim\'enez <dgimenez1<at>imim.es>\cr
 
-Web User Interface: Isaac Subirana <isubirana<at>imim.es>, Judith Pe\~nafiel <jpenafiel<at>imim.es>, Gavin Lucas <gavin.lucas<at>cleargenetics.com> and David Gim\'enez <dgimenez1<at>imim.es> \cr
+\author{
+Main functions: Isaac Subirana <isubirana<at>imim.es>, Joan Vila <jvila<at>imim.es>, Héctor Sanz <hsrodenas<at>gmail.com>, Gavin Lucas <gavin.lucas<at>cleargenetics.com> and David Giménez <dgimenez1<at>imim.es>\cr
+
+Web User Interface: Isaac Subirana <isubirana<at>imim.es>, Judith Peñafiel <jpenafiel<at>imim.es>, Gavin Lucas <gavin.lucas<at>cleargenetics.com> and David Giménez <dgimenez1<at>imim.es> \cr
 
 Maintainer: Isaac Subirana <isubirana<at>imim.es>
 }
