@@ -5,9 +5,9 @@ account: regicor
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 7887098
-bundleId: 6893097
+bundleId: 7398222
 url: https://regicor.shinyapps.io/compareGroups/
-when: 1677511815.68089
-lastSyncTime: 1677511815.68089
+when: 1687964656.92054
+lastSyncTime: 1687964656.92055
 asMultiple: FALSE
 asStatic: FALSE
