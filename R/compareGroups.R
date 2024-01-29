@@ -29,7 +29,8 @@ function (formula, data, subset, na.action = NULL, y = NULL, Xext = NULL, selec 
 
     call <- match.call()
     if (missing(data))
-        data <- environment(formula)
+        # data <- environment(formula)
+        data <- model.frame(formula)
     else{   # needed to handle tibbles
       if (!inherits(data, "data.frame"))
         stop("data must be a data.frame")
@@ -39,6 +40,8 @@ function (formula, data, subset, na.action = NULL, y = NULL, Xext = NULL, selec 
         vl <- sapply(data, attr, which="labels", exact=TRUE) # store value.labels
       }
     }
+    
+    #print(str(data))
 
     # remove labelled class (for incompatibility with haven and Hmisc)
     for (i in 1:ncol(data)){
@@ -58,11 +61,10 @@ function (formula, data, subset, na.action = NULL, y = NULL, Xext = NULL, selec 
 
     k = length(frame.call)
     for (i in c("data", "subset", "na.action", "drop.unused.levels")) {
-    # for (i in c("subset", "na.action", "drop.unused.levels")) {
       if (!is.null(call[[i]])) {
         frame.call[[i]] <- call[[i]]
         k <- k + 1
-        if (is.R()) 
+        if (exists("version") && !is.null(version$language) && version$language == "R") # is.R() code function
           names(frame.call)[k] = i
       }
     }
