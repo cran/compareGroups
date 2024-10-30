@@ -1,8 +1,8 @@
 Package: compareGroups
 Type: Package
 Title: Descriptive Analysis by Groups
-Version: 4.9.0
-Date: 2024-09-13
+Version: 4.9.1
+Date: 2024-10-29
 Depends: R (>= 3.5.0)
 Imports: survival, tools, HardyWeinberg, rmarkdown, knitr, kableExtra,
         methods, chron, stats, writexl, flextable, officer, PMCMRplus
@@ -25,8 +25,8 @@ BuildVignettes: true
 VignetteBuilder: knitr
 RoxygenNote: 7.2.0
 NeedsCompilation: no
-Packaged: 2024-09-13 11:33:12 UTC; isubirana
+Packaged: 2024-10-30 11:15:49 UTC; isubirana
 Author: Isaac Subirana [aut, cre] (<https://orcid.org/0000-0003-1676-0197>),
   Joan Salvador [ctb]
 Repository: CRAN
-Date/Publication: 2024-09-13 12:10:02 UTC
+Date/Publication: 2024-10-30 12:50:02 UTC

@@ -1,6 +1,6 @@
-df0a683823a68880a98c800edc036548 *DESCRIPTION
+b739b185b31cab1afd3abd62b52392a1 *DESCRIPTION
 acc50d33f2a8b24cb4c10d038848a10d *NAMESPACE
-2d2b74814426075d626eb50edafda09f *NEWS.md
+113304b900850fadd8b21d8804feec59 *NEWS.md
 d91b80ce71becac0c532dcf4b3633c69 *R/Cox.plot.R
 8e95fa0180a5b05533ffe8aec2d66104 *R/KM.plot.R
 7096b94072aac1b6a690614b5dfb2c4e *R/KMg.plot.R
@@ -8,7 +8,7 @@ d91b80ce71becac0c532dcf4b3633c69 *R/Cox.plot.R
 8d87c85a64c158f6396c0b413fc8a615 *R/bar2.plot.R
 634e0adce4859ec78a360c389393a9f9 *R/box.plot.R
 38946013c1c4b6511355ff414091af77 *R/cGroupsGUI.R
-3e749428ae1ffe393f78cd86cf39fda2 *R/cGroupsWUI.R
+4b4847294a7da24b8334cecad08364b3 *R/cGroupsWUI.R
 f4ab0bb42af4b7b83287a6fe9cbed25f *R/cbind.createTable.R
 0320ffab9168ab345d2d8174e5c9abb5 *R/chisq.test2.R
 403d19c7a09cd16ec52de7cd7889ab03 *R/combn2.R
@@ -81,7 +81,7 @@ ffbc054e8980ad2bd92f698e127886db *build/vignette.rds
 a36370d3b92859e24558751321191376 *data/regicor.rda
 18948588067b0de09f96f34ed3595598 *inst/CITATION
 cf441468b8a907fb060aee8a7ec916f9 *inst/app/flipBox.R
-9fbc0c23dda306876c781a515e41f2fc *inst/app/global.R
+ce569795a92e7aa1ff17863c2f77806f *inst/app/global.R
 b28a4529f82c3a804631ce78ab621ddd *inst/app/helpfiles/DataPanelhelp.md
 3e33ce8df81ac843db34b370dd693326 *inst/app/helpfiles/PlotGroupshelp.md
 da2af94a1e4b106d75104dfdb3e9e32d *inst/app/helpfiles/PlotVariableshelp.md
@@ -107,7 +107,7 @@ d80c4d1e53c176fe9c33c7010277662a *inst/app/helpfiles/subsethelp.md
 d7147c551185b7705b225b3645210580 *inst/app/helpfiles/typehelp.md
 a948688a4002ed649e3ad8983fe6192d *inst/app/home.md
 3a2db33d7f779fa4fa1070a01ef3e547 *inst/app/makeExamples.R
-6ba36474600cad4ae0c7f6f43318da66 *inst/app/server.R
+baf656f49ad210f7d39accaf97a007a7 *inst/app/server.R
 5cdd0cdb8226f6354f60c13bddc0a937 *inst/app/tableTemp.Rmd
 ab3a793f7aef25517e52c446562b39fb *inst/app/ui.R
 956116342a080d4dafed20439681a2bf *inst/app/www/ReGiCor.jpg
@@ -133,7 +133,7 @@ d7a2ca687b4dee2844cd4323c507c1e1 *inst/app/www/logo_imim_capsalera.gif
 2af6f4833dedf50c5db0ce11dfdbcef8 *inst/app/www/regicor_logo125.png
 bd6de838ef7625d633e1037a4d053e56 *inst/doc/compareGroups_vignette.R
 ece7fc3575c67411b9e0fe9c47ba89ea *inst/doc/compareGroups_vignette.Rmd
-dc16e9f548ceb1ff6043d9df92b9db4f *inst/doc/compareGroups_vignette.html
+e8617f19b1c013fc8f69b27b1c0a07c0 *inst/doc/compareGroups_vignette.html
 59b6dc09c3e19024359473b60170114b *inst/exdata/regicor.csv
 c765cb2b0130c44b0d5a42f9a9a4a4a9 *inst/exdata/regicor.dat
 b12132538971f6f87c7dc44d90018f26 *inst/exdata/regicor.sav
@@ -142,7 +142,7 @@ c125b8e8696009a47db81682270696f0 *inst/exdata/regicor.xlsx
 e61c2530268fa7016ff3c20f9f4c0d78 *man/cGroupsGUI.Rd
 725f026259fc736ca92369c5eb195723 *man/cGroupsWUI.Rd
 ea6f8db283c7a0bcc2df6d73951b1b45 *man/compareGroups-internal.Rd
-75d6925f24457e87a6e25c5161690f36 *man/compareGroups-package.Rd
+e57fda5af9cde5443ca23d120b883092 *man/compareGroups-package.Rd
 05c0362b100864b3fe49a2d85bf0f55c *man/compareGroups.Rd
 3ca76e9501594847bdcd5a3f8458b9d8 *man/compareSNPs.Rd
 16a65e88caa071703af1ded5c84f870d *man/createTable.Rd
@@ -196,14 +196,14 @@ d508e98fe917cd0447f35d0a0f24b6d4 *vignettes/figures/GUI/step5_select_method.png
 3e1e1e10898334e79dd6cdd63f05d96f *vignettes/figures/GUI/step7_report_options.png
 9ac8a73c75ccadb585b6964034562778 *vignettes/figures/GUI/step8_export_table.png
 79bb2c705192260a1b20c1b7128a9b17 *vignettes/figures/GUI/toevent.png
-0bc1f42c747fb5749c833d0ec2006220 *vignettes/figures/bivar/age.png
-4f083fb7af73ef2f9291cb9d3d90f304 *vignettes/figures/bivar/sex.png
-81050f36b9f4e28ae56d9e7b0e26cb6d *vignettes/figures/bivar/tmain.png
-6874848ae48788fcf46bf96f90193db4 *vignettes/figures/bivarsurv/age.png
-81050f36b9f4e28ae56d9e7b0e26cb6d *vignettes/figures/bivarsurv/sex.png
+45bd8f37d8f2d9521a40b7e743a362c2 *vignettes/figures/bivar/age.png
+1465e5d162f48ed02a988b132a0d261a *vignettes/figures/bivar/sex.png
+b0292a250d4703df64119a50be81fd57 *vignettes/figures/bivar/tmain.png
+c75cbd3fce57d6c7db8f0b09ec7b7eb5 *vignettes/figures/bivarsurv/age.png
+b0292a250d4703df64119a50be81fd57 *vignettes/figures/bivarsurv/sex.png
 3070e4ac59312fd60b3bc4d6c9155d39 *vignettes/figures/classes.pdf
 e3be94632aefdc605400fd3112170959 *vignettes/figures/classes.png
 bb5e79a3793ebfde27b3d38b87401780 *vignettes/figures/classes.tex
-c59d0554e1c6c7f75e766b6039a3bd8a *vignettes/figures/univar/age.png
-6fd6fbcd634accc72afc5d4805d5c4c6 *vignettes/figures/univar/sex.png
-baa100189e51326e19dd67847aaec08d *vignettes/figures/univar/tmain.png
+5b2b56d3faf452d1be3303e926e02908 *vignettes/figures/univar/age.png
+dc8a1734aa4f840ac87176ba96508ce6 *vignettes/figures/univar/sex.png
+49cba30a291bcccee3a1d65bcfc1ad98 *vignettes/figures/univar/tmain.png
