@@ -58,8 +58,8 @@ compareGroups(year ~ age7gr, data=regicor, method = c(age7gr=NA))
 compareGroups(year ~ age7gr, data=regicor, method = c(age7gr=NA), min.dis=8)
 
 ## ----eval=FALSE-------------------------------------------------------------------------------------------------------------------------------------
-#  regicor$var6cat <- factor(sample(1:5, nrow(regicor), replace=TRUE))
-#  compareGroups(age7gr ~ sex + bmi + smoker, data=regicor)
+# regicor$var6cat <- factor(sample(1:5, nrow(regicor), replace=TRUE))
+# compareGroups(age7gr ~ sex + bmi + smoker, data=regicor)
 
 ## ----echo=FALSE-------------------------------------------------------------------------------------------------------------------------------------
 cat("Error in compareGroups.fit(X = X, y = y, include.label = include.label, : 
@@ -69,7 +69,7 @@ number of groups must be less or equal to 5")
 compareGroups(age7gr ~ sex + bmi + smoker, data=regicor, max.ylev=7)
 
 ## ----echo=TRUE, eval=FALSE--------------------------------------------------------------------------------------------------------------------------
-#  compareGroups(year ~ sex + age7gr, method=c(age7gr=3), data=regicor, max.xlev=5)
+# compareGroups(year ~ sex + age7gr, method=c(age7gr=3), data=regicor, max.xlev=5)
 
 ## ----echo=FALSE-------------------------------------------------------------------------------------------------------------------------------------
 cat("Warning in compareGroups.fit(X = X, y = y, include.label = include.label,  :
@@ -181,7 +181,7 @@ restab<-createTable(res)
 print(restab,which.table='descr')
 
 ## ----echo=TRUE, eval=FALSE--------------------------------------------------------------------------------------------------------------------------
-#  print(restab,which.table='avail')
+# print(restab,which.table='avail')
 
 ## ----echo=FALSE-------------------------------------------------------------------------------------------------------------------------------------
 print(restab,which.table='avail')
@@ -218,7 +218,7 @@ createTable(res, show.p.overall=FALSE)
 createTable(res, show.p.trend=TRUE)
 
 ## ----eval=FALSE-------------------------------------------------------------------------------------------------------------------------------------
-#  createTable(res, show.p.mul=TRUE)
+# createTable(res, show.p.mul=TRUE)
 
 ## ----echo=FALSE-------------------------------------------------------------------------------------------------------------------------------------
 createTable(res, show.p.mul=TRUE)
@@ -255,13 +255,13 @@ femaletab <- createTable(update(res,subset=sex=='Female'), show.p.overall = FALS
 maletab <- createTable(update(res,subset=sex=='Male'), show.p.overall = FALSE)
 
 ## ----eval=FALSE-------------------------------------------------------------------------------------------------------------------------------------
-#  cbind("ALL"=alltab,"FEMALE"=femaletab,"MALE"=maletab)
+# cbind("ALL"=alltab,"FEMALE"=femaletab,"MALE"=maletab)
 
 ## ----echo=FALSE-------------------------------------------------------------------------------------------------------------------------------------
 cbind("ALL"=alltab,"FEMALE"=femaletab,"MALE"=maletab)
 
 ## ----eval=FALSE-------------------------------------------------------------------------------------------------------------------------------------
-#  cbind(alltab,femaletab,maletab)
+# cbind(alltab,femaletab,maletab)
 
 ## ----echo=FALSE-------------------------------------------------------------------------------------------------------------------------------------
 cbind(alltab,femaletab,maletab)
@@ -271,7 +271,7 @@ res <- compareGroups(year ~ age + bmi + smoker + histchol + histhtn, regicor)
 restab <- createTable(res, hide.no="no")
 
 ## ----eval=FALSE-------------------------------------------------------------------------------------------------------------------------------------
-#  strataTable(restab, "sex")
+# strataTable(restab, "sex")
 
 ## ----echo=FALSE-------------------------------------------------------------------------------------------------------------------------------------
 strataTable(restab, "sex")
@@ -342,11 +342,11 @@ restab <- strataTable(descrTable(year ~ . -id, regicor), "sex")
 export2md(restab, size=8)
 
 ## ----eval=FALSE-------------------------------------------------------------------------------------------------------------------------------------
-#  # to know more about report function
-#  ?report
-#  
-#  # info about REGICOR data set
-#  ?regicor
+# # to know more about report function
+# ?report
+# 
+# # info about REGICOR data set
+# ?regicor
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
 # from a compareGroups object
@@ -355,9 +355,9 @@ res <- compareGroups(year ~ .-id, regicor)
 missingTable(res)
 
 ## ----eval=FALSE,results='hide'----------------------------------------------------------------------------------------------------------------------
-#  # or from createTable objects
-#  restab <- createTable(res, hide.no = 'no')
-#  missingTable(restab)
+# # or from createTable objects
+# restab <- createTable(res, hide.no = 'no')
+# missingTable(restab)
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------
 # first create time-to-cardiovascular event
