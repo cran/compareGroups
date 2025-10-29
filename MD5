@@ -1,6 +1,6 @@
-6349a099307bca4fcecf30e6f3e7f618 *DESCRIPTION
+1e6628eb9dffb9da5695aead9b7067eb *DESCRIPTION
 6a8d2a3b058e2fb6ab4fbfa3812aa467 *NAMESPACE
-d8887d725d3cee7f0d212a5c1dabeefe *NEWS.md
+e6bbd71c5a683ec866965fd1a5c8d563 *NEWS.md
 d91b80ce71becac0c532dcf4b3633c69 *R/Cox.plot.R
 8e95fa0180a5b05533ffe8aec2d66104 *R/KM.plot.R
 7096b94072aac1b6a690614b5dfb2c4e *R/KMg.plot.R
@@ -35,7 +35,7 @@ caa6644744fe8b2cde36524d173a3516 *R/export2mdword.R
 41d945c7702b35d11e2067f6f900bb54 *R/export2word.R
 ec3071baa6420da4a380a581a2039e7d *R/export2xls.R
 9b7e92d41c505b94de8b647e06efa9de *R/flip.R
-7f4bd46b33d9d164176c72830fcd617f *R/format2.R
+51c06b17e81839f4905669f20e51f329 *R/format2.R
 9e4885523b9cdac509f07f7f2dcb91ed *R/formula.compareGroups.R
 78af1a92bbd613d3b973c57a79f50782 *R/getResults.R
 bd92df3938368ecf1905af42c6ee290b *R/logrank.pval.R
@@ -81,7 +81,7 @@ f9750d3aaef31d2944dd7b6f86b79c2a *build/vignette.rds
 a36370d3b92859e24558751321191376 *data/regicor.rda
 18948588067b0de09f96f34ed3595598 *inst/CITATION
 cf441468b8a907fb060aee8a7ec916f9 *inst/app/flipBox.R
-7767be146b0ae0e603347f4c1c8f41b1 *inst/app/global.R
+30808f9761ccf8980fb536f2392f9836 *inst/app/global.R
 b28a4529f82c3a804631ce78ab621ddd *inst/app/helpfiles/DataPanelhelp.md
 3e33ce8df81ac843db34b370dd693326 *inst/app/helpfiles/PlotGroupshelp.md
 da2af94a1e4b106d75104dfdb3e9e32d *inst/app/helpfiles/PlotVariableshelp.md
@@ -107,7 +107,7 @@ d80c4d1e53c176fe9c33c7010277662a *inst/app/helpfiles/subsethelp.md
 d7147c551185b7705b225b3645210580 *inst/app/helpfiles/typehelp.md
 a948688a4002ed649e3ad8983fe6192d *inst/app/home.md
 3a2db33d7f779fa4fa1070a01ef3e547 *inst/app/makeExamples.R
-cf2d116d9d2c73e2991be94e68f29733 *inst/app/server.R
+22bacb7f19e3fe0b116e54dd8cf55db4 *inst/app/server.R
 5cdd0cdb8226f6354f60c13bddc0a937 *inst/app/tableTemp.Rmd
 af3c5493fe0d6e4e6112c866f831de06 *inst/app/ui.R
 956116342a080d4dafed20439681a2bf *inst/app/www/ReGiCor.jpg
@@ -133,7 +133,7 @@ d7a2ca687b4dee2844cd4323c507c1e1 *inst/app/www/logo_imim_capsalera.gif
 2af6f4833dedf50c5db0ce11dfdbcef8 *inst/app/www/regicor_logo125.png
 5e948b32338b2dd7b7147bdbbe422cc6 *inst/doc/compareGroups_vignette.R
 265d8048b99a569f3cfca36da6d67960 *inst/doc/compareGroups_vignette.Rmd
-211d019a73c467c262947a4d1dd347dc *inst/doc/compareGroups_vignette.html
+e3afc67a5e5a94e7a793c5ac69fd65bf *inst/doc/compareGroups_vignette.html
 59b6dc09c3e19024359473b60170114b *inst/exdata/regicor.csv
 c765cb2b0130c44b0d5a42f9a9a4a4a9 *inst/exdata/regicor.dat
 b12132538971f6f87c7dc44d90018f26 *inst/exdata/regicor.sav
@@ -142,7 +142,7 @@ c125b8e8696009a47db81682270696f0 *inst/exdata/regicor.xlsx
 e61c2530268fa7016ff3c20f9f4c0d78 *man/cGroupsGUI.Rd
 725f026259fc736ca92369c5eb195723 *man/cGroupsWUI.Rd
 ea6f8db283c7a0bcc2df6d73951b1b45 *man/compareGroups-internal.Rd
-fe7e4423ed1ff5bdb5ca6f3944c3163c *man/compareGroups-package.Rd
+8e78d9b3db1a1f57823aa5901340e762 *man/compareGroups-package.Rd
 0876015287b933bc8f491342d13b09c6 *man/compareGroups.Rd
 3ca76e9501594847bdcd5a3f8458b9d8 *man/compareSNPs.Rd
 16a65e88caa071703af1ded5c84f870d *man/createTable.Rd
@@ -167,9 +167,9 @@ e26a66b1a052836f2bb1c5a112d34fc1 *man/figures/logo.png
 87ac84ccd77aae4dd0ba95c7c314b1a0 *man/figures/prbb.jpg
 812d365d7d3f4b3bdcc86b3784dbfdd8 *man/figures/sex.pdf
 04445df9a84482f1e4991d7fc01c20e5 *man/figures/subplot.png
-af0be627e0c7f7aa70577259582b3a74 *man/figures/var1age.pdf
+0fecf802a3d99a689a4a92d3f78903c0 *man/figures/var1age.pdf
 c59d0554e1c6c7f75e766b6039a3bd8a *man/figures/var1age.png
-6b6ced55428c1280ff86ed378d82c641 *man/figures/var1sex.pdf
+c29808e3b10f0bc1870ea66f27f1ea03 *man/figures/var1sex.pdf
 6fd6fbcd634accc72afc5d4805d5c4c6 *man/figures/var1sex.png
 286adf5dce76da5393b2b06021aa1b60 *man/figures/varage.pdf
 c59d0554e1c6c7f75e766b6039a3bd8a *man/figures/varage.png

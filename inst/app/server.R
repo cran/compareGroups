@@ -6,22 +6,22 @@ server <- function(input, output, session) {
   
 
   # register entrance and exit time entries
-  #if (!runAppLocal){
-  observe({
-    port <- session$clientData$url_port
-    if (port==""){
-      nomapp <- "compareGroups" # canviar a compareGroups/compareGroups_datarus segons si es fa el deploy a isubirana o regicor respectivament 
-    } else {
-      nomapp <- "compareGroups_cGroupsWUI"
-    }  
-    dd <- data.frame(id=session$token, start=as.character(Sys.time()),end=NA,app=nomapp)
-    googlesheets4::sheet_append(sheet_id, dd)
-    onStop(function(){
-      dd <- data.frame(id=session$token, start=NA,end=as.character(Sys.time()),app=nomapp)
+  if (dir.exists(".secrets")){
+    observe({
+      # port <- session$clientData$url_port
+      # if (port==""){
+        nomapp <- "compareGroups" # canviar a compareGroups/compareGroups_datarus segons si es fa el deploy a isubirana o regicor respectivament 
+      # } else {
+      #   nomapp <- "compareGroups_cGroupsWUI"
+      # }  
+      dd <- data.frame(id=session$token, start=as.character(Sys.time()),end=NA,app=nomapp)
       googlesheets4::sheet_append(sheet_id, dd)
+      onStop(function(){
+        dd <- data.frame(id=session$token, start=NA,end=as.character(Sys.time()),app=nomapp)
+        googlesheets4::sheet_append(sheet_id, dd)
+      })
     })
-  })
-
+  }
 
   output$xxx <- renderPrint({
     # cat("summary(rv$dataset)\n")
